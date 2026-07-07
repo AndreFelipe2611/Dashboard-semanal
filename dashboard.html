@@ -677,73 +677,88 @@
             }
         }
     });
-    // 3. Gráfico Comparativo (Linha)
+    // 3. Gráfico Comparativo (Colunas)
     const ctxComp = document.getElementById('compChart').getContext('2d');
     new Chart(ctxComp, {
-        type: 'line', 
+        type: 'bar',
         data: {
             labels: dadosCompChart.labels,
             datasets: [
                 {
                     label: 'Abastecimento (Transnet)',
                     data: dadosCompChart.abastecimento,
-                    borderColor: '#0f1c3f',
                     backgroundColor: '#0f1c3f',
-                    borderWidth: 3,
-                    pointRadius: 6,
+                    borderColor: '#0f1c3f',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    categoryPercentage: 0.72,
+                    barPercentage: 0.78,
                     datalabels: {
                         color: '#0f1c3f',
-                        offset: 6,
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 4,
+                        clip: false,
                         font: { weight: '900', size: 13 },
-                        align: function(context) {
-                            var val1 = context.dataset.data[context.dataIndex];
-                            var val2 = context.chart.data.datasets[1].data[context.dataIndex];
-                            return val1 >= val2 ? 'top' : 'bottom';
-                        },
-                        anchor: function(context) {
-                            var val1 = context.dataset.data[context.dataIndex];
-                            var val2 = context.chart.data.datasets[1].data[context.dataIndex];
-                            return val1 >= val2 ? 'top' : 'bottom';
-                        },
-                        formatter: function(value) { return value.toFixed(2).replace('.', ','); }
+                        formatter: function(value) {
+                            return value.toFixed(2).replace('.', ',');
+                        }
                     }
                 },
                 {
-                    label: 'Rede Can',
+                    label: 'Rede CAN',
                     data: dadosCompChart.redeCan,
-                    borderColor: '#a0a0a0',
                     backgroundColor: '#a0a0a0',
-                    borderWidth: 3,
-                    pointRadius: 6,
+                    borderColor: '#a0a0a0',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    categoryPercentage: 0.72,
+                    barPercentage: 0.78,
                     datalabels: {
                         color: '#555555',
-                        offset: 6,
+                        anchor: 'end',
+                        align: 'top',
+                        offset: 4,
+                        clip: false,
                         font: { weight: '900', size: 13 },
-                        align: function(context) {
-                            var val2 = context.dataset.data[context.dataIndex];
-                            var val1 = context.chart.data.datasets[0].data[context.dataIndex];
-                            return val2 > val1 ? 'top' : 'bottom';
-                        },
-                        anchor: function(context) {
-                            var val2 = context.dataset.data[context.dataIndex];
-                            var val1 = context.chart.data.datasets[0].data[context.dataIndex];
-                            return val2 > val1 ? 'top' : 'bottom';
-                        },
-                        formatter: function(value) { return value.toFixed(2).replace('.', ','); }
+                        formatter: function(value) {
+                            return value.toFixed(2).replace('.', ',');
+                        }
                     }
                 }
             ]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, font: { size: 14, weight: 'bold' } } } },
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 10,
+                        font: { size: 14, weight: 'bold' }
+                    }
+                },
+                tooltip: { enabled: true }
+            },
             scales: {
                 y: {
-                    min: 2.20, max: 3.40,
-                    ticks: { font: { size: 13, weight: 'bold' }, stepSize: 0.20, callback: function(value) { return value.toFixed(2).replace('.', ','); } },
+                    min: 2.20,
+                    max: 3.40,
+                    ticks: {
+                        font: { size: 13, weight: 'bold' },
+                        stepSize: 0.20,
+                        callback: function(value) {
+                            return value.toFixed(2).replace('.', ',');
+                        }
+                    },
                     grid: { color: '#e5e5e5' }
                 },
-                x: { grid: { display: false }, ticks: { font: { size: 13, weight: 'bold' } } }
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 13, weight: 'bold' } }
+                }
             }
         }
     });
