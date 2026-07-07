@@ -1,697 +1,864 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cenário Geral - Motoristas</title>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js & DataLabels -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-body: #f5f7fa;
-            --blue-dark: #0f1847;
-            --blue-primary: #102a63;
-            --green-primary: #438e36;
-            --orange-primary: #ea5813;
-            --grey-primary: #757575;
-            --box-green: #2a6132;
-            --box-red: #ba3819;
-            --border-color: #e0e0e0;
-            --font-main: 'Inter', sans-serif;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-body);
-            color: #333;
-            padding: 20px;
-        }
-        .dashboard {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        /* --- Header --- */
-        .main-header {
-            background-color: var(--blue-dark);
-            color: white;
-            border-radius: 12px;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header-left h1 {
-            font-size: 1.8rem;
-            font-weight: 900;
-            margin: 0 0 5px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            letter-spacing: -0.5px;
-        }
-        .header-left h1 .divider { color: #4a5d8a; font-weight: 300; }
-        .header-left h1 .period { font-size: 1rem; font-weight: 600; text-transform: uppercase; }
-        .header-left p { font-size: 1rem; margin: 0; color: #cbd5e1; font-weight: 500; }
-        .header-right { display: flex; gap: 15px; }
-        .hkpi {
-            background: white;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            gap: 15px;
-        }
-        .hkpi.orange { color: var(--orange-primary); border: 2px solid var(--orange-primary); }
-        .hkpi.blue { color: var(--blue-dark); border: 2px solid var(--blue-dark); }
-        .hkpi i { font-size: 2.2rem; }
-        .hkpi-info { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .hkpi-lbl { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
-        .hkpi-val { font-size: 1.8rem; font-weight: 900; line-height: 1.1; }
-        /* --- Grid Layout --- */
-        .main-wrapper {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            padding: 0 10px;
-        }
-        .col-left { display: flex; flex-direction: column; gap: 20px; }
-        .col-right { display: flex; flex-direction: column; gap: 20px; }
-        .section-title {
-            color: var(--blue-primary);
-            font-size: 1.05rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-        /* --- Resumo Executivo --- */
-        .rcard {
-            display: flex;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-        }
-        .rcard-icon {
-            width: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            color: white;
-        }
-        .rcard-body {
-            flex: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            background: white;
-        }
-        .rcard-info { display: flex; flex-direction: column; }
-        .rcard-title { font-size: 0.85rem; font-weight: 800; margin-bottom: 2px; }
-        .rcard-val { font-size: 1.8rem; font-weight: 900; color: #1e293b; line-height: 1.1; }
-        .rcard-pct { font-size: 1.3rem; font-weight: 800; }
-        .bg-blue { background-color: var(--blue-primary); }
-        .bg-green { background-color: var(--green-primary); }
-        .bg-orange { background-color: var(--orange-primary); }
-        .bg-grey { background-color: var(--grey-primary); }
-        .text-blue { color: var(--blue-primary); }
-        .text-green { color: var(--green-primary); }
-        .text-orange { color: var(--orange-primary); }
-        .text-grey { color: var(--grey-primary); }
-        /* --- Destaques --- */
-        .destaques-box {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            background: white;
-            flex: 1;
-        }
-        .destaques-list { list-style: none; padding-left: 0; }
-        .destaques-list li {
-            font-size: 0.8rem;
-            color: var(--blue-primary);
-            font-weight: 600;
-            margin-bottom: 12px;
-            position: relative;
-            padding-left: 15px;
-            line-height: 1.4;
-        }
-        .destaques-list li::before {
-            content: "•";
-            color: var(--blue-primary);
-            font-size: 1.5rem;
-            position: absolute;
-            left: 0;
-            top: -6px;
-        }
-        /* --- Acompanhamento por Perfil --- */
-        .acomp-section {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: white;
-            padding: 15px 20px;
-        }
-        .acomp-header { text-align: center; margin-bottom: 15px; }
-        .acomp-subtitle { color: var(--blue-primary); font-size: 0.85rem; font-weight: 600; }
-        .acomp-content {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .acomp-chart {
-            flex: 1;
-            position: relative;
-            height: 240px;
-            display: flex;
-            justify-content: center;
-        }
-        .donut-inner {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: var(--blue-primary);
-        }
-        .donut-inner span { font-size: 1.8rem; font-weight: 900; display: block; }
-        .donut-inner small { font-size: 0.6rem; font-weight: 800; line-height: 1.1; display: block; }
-        .acomp-table-wrap { flex: 1.2; }
-        /* --- Styled Table --- */
-        .styled-table { width: 100%; border-collapse: collapse; }
-        .styled-table th {
-            font-size: 0.65rem;
-            color: var(--blue-primary);
-            text-transform: uppercase;
-            font-weight: 800;
-            padding: 8px 5px;
-            border-bottom: 2px solid var(--border-color);
-            text-align: center;
-        }
-        .styled-table td {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #333;
-            padding: 10px 5px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .styled-table td:first-child { text-align: left; }
-        .styled-table tr:last-child td { border-bottom: none; }
-        .styled-table .total-row td {
-            color: var(--blue-primary);
-            font-weight: 900;
-            border-top: 2px solid var(--border-color);
-            background: #f8faff;
-        }
-        .dot {
-            display: inline-block;
-            width: 12px; height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-        /* --- Bottom Row (3 Columns) --- */
-        .bottom-row {
-            display: grid;
-            grid-template-columns: 1.2fr 1.2fr 1fr;
-            gap: 15px;
-        }
-        /* --- Bottom Cards --- */
-        .bottom-card {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            background: white;
-            display: flex;
-            flex-direction: column;
-        }
-        .bc-header {
-            color: white;
-            padding: 12px 15px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            line-height: 1.2;
-        }
-        .bc-header.green { background-color: var(--box-green); }
-        .bc-header.red { background-color: var(--box-red); }
-        .bc-badge {
-            background: white;
-            border-radius: 6px;
-            padding: 4px 15px;
-            text-align: center;
-        }
-        .bc-badge .val { font-size: 1.4rem; font-weight: 900; display: block; line-height: 1; }
-        .bc-badge .lbl { font-size: 0.6rem; font-weight: 800; }
-        .bc-body {
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-        }
-        /* --- Circular Progress --- */
-        .circ-wrap {
-            text-align: center;
-            width: 100px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .progress-circle {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        .progress-circle::after {
-            content: "";
-            width: 72px;
-            height: 72px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-        }
-        .progress-circle span {
-            position: relative;
-            z-index: 1;
-            font-size: 1.3rem;
-            font-weight: 900;
-        }
-        .progress-circle.green span { color: var(--green-primary); }
-        .progress-circle.orange span { color: var(--orange-primary); }
-        
-        .circ-desc {
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #333;
-            margin-top: 10px;
-            line-height: 1.3;
-        }
-        .bc-table-wrap { flex: 1; }
-        .bc-table-wrap .styled-table th { font-size: 0.55rem; }
-        .bc-table-wrap .styled-table td { font-size: 0.75rem; padding: 6px 2px; }
-        /* --- Importante Box --- */
-        .importante-box {
-            background: #f0f4ff;
-            border-radius: 8px;
-            padding: 20px;
-            border: 1px solid #dce4f7;
-            height: 100%;
-        }
-        .importante-box h4 {
-            color: var(--blue-primary);
-            font-size: 1.1rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .importante-box p {
-            font-size: 0.85rem;
-            color: var(--blue-primary);
-            font-weight: 600;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cenário Geral - Motoristas</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-body: #f5f7fa;
+    --blue-dark: #0f1847;
+    --blue-primary: #102a63;
+    --green-primary: #438e36;
+    --orange-primary: #ea5813;
+    --grey-primary: #757575;
+    --box-green: #2a6132;
+    --box-red: #ba3819;
+    --border-color: #e0e0e0;
+    --font-main: 'Inter', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-body);
+    color: #333;
+    padding: 20px;
+}
+
+.dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.main-header {
+    background-color: var(--blue-dark);
+    color: white;
+    border-radius: 12px;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.header-left p {
+    font-size: 1rem;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    gap: 15px;
+}
+
+.hkpi {
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 15px;
+}
+
+.hkpi.orange {
+    color: var(--orange-primary);
+    border: 2px solid var(--orange-primary);
+}
+
+.hkpi.blue {
+    color: var(--blue-dark);
+    border: 2px solid var(--blue-dark);
+}
+
+.hkpi i {
+    font-size: 2.2rem;
+}
+
+.hkpi-info {
+    text-align: center;
+}
+
+.hkpi-lbl {
+    font-size: 0.65rem;
+    font-weight: 800;
+    display: block;
+}
+
+.hkpi-val {
+    font-size: 1.8rem;
+    font-weight: 900;
+}
+
+.main-wrapper {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.col-left,
+.col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section-title {
+    color: var(--blue-primary);
+    font-size: 1.05rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.rcard {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.rcard-icon {
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: white;
+}
+
+.rcard-body {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: white;
+}
+
+.rcard-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.rcard-val {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #1e293b;
+}
+
+.rcard-pct {
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.bg-blue { background-color: var(--blue-primary); }
+.bg-green { background-color: var(--green-primary); }
+.bg-orange { background-color: var(--orange-primary); }
+.bg-grey { background-color: var(--grey-primary); }
+
+.text-blue { color: var(--blue-primary); }
+.text-green { color: var(--green-primary); }
+.text-orange { color: var(--orange-primary); }
+.text-grey { color: var(--grey-primary); }
+
+.destaques-box {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    background: white;
+    flex: 1;
+}
+
+.destaques-list {
+    list-style: none;
+}
+
+.destaques-list li {
+    font-size: 0.8rem;
+    color: var(--blue-primary);
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-left: 15px;
+    position: relative;
+    line-height: 1.4;
+}
+
+.destaques-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: -5px;
+    font-size: 1.5rem;
+}
+
+.acomp-section {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    padding: 15px 20px;
+}
+
+.acomp-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.acomp-subtitle {
+    color: var(--blue-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.acomp-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.acomp-chart {
+    flex: 1;
+    position: relative;
+    height: 240px;
+}
+
+.donut-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--blue-primary);
+}
+
+.donut-inner span {
+    font-size: 1.8rem;
+    font-weight: 900;
+    display: block;
+}
+
+.donut-inner small {
+    font-size: 0.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.acomp-table-wrap {
+    flex: 1.2;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.styled-table th {
+    font-size: 0.65rem;
+    color: var(--blue-primary);
+    text-transform: uppercase;
+    font-weight: 800;
+    padding: 8px 5px;
+    border-bottom: 2px solid var(--border-color);
+    text-align: center;
+}
+
+.styled-table td {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 10px 5px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.styled-table td:first-child {
+    text-align: left;
+}
+
+.total-row td {
+    color: var(--blue-primary);
+    font-weight: 900;
+    border-top: 2px solid var(--border-color);
+    background: #f8faff;
+}
+
+.dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.bottom-row {
+    display: grid;
+    grid-template-columns: 1.2fr 1.2fr 1fr;
+    gap: 15px;
+}
+
+.bottom-card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+
+.bc-header {
+    color: white;
+    padding: 12px 15px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bc-header.green { background-color: var(--box-green); }
+.bc-header.red { background-color: var(--box-red); }
+
+.bc-badge {
+    background: white;
+    border-radius: 6px;
+    padding: 4px 15px;
+    text-align: center;
+}
+
+.bc-badge .val {
+    font-size: 1.4rem;
+    font-weight: 900;
+    display: block;
+}
+
+.bc-badge .lbl {
+    font-size: 0.6rem;
+    font-weight: 800;
+}
+
+.bc-body {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.circ-wrap {
+    width: 105px;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.progress-circle {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.progress-circle::after {
+    content: "";
+    width: 72px;
+    height: 72px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.progress-circle span {
+    position: relative;
+    z-index: 1;
+    font-size: 1.15rem;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.progress-circle.green span { color: var(--green-primary); }
+.progress-circle.orange span { color: var(--orange-primary); }
+
+.circ-desc {
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-top: 10px;
+    line-height: 1.3;
+}
+
+.bc-table-wrap {
+    flex: 1;
+}
+
+.bc-table-wrap .styled-table th {
+    font-size: 0.55rem;
+}
+
+.bc-table-wrap .styled-table td {
+    font-size: 0.75rem;
+    padding: 6px 2px;
+}
+
+.importante-box {
+    background: #f0f4ff;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #dce4f7;
+    height: 100%;
+}
+
+.importante-box h4 {
+    color: var(--blue-primary);
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.importante-box p {
+    font-size: 0.85rem;
+    color: var(--blue-primary);
+    font-weight: 600;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+</style>
 </head>
+
 <body>
 <div class="dashboard">
-    <!-- HEADER -->
-    <header class="main-header">
-        <div class="header-left">
-            <h1>CENÁRIO GERAL – MOTORISTAS <span class="divider">|</span> <span class="period">PERÍODO DE ANÁLISE: <span id="periodo-txt"></span></span></h1>
-            <p>Panorama geral de acompanhamento e status dos motoristas</p>
-        </div>
-        <div class="header-right">
-            <div class="hkpi orange">
-                <i class="fa-solid fa-bullseye"></i>
-                <div class="hkpi-info">
-                    <span class="hkpi-lbl">META CONSIDERADA</span>
-                    <span class="hkpi-val" id="meta-txt"></span>
-                </div>
-            </div>
-            <div class="hkpi blue">
-                <i class="fa-solid fa-users"></i>
-                <div class="hkpi-info">
-                    <span class="hkpi-lbl">TOTAL MOTORISTAS</span>
-                    <span class="hkpi-val" id="total-mot-txt"></span>
-                </div>
+
+<header class="main-header">
+    <div class="header-left">
+        <h1>CENÁRIO GERAL – MOTORISTAS | <span>PERÍODO DE ANÁLISE: <span id="periodo-txt"></span></span></h1>
+        <p>Panorama geral de acompanhamento e status dos motoristas</p>
+    </div>
+
+    <div class="header-right">
+        <div class="hkpi orange">
+            <i class="fa-solid fa-bullseye"></i>
+            <div class="hkpi-info">
+                <span class="hkpi-lbl">META CONSIDERADA</span>
+                <span class="hkpi-val" id="meta-txt"></span>
             </div>
         </div>
-    </header>
-    <div class="main-wrapper">
-        <!-- COLUNA ESQUERDA -->
-        <div class="col-left">
-            
-            <!-- Resumo Executivo -->
-            <div class="resumo-box">
-                <h3 class="section-title">RESUMO EXECUTIVO</h3>
-                
-                <div class="rcard">
-                    <div class="rcard-icon bg-blue"><i class="fa-solid fa-user"></i></div>
-                    <div class="rcard-body">
-                        <div class="rcard-info">
-                            <span class="rcard-title text-blue">ATIVOS</span>
-                            <span class="rcard-val" id="res-ativos-val"></span>
-                        </div>
-                        <div class="rcard-pct text-blue" id="res-ativos-pct"></div>
-                    </div>
-                </div>
-                <div class="rcard">
-                    <div class="rcard-icon bg-green"><i class="fa-solid fa-chart-simple"></i></div>
-                    <div class="rcard-body">
-                        <div class="rcard-info">
-                            <span class="rcard-title text-green">ACIMA DA META</span>
-                            <span class="rcard-val" id="res-acima-val"></span>
-                        </div>
-                        <div class="rcard-pct text-green" id="res-acima-pct"></div>
-                    </div>
-                </div>
-                <div class="rcard">
-                    <div class="rcard-icon bg-orange"><i class="fa-solid fa-bullseye"></i></div>
-                    <div class="rcard-body">
-                        <div class="rcard-info">
-                            <span class="rcard-title text-orange">ABAIXO DA META</span>
-                            <span class="rcard-val" id="res-abaixo-val"></span>
-                        </div>
-                        <div class="rcard-pct text-orange" id="res-abaixo-pct"></div>
-                    </div>
-                </div>
-                <div class="rcard">
-                    <div class="rcard-icon bg-grey"><i class="fa-solid fa-circle-minus"></i></div>
-                    <div class="rcard-body">
-                        <div class="rcard-info">
-                            <span class="rcard-title text-grey">SEM DADOS</span>
-                            <span class="rcard-val" id="res-sem-val"></span>
-                        </div>
-                        <div class="rcard-pct text-grey" id="res-sem-pct"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Destaques -->
-            <div class="destaques-box">
-                <h3 class="section-title">DESTAQUES</h3>
-                <ul class="destaques-list">
-                    <li><span id="dest-acima"></span>% do total de motoristas estão acima da meta de <span id="dest-meta-1"></span>.</li>
-                    <li><span id="dest-abaixo"></span>% dos motoristas estão abaixo da meta de <span id="dest-meta-2"></span>.</li>
-                    <li><span id="dest-sem"></span>% dos motoristas não possuem dados para avaliação.</li>
-                    <li>Os acompanhamentos por perfil não são exclusivos.</li>
-                </ul>
-            </div>
-            
-        </div>
-        <!-- COLUNA DIREITA -->
-        <div class="col-right">
-            
-            <!-- Acompanhamento por perfil -->
-            <div class="acomp-section">
-                <div class="acomp-header">
-                    <h3 class="section-title" style="margin-bottom: 5px;">ACOMPANHAMENTO POR PERFIL</h3>
-                    <p class="acomp-subtitle">Número de motoristas acompanhados por perfil (não exclusivo)</p>
-                </div>
-                <div class="acomp-content">
-                    <div class="acomp-chart">
-                        <canvas id="chart-pizza"></canvas>
-                        <div class="donut-inner">
-                            <span id="donut-total"></span>
-                            <small>TOTAL DE<br>ACOMPANHAMENTOS<br>(SEM DUPLICIDADE)</small>
-                        </div>
-                    </div>
-                    <div class="acomp-table-wrap">
-                        <table class="styled-table">
-                            <thead>
-                                <tr>
-                                    <th>PERFIL</th>
-                                    <th>ACOMPANHADOS</th>
-                                    <th>% DO TOTAL</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-acomp"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!-- Bottom Row inside Right Col -->
-            <div class="bottom-row">
-                
-                <!-- Já Acompanhados -->
-                <div class="bottom-card">
-                    <div class="bc-header green">
-                        MOTORISTAS ACIMA DA META<br>JÁ ACOMPANHADOS
-                        <div class="bc-badge text-green">
-                            <span class="val" id="ja-acomp-total"></span>
-                            <span class="lbl">TOTAL</span>
-                        </div>
-                    </div>
-                    <div class="bc-body">
-                        <div class="circ-wrap">
-                            <div class="progress-circle green" id="circ-ja-acomp">
-                                <span id="circ-ja-acomp-txt"></span>
-                            </div>
-                            <div class="circ-desc">dos motoristas acima da meta já foram acompanhados.</div>
-                        </div>
-                        <div class="bc-table-wrap">
-                            <table class="styled-table">
-                                <thead>
-                                    <tr>
-                                        <th>PERFIL</th>
-                                        <th>ACOMPANHADOS</th>
-                                        <th>% DO TOTAL<br>ACIMA DA META</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-ja-acomp"></tbody>
-                            </table>
-                            <div class="circ-desc" style="text-align: center; margin-top: 10px;">Considera apenas os perfis Instrutor e Supervisor para o cálculo do percentual.</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Não Acompanhados -->
-                <div class="bottom-card">
-                    <div class="bc-header red">
-                        MOTORISTAS ACIMA DA META<br>NÃO ACOMPANHADOS
-                        <div class="bc-badge text-orange">
-                            <span class="val" id="nao-acomp-total"></span>
-                            <span class="lbl">TOTAL</span>
-                        </div>
-                    </div>
-                    <div class="bc-body">
-                        <div class="circ-wrap">
-                            <div class="progress-circle orange" id="circ-nao-acomp">
-                                <span id="circ-nao-acomp-txt"></span>
-                            </div>
-                            <div class="circ-desc">dos motoristas acima da meta ainda não foram acompanhados.</div>
-                        </div>
-                        <div class="bc-table-wrap">
-                            <table class="styled-table">
-                                <thead>
-                                    <tr>
-                                        <th>PERFIL</th>
-                                        <th>NÃO ACOMPANHADOS</th>
-                                        <th>% DO TOTAL<br>ACIMA DA META</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-nao-acomp"></tbody>
-                            </table>
-                            <div class="circ-desc" style="text-align: center; margin-top: 10px;">Considera apenas os perfis Instrutor e Supervisor para o cálculo do percentual.</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Importante -->
-                <div class="importante-box">
-                    <h4><i class="fa-solid fa-circle-info"></i> IMPORTANTE</h4>
-                    <p>Os percentuais de <strong id="imp-pct1"></strong> e <strong id="imp-pct2"></strong> consideram apenas os perfis Instrutor e Supervisor.</p>
-                    <p>O perfil "Ambos" indica apenas a distribuição percentual dentro desses dois perfis.</p>
-                </div>
+
+        <div class="hkpi blue">
+            <i class="fa-solid fa-users"></i>
+            <div class="hkpi-info">
+                <span class="hkpi-lbl">TOTAL MOTORISTAS</span>
+                <span class="hkpi-val" id="total-mot-txt"></span>
             </div>
         </div>
     </div>
+</header>
+
+<div class="main-wrapper">
+
+<div class="col-left">
+    <div>
+        <h3 class="section-title">RESUMO EXECUTIVO</h3>
+
+        <div class="rcard">
+            <div class="rcard-icon bg-blue"><i class="fa-solid fa-user"></i></div>
+            <div class="rcard-body">
+                <div>
+                    <div class="rcard-title text-blue">ATIVOS</div>
+                    <div class="rcard-val" id="res-ativos-val"></div>
+                </div>
+                <div class="rcard-pct text-blue" id="res-ativos-pct"></div>
+            </div>
+        </div>
+
+        <div class="rcard">
+            <div class="rcard-icon bg-green"><i class="fa-solid fa-chart-simple"></i></div>
+            <div class="rcard-body">
+                <div>
+                    <div class="rcard-title text-green">ACIMA DA META</div>
+                    <div class="rcard-val" id="res-acima-val"></div>
+                </div>
+                <div class="rcard-pct text-green" id="res-acima-pct"></div>
+            </div>
+        </div>
+
+        <div class="rcard">
+            <div class="rcard-icon bg-orange"><i class="fa-solid fa-bullseye"></i></div>
+            <div class="rcard-body">
+                <div>
+                    <div class="rcard-title text-orange">ABAIXO DA META</div>
+                    <div class="rcard-val" id="res-abaixo-val"></div>
+                </div>
+                <div class="rcard-pct text-orange" id="res-abaixo-pct"></div>
+            </div>
+        </div>
+
+        <div class="rcard">
+            <div class="rcard-icon bg-grey"><i class="fa-solid fa-circle-minus"></i></div>
+            <div class="rcard-body">
+                <div>
+                    <div class="rcard-title text-grey">SEM DADOS</div>
+                    <div class="rcard-val" id="res-sem-val"></div>
+                </div>
+                <div class="rcard-pct text-grey" id="res-sem-pct"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="destaques-box">
+        <h3 class="section-title">DESTAQUES</h3>
+        <ul class="destaques-list">
+            <li><span id="dest-acima"></span>% do total de motoristas estão acima da meta de <span id="dest-meta-1"></span>.</li>
+            <li><span id="dest-abaixo"></span>% dos motoristas estão abaixo da meta de <span id="dest-meta-2"></span>.</li>
+            <li><span id="dest-sem"></span>% dos motoristas não possuem dados para avaliação.</li>
+            <li>Os acompanhamentos por perfil não são exclusivos.</li>
+        </ul>
+    </div>
 </div>
+
+<div class="col-right">
+
+<div class="acomp-section">
+    <div class="acomp-header">
+        <h3 class="section-title">ACOMPANHAMENTO POR PERFIL</h3>
+        <p class="acomp-subtitle">Número de motoristas acompanhados por perfil (não exclusivo)</p>
+    </div>
+
+    <div class="acomp-content">
+        <div class="acomp-chart">
+            <canvas id="chart-pizza"></canvas>
+            <div class="donut-inner">
+                <span id="donut-total"></span>
+                <small>TOTAL DE<br>ACOMPANHAMENTOS<br>(SEM DUPLICIDADE)</small>
+            </div>
+        </div>
+
+        <div class="acomp-table-wrap">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>PERFIL</th>
+                        <th>ACOMPANHADOS</th>
+                        <th>% DO TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-acomp"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-row">
+
+<div class="bottom-card">
+    <div class="bc-header green">
+        MOTORISTAS ACIMA DA META<br>JÁ ACOMPANHADOS
+        <div class="bc-badge text-green">
+            <span class="val" id="ja-acomp-total"></span>
+            <span class="lbl">TOTAL</span>
+        </div>
+    </div>
+
+    <div class="bc-body">
+        <div class="circ-wrap">
+            <div class="progress-circle green" id="circ-ja-acomp">
+                <span id="circ-ja-acomp-txt"></span>
+            </div>
+            <div class="circ-desc">dos motoristas acima da meta já foram acompanhados.</div>
+        </div>
+
+        <div class="bc-table-wrap">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>PERFIL</th>
+                        <th>ACOMPANHADOS</th>
+                        <th>% DO TOTAL<br>ACIMA DA META</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-ja-acomp"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-card">
+    <div class="bc-header red">
+        MOTORISTAS ACIMA DA META<br>NÃO ACOMPANHADOS
+        <div class="bc-badge text-orange">
+            <span class="val" id="nao-acomp-total"></span>
+            <span class="lbl">TOTAL</span>
+        </div>
+    </div>
+
+    <div class="bc-body">
+        <div class="circ-wrap">
+            <div class="progress-circle orange" id="circ-nao-acomp">
+                <span id="circ-nao-acomp-txt"></span>
+            </div>
+            <div class="circ-desc">dos motoristas acima da meta ainda não foram acompanhados.</div>
+        </div>
+
+        <div class="bc-table-wrap">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>PERFIL</th>
+                        <th>NÃO ACOMPANHADOS</th>
+                        <th>% DO TOTAL<br>ACIMA DA META</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-nao-acomp"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="importante-box">
+    <h4><i class="fa-solid fa-circle-info"></i> IMPORTANTE</h4>
+    <p>Os percentuais de <strong id="imp-pct1"></strong> e <strong id="imp-pct2"></strong> consideram apenas os perfis Instrutor e Supervisor.</p>
+    <p>O perfil "Ambos" indica apenas a distribuição percentual dentro desses dois perfis.</p>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
 <script>
-    Chart.register(ChartDataLabels);
-    Chart.defaults.font.family = "'Inter', sans-serif";
-    // =========================================================================
-    // DADOS PARA ALTERAÇÃO MANUAL (HTML)
-    // =========================================================================
-    const dados = {
-        periodo: "JUNHO 2026",
-        meta_considerada: "1,50 EPK",
-        total_motoristas: 1266,
-        
-        resumo_executivo: {
-            ativos: 1164,
-            acima_meta: 354,
-            abaixo_meta: 791,
-            sem_dados: 19
-        },
-        // Gráfico de pizza (Acompanhamento por Perfil - Sem duplicidade)
-        pizza_acompanhamento: {
-            instrutor: 664,
-            supervisor: 467,
-            ambos: 404,
-            total_manual: 722 // <-- Valor manual do total no centro do gráfico
-        },
-        // Tabela direita superior (Acompanhamento por perfil não exclusivo)
-        tabela_acompanhamento: {
-            instrutor: 664,
-            supervisor: 467,
-            ambos: 404
-        },
-        // Tabelas inferiores
-        acima_meta_acompanhados: {
-            instrutor: 354,
-            supervisor: 249,
-            ambos: 249
-        },
-        acima_meta_nao_acompanhados: {
-            instrutor: 0,
-            supervisor: 105,
-            ambos: 105
-        }
-    };
-    // =========================================================================
-    // CÁLCULO E RENDERIZAÇÃO
-    // =========================================================================
-    function renderDashboard() {
-        const totM = dados.total_motoristas;
-        const res = dados.resumo_executivo;
-        
-        // 1. Header
-        document.getElementById('periodo-txt').textContent = dados.periodo;
-        document.getElementById('meta-txt').textContent = dados.meta_considerada;
-        document.getElementById('total-mot-txt').textContent = totM.toLocaleString('pt-BR');
-        // Utils
-        const calcPct = (val) => (val / totM * 100).toFixed(1).replace('.', ',');
-        const calcPctAtivos = (val) => (val / res.ativos * 100).toFixed(1).replace('.', ',');
-        const calcPctAcima = (val) => (val / res.acima_meta * 100).toFixed(1).replace('.', ',');
-        // 2. Resumo Executivo
-        document.getElementById('res-ativos-val').textContent = res.ativos.toLocaleString('pt-BR');
-        document.getElementById('res-ativos-pct').textContent = calcPct(res.ativos) + '%';
-        
-        document.getElementById('res-acima-val').textContent = res.acima_meta.toLocaleString('pt-BR');
-        document.getElementById('res-acima-pct').textContent = calcPctAtivos(res.acima_meta) + '%';
-        
-        document.getElementById('res-abaixo-val').textContent = res.abaixo_meta.toLocaleString('pt-BR');
-        document.getElementById('res-abaixo-pct').textContent = calcPctAtivos(res.abaixo_meta) + '%';
-        
-        document.getElementById('res-sem-val').textContent = res.sem_dados.toLocaleString('pt-BR');
-        document.getElementById('res-sem-pct').textContent = calcPctAtivos(res.sem_dados) + '%';
-        // 3. Destaques
-        document.getElementById('dest-acima').textContent = calcPctAtivos(res.acima_meta);
-        document.getElementById('dest-abaixo').textContent = calcPctAtivos(res.abaixo_meta);
-        document.getElementById('dest-sem').textContent = calcPctAtivos(res.sem_dados);
-        document.getElementById('dest-meta-1').textContent = dados.meta_considerada;
-        document.getElementById('dest-meta-2').textContent = dados.meta_considerada;
-        // 4. Tabela Acompanhamento por Perfil
-        const tab = dados.tabela_acompanhamento;
-        const totTab = tab.instrutor + tab.supervisor + tab.ambos;
-        const cPctTab = (val) => (val / totTab * 100).toFixed(1).replace('.', ',');
-        
-        const htmlTab = `
-            <tr><td><span class="dot bg-blue"></span> INSTRUTOR</td><td>${tab.instrutor}</td><td>${cPctTab(tab.instrutor)}%</td></tr>
-            <tr><td><span class="dot bg-green"></span> SUPERVISOR</td><td>${tab.supervisor}</td><td>${cPctTab(tab.supervisor)}%</td></tr>
-            <tr><td><span class="dot bg-orange"></span> AMBOS</td><td>${tab.ambos}</td><td>${cPctTab(tab.ambos)}%</td></tr>
-            <tr class="total-row"><td>TOTAL</td><td>${totTab.toLocaleString('pt-BR')}</td><td>100,0%</td></tr>
-        `;
-        document.getElementById('tbody-acomp').innerHTML = htmlTab;
-        // 5. Motoristas Acima da Meta Já Acompanhados
-        const acomp = dados.acima_meta_acompanhados;
-        const totAcomp = acomp.instrutor + acomp.supervisor - acomp.ambos;
-        const pctAcompNum = (totAcomp / res.acima_meta * 100);
-        const pctAcompStr = pctAcompNum.toFixed(1).replace('.', ',') + '%';
-        
-        document.getElementById('ja-acomp-total').textContent = totAcomp;
-        document.getElementById('circ-ja-acomp-txt').textContent = pctAcompStr;
-        document.getElementById('circ-ja-acomp').style.background = `conic-gradient(#438e36 ${pctAcompNum}%, #e0e0e0 0)`;
-        
-        const htmlAcomp = `
-            <tr><td><i class="fa-solid fa-user-tie text-blue"></i> INSTRUTOR</td><td>${acomp.instrutor}</td><td>${calcPctAcima(acomp.instrutor)}%</td></tr>
-            <tr><td><i class="fa-solid fa-user text-green"></i> SUPERVISOR</td><td>${acomp.supervisor}</td><td>${calcPctAcima(acomp.supervisor)}%</td></tr>
-            <tr><td><i class="fa-solid fa-users text-orange"></i> AMBOS</td><td>${acomp.ambos}</td><td>${calcPctAcima(acomp.ambos)}%</td></tr>
-            <tr class="total-row"><td>TOTAL</td><td>${totAcomp}</td><td>${pctAcompStr}</td></tr>
-        `;
-        document.getElementById('tbody-ja-acomp').innerHTML = htmlAcomp;
-        // 6. Motoristas Acima da Meta Não Acompanhados
-        const nacomp = dados.acima_meta_nao_acompanhados;
-        const totNacomp = nacomp.instrutor + nacomp.supervisor - nacomp.ambos;
-        const pctNacompNum = (totNacomp / res.acima_meta * 100);
-        const pctNacompStr = pctNacompNum.toFixed(1).replace('.', ',') + '%';
-        
-        document.getElementById('nao-acomp-total').textContent = totNacomp;
-        document.getElementById('circ-nao-acomp-txt').textContent = pctNacompStr;
-        document.getElementById('circ-nao-acomp').style.background = `conic-gradient(#ea5813 ${pctNacompNum}%, #e0e0e0 0)`;
-        
-        const htmlNacomp = `
-            <tr><td><i class="fa-solid fa-user-tie text-blue"></i> INSTRUTOR</td><td>${nacomp.instrutor}</td><td>${calcPctAcima(nacomp.instrutor)}%</td></tr>
-            <tr><td><i class="fa-solid fa-user text-green"></i> SUPERVISOR</td><td>${nacomp.supervisor}</td><td>${calcPctAcima(nacomp.supervisor)}%</td></tr>
-            <tr><td><i class="fa-solid fa-users text-orange"></i> AMBOS</td><td>${nacomp.ambos}</td><td>${calcPctAcima(nacomp.ambos)}%</td></tr>
-            <tr class="total-row"><td>TOTAL</td><td>${totNacomp}</td><td>${pctNacompStr}</td></tr>
-        `;
-        document.getElementById('tbody-nao-acomp').innerHTML = htmlNacomp;
-        // 7. Textos do box IMPORTANTE
-        document.getElementById('imp-pct1').textContent = pctAcompStr;
-        document.getElementById('imp-pct2').textContent = pctNacompStr;
-        // 8. Desenhar Gráfico de Pizza
-        drawPizzaChart(dados.pizza_acompanhamento);
+Chart.register(ChartDataLabels);
+Chart.defaults.font.family = "'Inter', sans-serif";
+
+const dados = {
+    periodo: "JUNHO 2026",
+    meta_considerada: "1,50 EPK",
+    total_motoristas: 1266,
+
+    resumo_executivo: {
+        ativos: 1164,
+        acima_meta: 354,
+        abaixo_meta: 791,
+        sem_dados: 19
+    },
+
+    pizza_acompanhamento: {
+        instrutor: 664,
+        supervisor: 467,
+        ambos: 404,
+        total_manual: 722
+    },
+
+    tabela_acompanhamento: {
+        instrutor: 664,
+        supervisor: 467,
+        ambos: 404
+    },
+
+    acima_meta_acompanhados: {
+        instrutor: 354,
+        supervisor: 249,
+        ambos: 249
+    },
+
+    acima_meta_nao_acompanhados: {
+        instrutor: 0,
+        supervisor: 105,
+        ambos: 105
     }
-    function drawPizzaChart(dataObj) {
-        const ctx = document.getElementById('chart-pizza').getContext('2d');
-        const total = dataObj.total_manual !== undefined ? dataObj.total_manual : (dataObj.instrutor + dataObj.supervisor + dataObj.ambos);
-        document.getElementById('donut-total').textContent = total;
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Instrutor', 'Supervisor', 'Ambos'],
-                datasets: [{
-                    data: [dataObj.instrutor, dataObj.supervisor, dataObj.ambos],
-                    backgroundColor: ['#102a63', '#438e36', '#ea5813'],
-                    borderWidth: 3,
-                    borderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '58%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true },
-                    datalabels: {
-                        color: '#ffffff',
-                        font: { weight: '900', size: 14 },
-                        textAlign: 'center',
-                        formatter: (value, ctx) => {
-                            let sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            let percentage = (value * 100 / sum).toFixed(1).replace('.', ',');
-                            return `${value}\n(${percentage}%)`;
-                        }
+};
+
+function pct(valor, base) {
+    if (!base || base === 0) return "0,0";
+    return (valor / base * 100).toFixed(1).replace('.', ',');
+}
+
+function renderDashboard() {
+    const res = dados.resumo_executivo;
+
+    document.getElementById('periodo-txt').textContent = dados.periodo;
+    document.getElementById('meta-txt').textContent = dados.meta_considerada;
+    document.getElementById('total-mot-txt').textContent = dados.total_motoristas.toLocaleString('pt-BR');
+
+    document.getElementById('res-ativos-val').textContent = res.ativos.toLocaleString('pt-BR');
+    document.getElementById('res-ativos-pct').textContent = pct(res.ativos, dados.total_motoristas) + '%';
+
+    document.getElementById('res-acima-val').textContent = res.acima_meta.toLocaleString('pt-BR');
+    document.getElementById('res-acima-pct').textContent = pct(res.acima_meta, res.ativos) + '%';
+
+    document.getElementById('res-abaixo-val').textContent = res.abaixo_meta.toLocaleString('pt-BR');
+    document.getElementById('res-abaixo-pct').textContent = pct(res.abaixo_meta, res.ativos) + '%';
+
+    document.getElementById('res-sem-val').textContent = res.sem_dados.toLocaleString('pt-BR');
+    document.getElementById('res-sem-pct').textContent = pct(res.sem_dados, res.ativos) + '%';
+
+    document.getElementById('dest-acima').textContent = pct(res.acima_meta, res.ativos);
+    document.getElementById('dest-abaixo').textContent = pct(res.abaixo_meta, res.ativos);
+    document.getElementById('dest-sem').textContent = pct(res.sem_dados, res.ativos);
+    document.getElementById('dest-meta-1').textContent = dados.meta_considerada;
+    document.getElementById('dest-meta-2').textContent = dados.meta_considerada;
+
+    const tab = dados.tabela_acompanhamento;
+
+    // AJUSTADO: total considera apenas Instrutor + Supervisor
+    const totalPerfil = tab.instrutor + tab.supervisor;
+
+    document.getElementById('tbody-acomp').innerHTML = `
+        <tr>
+            <td><span class="dot bg-blue"></span> INSTRUTOR</td>
+            <td>${tab.instrutor}</td>
+            <td>${pct(tab.instrutor, totalPerfil)}%</td>
+        </tr>
+        <tr>
+            <td><span class="dot bg-green"></span> SUPERVISOR</td>
+            <td>${tab.supervisor}</td>
+            <td>${pct(tab.supervisor, totalPerfil)}%</td>
+        </tr>
+        <tr>
+            <td><span class="dot bg-orange"></span> AMBOS</td>
+            <td>${tab.ambos}</td>
+            <td>${pct(tab.ambos, totalPerfil)}%</td>
+        </tr>
+        <tr class="total-row">
+            <td>TOTAL</td>
+            <td>${totalPerfil.toLocaleString('pt-BR')}</td>
+            <td>100,0%</td>
+        </tr>
+    `;
+
+    const acomp = dados.acima_meta_acompanhados;
+    const nacomp = dados.acima_meta_nao_acompanhados;
+
+    // AJUSTADO: total = Instrutor + Supervisor
+    const totalAcompanhados = acomp.instrutor + acomp.supervisor;
+    const totalNaoAcompanhados = nacomp.instrutor + nacomp.supervisor;
+
+    // Base correta para o círculo
+    const baseAcompanhamento = totalAcompanhados + totalNaoAcompanhados;
+
+    const pctAcompanhadosNum = baseAcompanhamento > 0 ? totalAcompanhados / baseAcompanhamento * 100 : 0;
+    const pctNaoAcompanhadosNum = baseAcompanhamento > 0 ? totalNaoAcompanhados / baseAcompanhamento * 100 : 0;
+
+    const pctAcompanhadosTxt = pctAcompanhadosNum.toFixed(1).replace('.', ',') + '%';
+    const pctNaoAcompanhadosTxt = pctNaoAcompanhadosNum.toFixed(1).replace('.', ',') + '%';
+
+    document.getElementById('ja-acomp-total').textContent = totalAcompanhados;
+    document.getElementById('nao-acomp-total').textContent = totalNaoAcompanhados;
+
+    document.getElementById('circ-ja-acomp-txt').textContent = pctAcompanhadosTxt;
+    document.getElementById('circ-nao-acomp-txt').textContent = pctNaoAcompanhadosTxt;
+
+    document.getElementById('circ-ja-acomp').style.background =
+        `conic-gradient(#438e36 ${pctAcompanhadosNum}%, #e0e0e0 0)`;
+
+    document.getElementById('circ-nao-acomp').style.background =
+        `conic-gradient(#ea5813 ${pctNaoAcompanhadosNum}%, #e0e0e0 0)`;
+
+    document.getElementById('tbody-ja-acomp').innerHTML = `
+        <tr>
+            <td><i class="fa-solid fa-user-tie text-blue"></i> INSTRUTOR</td>
+            <td>${acomp.instrutor}</td>
+            <td>${pct(acomp.instrutor, baseAcompanhamento)}%</td>
+        </tr>
+        <tr>
+            <td><i class="fa-solid fa-user text-green"></i> SUPERVISOR</td>
+            <td>${acomp.supervisor}</td>
+            <td>${pct(acomp.supervisor, baseAcompanhamento)}%</td>
+        </tr>
+        <tr>
+            <td><i class="fa-solid fa-users text-orange"></i> AMBOS</td>
+            <td>${acomp.ambos}</td>
+            <td>${pct(acomp.ambos, baseAcompanhamento)}%</td>
+        </tr>
+        <tr class="total-row">
+            <td>TOTAL</td>
+            <td>${totalAcompanhados}</td>
+            <td>${pctAcompanhadosTxt}</td>
+        </tr>
+    `;
+
+    document.getElementById('tbody-nao-acomp').innerHTML = `
+        <tr>
+            <td><i class="fa-solid fa-user-tie text-blue"></i> INSTRUTOR</td>
+            <td>${nacomp.instrutor}</td>
+            <td>${pct(nacomp.instrutor, baseAcompanhamento)}%</td>
+        </tr>
+        <tr>
+            <td><i class="fa-solid fa-user text-green"></i> SUPERVISOR</td>
+            <td>${nacomp.supervisor}</td>
+            <td>${pct(nacomp.supervisor, baseAcompanhamento)}%</td>
+        </tr>
+        <tr>
+            <td><i class="fa-solid fa-users text-orange"></i> AMBOS</td>
+            <td>${nacomp.ambos}</td>
+            <td>${pct(nacomp.ambos, baseAcompanhamento)}%</td>
+        </tr>
+        <tr class="total-row">
+            <td>TOTAL</td>
+            <td>${totalNaoAcompanhados}</td>
+            <td>${pctNaoAcompanhadosTxt}</td>
+        </tr>
+    `;
+
+    document.getElementById('imp-pct1').textContent = pctAcompanhadosTxt;
+    document.getElementById('imp-pct2').textContent = pctNaoAcompanhadosTxt;
+
+    drawPizzaChart(dados.pizza_acompanhamento);
+}
+
+function drawPizzaChart(dataObj) {
+    const ctx = document.getElementById('chart-pizza').getContext('2d');
+
+    document.getElementById('donut-total').textContent = dataObj.total_manual;
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Instrutor', 'Supervisor', 'Ambos'],
+            datasets: [{
+                data: [dataObj.instrutor, dataObj.supervisor, dataObj.ambos],
+                backgroundColor: ['#102a63', '#438e36', '#ea5813'],
+                borderWidth: 3,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '58%',
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true },
+                datalabels: {
+                    color: '#ffffff',
+                    font: { weight: '900', size: 14 },
+                    textAlign: 'center',
+                    formatter: function(value, ctx) {
+                        const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentual = (value * 100 / total).toFixed(1).replace('.', ',');
+                        return `${value}\n(${percentual}%)`;
                     }
                 }
             }
-        });
-    }
-    // Start
-    window.onload = renderDashboard;
+        }
+    });
+}
+
+window.onload = renderDashboard;
 </script>
+
 </body>
 </html>
