@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desempenho dos Motoristas - EPK</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js & DataLabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #f5f7fa;
+            --blue-dark: #071529;
+            --blue-primary: #102a63;
+            --green-primary: #388e3c;
+            --yellow-primary: #fbc02d;
+            --orange-primary: #ef6c00;
+            --red-primary: #c62828;
+            --border-color: #cbd5e1;
+            --font-main: 'Inter', sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-main); background-color: var(--bg-body); color: #333; padding: 15px; }
+        .dashboard { max-width: 1550px; margin: 0 auto; background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        /* --- Header --- */
+        .main-header {
+            background-color: var(--blue-dark); color: white; border-radius: 10px; padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-left h1 { font-size: 1.6rem; font-weight: 900; margin: 0 0 5px 0; display: flex; align-items: center; gap: 15px; letter-spacing: -0.5px; }
+        .header-left p { font-size: 0.95rem; margin: 0; color: #cbd5e1; font-weight: 500; }
+        .header-right { display: flex; gap: 20px; align-items: center; }
+        
+        .meta-box { display: flex; align-items: center; gap: 15px; }
+        .meta-box i { font-size: 2.2rem; }
+        .meta-text { display: flex; flex-direction: column; }
+        .meta-text .lbl { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
+        .meta-text .val { font-size: 1.6rem; font-weight: 900; color: #4ade80; line-height: 1.1; }
+        .meta-text .unt { font-size: 0.65rem; font-weight: 600; }
+        
+        .insight-box { display: flex; align-items: flex-start; gap: 10px; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px; }
+        .insight-box i { font-size: 1.5rem; margin-top: 5px; }
+        .insight-text { display: flex; flex-direction: column; font-size: 0.75rem; font-weight: 500; line-height: 1.4; }
+        .insight-text strong { font-size: 0.7rem; font-weight: 800; margin-bottom: 2px; }
+        /* --- Resumo de Performance --- */
+        .resumo-bar { border: 1px solid var(--blue-primary); border-radius: 8px; margin-top: 15px; overflow: hidden; background: white; }
+        .resumo-title { background: #f0f4ff; color: var(--blue-primary); text-align: center; font-weight: 900; font-size: 0.95rem; padding: 6px 0; border-bottom: 1px solid var(--border-color); text-transform: uppercase; }
+        .resumo-items { display: flex; align-items: center; justify-content: space-around; padding: 15px; }
+        .res-item { display: flex; flex-direction: column; align-items: center; padding: 0 10px; flex: 1; text-align: center; }
+        .res-item.border-left { border-left: 1px solid var(--border-color); }
+        .res-item.flex-row { flex-direction: row; gap: 8px; text-align: left; }
+        .res-item .lbl { font-size: 0.6rem; font-weight: 800; color: var(--blue-primary); text-transform: uppercase; margin-bottom: 3px; white-space: nowrap; }
+        .res-item .val { font-size: 1.7rem; font-weight: 900; line-height: 1.1; }
+        .res-item .sub { font-size: 0.65rem; font-weight: 800; margin-top: 2px; }
+        
+        .icon-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; flex-shrink: 0; }
+        .bg-green { background: var(--green-primary) !important; }
+        .bg-yellow { background: var(--yellow-primary) !important; color: white; }
+        .bg-orange { background: var(--orange-primary) !important; }
+        .bg-red { background: var(--red-primary) !important; }
+        .bg-cyan { background: #00acc1 !important; }
+        
+        .text-blue { color: var(--blue-primary) !important; }
+        .text-green { color: var(--green-primary) !important; }
+        .text-yellow { color: var(--yellow-primary) !important; }
+        .text-orange { color: var(--orange-primary) !important; }
+        .text-red { color: var(--red-primary) !important; }
+        /* --- Middle Row --- */
+        .middle-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .box-title { background: var(--blue-primary); color: white; text-align: center; font-size: 0.75rem; font-weight: 800; padding: 8px 5px; border-radius: 6px 6px 0 0; text-transform: uppercase; }
+        .box-content { border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 6px 6px; padding: 10px; background: white; height: 100%; display: flex; flex-direction: column; }
+        
+        .chart-wrap { position: relative; height: 370px; width: 100%; }
+        .chart-legend {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            padding: 8px 20px 12px 72px;
+        }
+        .chart-legend-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 9px;
+            color: var(--blue-primary);
+            font-size: 0.72rem;
+            font-weight: 900;
+            line-height: 1.25;
+        }
+        .chart-legend-line {
+            width: 28px;
+            height: 3px;
+            margin-top: 7px;
+            border-radius: 3px;
+            position: relative;
+            flex: 0 0 auto;
+        }
+        .chart-legend-line::after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            left: 9px;
+            top: -4px;
+            background: inherit;
+        }
+        .chart-totals {
+            display: grid;
+            grid-template-columns: 115px repeat(6, minmax(0, 1fr));
+            border: 1px solid #d8dee9;
+            border-radius: 8px;
+            overflow: hidden;
+            color: var(--blue-primary);
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+        .chart-total-label,
+        .chart-total-value {
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #fff;
+        }
+        .chart-total-label { line-height: 1.2; background: #f8faff; }
+        .chart-total-value { border-left: 1px solid #d8dee9; font-size: 0.8rem; }
+        @media (max-width: 1050px) {
+            .middle-row { grid-template-columns: 1fr; }
+            .chart-wrap { height: 420px; }
+        }
+        @media (max-width: 700px) {
+            .chart-wrap { height: 360px; }
+            .chart-legend { grid-template-columns: repeat(2, 1fr); padding-left: 10px; }
+            .chart-totals { grid-template-columns: 90px repeat(6, minmax(75px, 1fr)); overflow-x: auto; }
+            .chart-total-value { font-size: 0.7rem; }
+        }
+        .bg-blue { background: var(--blue-primary) !important; }
+        .text-white { color: white !important; }
+        .fw-bold { font-weight: 800 !important; }
+        /* Acesso Table */
+        .acesso-content {
+            justify-content: flex-start;
+            padding: 16px 10px 10px;
+        }
+        .acesso-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: center; }
+        .acesso-table th {
+            padding: 10px 4px 9px;
+            font-size: 0.55rem;
+            font-weight: 800;
+            color: var(--blue-primary);
+            background: #fff;
+            border-bottom: 2px solid var(--border-color);
+            vertical-align: middle;
+            line-height: 1.25;
+        }
+        .acesso-table td {
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 10px 3px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .acesso-table td:first-child { padding-left: 4px; }
+        .bar-wrap { width: 100%; background: #e2e8f0; height: 6px; border-radius: 3px; margin-top: 8px; position: relative; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 3px; position: absolute; left: 0; top: 0; }
+        /* Evolução Box */
+        .evo-content { padding: 0; min-height: 0; justify-content: stretch; }
+        .evo-block {
+            flex: 1 1 50%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .evo-block:last-child { border-bottom: none; }
+        .evo-title { font-size: 0.85rem; font-weight: 800; margin-bottom: 15px; text-align: center; }
+        .evo-flex { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; margin-bottom: 5px; }
+        .icon-trend { font-size: 2.2rem; }
+        .evo-data { display: flex; flex-direction: column; align-items: center; }
+        .m-lbl { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-bottom: 2px; }
+        .m-val { font-size: 1.55rem; font-weight: 900; }
+        .arrow-mid { font-size: 1.2rem; color: #cbd5e1; }
+        .evo-sub { font-size: 0.65rem; font-weight: 700; color: #64748b; margin-top: 10px; }
+        @media (max-width: 1050px) {
+            .evo-content { min-height: 360px; }
+            .acesso-content { min-height: 360px; }
+        }
+        /* --- Bottom Row --- */
+        .bottom-row { display: grid; grid-template-columns: 1fr 1.1fr; gap: 15px; margin-top: 15px; }
+        
+        /* Detalhe Table */
+        .styled-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: center; }
+        .styled-table th { font-size: 0.58rem; color: var(--blue-primary); border-bottom: 2px solid var(--border-color); border-right: 1px solid #e5e7eb; padding: 6px 2px; background: #f8faff; }
+        .styled-table td { height: 43px; font-size: 0.66rem; font-weight: 700; padding: 5px 2px; border-bottom: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; }
+        .styled-table th:last-child, .styled-table td:last-child { border-right: none; }
+        .styled-table th:first-child, .styled-table td:first-child { width: 108px; }
+        .styled-table td:first-child { text-align: left; line-height: 1.25; }
+        .styled-table td:not(:first-child) { white-space: nowrap; }
+        .styled-table .percent-cell { padding-left: 1px; padding-right: 1px; font-size: 0.64rem; }
+        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+        /* Criticos Table */
+        .crit-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: center; }
+        .crit-table th { font-size: 0.46rem; color: var(--blue-primary); border-bottom: 2px solid var(--border-color); border-right: 1px solid #e5e7eb; padding: 4px 2px; background: #f8faff; line-height: 1.1; }
+        .crit-table td {
+            min-height: 38px;
+            height: auto;
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 6px 3px;
+            border-bottom: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            line-height: 1.2;
+            white-space: normal;
+            overflow-wrap: break-word;
+            word-break: normal;
+            vertical-align: middle;
+        }
+        .crit-table th:last-child, .crit-table td:last-child { border-right: none; }
+        .crit-table th:nth-child(5),
+        .crit-table th:nth-child(6),
+        .crit-table th:nth-child(7) {
+            font-size: 0.40rem;
+            line-height: 1.05;
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+        .crit-table td:nth-child(5),
+        .crit-table td:nth-child(6),
+        .crit-table td:nth-child(7) {
+            font-size: 0.47rem;
+            line-height: 1.1;
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+        .bg-light-green { background-color: #e8f5e9 !important; }
+        .bg-light-yellow { background-color: #fffde7 !important; }
+        .bg-light-orange { background-color: #fff3e0 !important; }
+        .bg-light-red { background-color: #ffebee !important; }
+        
+        /* Footer Note */
+        .footer-note { font-size: 0.65rem; font-weight: 600; color: #64748b; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+        .footer-note i { font-size: 1rem; color: var(--blue-primary); }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="header-left">
+            <h1>DESEMPENHO DOS MOTORISTAS – EVENTOS POR KM (EPK)</h1>
+            <p>Análise de distribuição do EPK por motoristas</p>
+        </div>
+        <div class="header-right">
+            <div class="meta-box">
+                <i class="fa-solid fa-bullseye"></i>
+                <div class="meta-text">
+                    <span class="lbl">NOSSA META</span>
+                    <span class="val" id="top-meta">1,50</span>
+                    <span class="unt">eventos por km</span>
+                </div>
+            </div>
+            <div class="insight-box">
+                <i class="fa-regular fa-lightbulb"></i>
+                <div class="insight-text">
+                    <strong>INSIGHT PRINCIPAL</strong>
+                    Quanto menor o EPK, melhor.<br>Motoristas abaixo da meta são mais eficientes,<br>seguros e econômicos.
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- RESUMO PERFORMANCE -->
+    <div class="resumo-bar">
+        <div class="resumo-title">RESUMO DE PERFORMANCE (<span id="res-mes"></span>)</div>
+        <div class="resumo-items">
+            <div class="res-item">
+                <span class="lbl">Média EPK (eventos)</span>
+                <span class="val text-green" id="res-media"></span>
+            </div>
+            <div class="res-item border-left">
+                <span class="lbl">Pior EPK (máximo)</span>
+                <span class="val text-red" id="res-pior"></span>
+            </div>
+            <div class="res-item border-left">
+                <span class="lbl">Mediana</span>
+                <span class="val text-blue" id="res-mediana"></span>
+            </div>
+            
+            <div class="res-item border-left flex-row">
+                <div class="icon-circle bg-green"><i class="fa-solid fa-arrow-up"></i></div>
+                <div style="display:flex; flex-direction:column;">
+                    <span class="lbl">DENTRO DA META (0 - 1,5)</span>
+                    <span class="val text-green" id="res-d-pct"></span>
+                    <span class="sub text-green" id="res-d-qtd"></span>
+                </div>
+            </div>
+            <div class="res-item border-left flex-row">
+                <div class="icon-circle bg-yellow"><i class="fa-solid fa-exclamation"></i></div>
+                <div style="display:flex; flex-direction:column;">
+                    <span class="lbl">PRÓXIMOS (1,5 - 2,5)</span>
+                    <span class="val text-yellow" id="res-p-pct"></span>
+                    <span class="sub text-yellow" id="res-p-qtd"></span>
+                </div>
+            </div>
+            <div class="res-item border-left flex-row">
+                <div class="icon-circle bg-orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div style="display:flex; flex-direction:column;">
+                    <span class="lbl">CRÍTICOS (2,5 - 8)</span>
+                    <span class="val text-orange" id="res-c-pct"></span>
+                    <span class="sub text-orange" id="res-c-qtd"></span>
+                </div>
+            </div>
+            <div class="res-item border-left flex-row">
+                <div class="icon-circle bg-red"><i class="fa-solid fa-skull"></i></div>
+                <div style="display:flex; flex-direction:column;">
+                    <span class="lbl">MUITO CRÍTICOS (> 8)</span>
+                    <span class="val text-red" id="res-m-pct"></span>
+                    <span class="sub text-red" id="res-m-qtd"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MIDDLE ROW -->
+    <div class="middle-row">
+        <div class="box-container" style="display:flex; flex-direction:column;">
+            <div class="box-title">CENÁRIO MENSAL DE ACOMPANHAMENTO – DISTRIBUIÇÃO DOS MOTORISTAS POR FAIXA DE EPK (%)</div>
+            <div class="box-content">
+                <div style="text-align: center; font-size: 0.75rem; font-weight: 800; color: var(--blue-primary); margin-bottom: 5px;">Evolução da participação (%) dos motoristas por faixa de EPK ao longo dos meses</div>
+                <div class="chart-wrap">
+                    <canvas id="mainChart"></canvas>
+                </div>
+                <div class="chart-legend" aria-label="Legenda do gráfico">
+                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#16883a"></span><span>0 - 1,5<br>DENTRO DA META</span></div>
+                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#f5b400"></span><span>1,5 - 2,5<br>PRÓXIMOS</span></div>
+                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#ff6b00"></span><span>2,5 - 8<br>CRÍTICOS</span></div>
+                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#ff1f1f"></span><span>&gt; 8<br>MUITO CRÍTICOS</span></div>
+                </div>
+                <div class="chart-totals" id="chart-totals"></div>
+            </div>
+        </div>
+        <div class="box-container" style="display:flex; flex-direction:column;">
+            <div class="box-title">ACESSO AO SITE POR FAIXA DE EPK (<span id="acesso-mes"></span>)</div>
+            <div class="box-content acesso-content">
+                <table class="acesso-table">
+                    <colgroup>
+                        <col style="width:38%">
+                        <col style="width:22%">
+                        <col style="width:18%">
+                        <col style="width:22%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Faixa de EPK</th>
+                            <th>Motoristas que<br>acessaram o site</th>
+                            <th>Motoristas<br>totais</th>
+                            <th>% de motoristas<br>que acessaram</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-acesso"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box-container" style="display:flex; flex-direction:column;">
+            <div class="box-title">EVOLUÇÃO DOS PRINCIPAIS INDICADORES</div>
+            <div class="box-content evo-content">
+                <div class="evo-block">
+                    <div class="evo-title text-green">DENTRO DA META (0 - 1,5)</div>
+                    <div class="evo-flex">
+                        <i id="evo-d-icon"></i>
+                        <div class="evo-data"><span class="m-lbl" id="evo-d-lbl1"></span><span class="m-val text-green" id="evo-d-1"></span></div>
+                        <i class="fa-solid fa-arrow-right arrow-mid"></i>
+                        <div class="evo-data"><span class="m-lbl" id="evo-d-lbl2"></span><span class="m-val text-green" id="evo-d-2"></span></div>
+                    </div>
+                    <div class="evo-sub" id="evo-d-diff"></div>
+                </div>
+                <div class="evo-block">
+                    <div class="evo-title text-red">CRÍTICOS + MUITO CRÍTICOS (> 2,5)</div>
+                    <div class="evo-flex">
+                        <i id="evo-c-icon"></i>
+                        <div class="evo-data"><span class="m-lbl" id="evo-c-lbl1"></span><span class="m-val text-red" id="evo-c-1"></span></div>
+                        <i class="fa-solid fa-arrow-right arrow-mid"></i>
+                        <div class="evo-data"><span class="m-lbl" id="evo-c-lbl2"></span><span class="m-val text-red" id="evo-c-2"></span></div>
+                    </div>
+                    <div class="evo-sub" id="evo-c-diff"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BOTTOM ROW -->
+    <div class="bottom-row">
+        <div class="box-container" style="display:flex; flex-direction:column;">
+            <div class="box-title">DETALHAMENTO MENSAL – QUANTIDADE E PERCENTUAL POR FAIXA DE EPK</div>
+            <div class="box-content" style="padding: 0;">
+                <table class="styled-table" id="table-detalhe"></table>
+            </div>
+        </div>
+        <div class="box-container" style="display:flex; flex-direction:column;">
+            <div class="box-title">MOTORISTAS CRÍTICOS (ACIMA DE 8 DE EPK) QUE PERMANECEM CRÍTICOS EM <span id="crit-mes"></span></div>
+            <div class="box-content" style="padding: 0;">
+                <table class="crit-table">
+                    <colgroup>
+                        <col style="width:16%">
+                        <col style="width:6%">
+                        <col style="width:5%">
+                        <col style="width:5%">
+                        <col style="width:12%">
+                        <col style="width:12%">
+                        <col style="width:9%">
+                        <col style="width:11%">
+                        <col style="width:12%">
+                        
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Colaborador</th>
+                            <th>Km Rodado</th>
+                            <th>EPK <span id="epk-mes-anterior"></span></th>
+                            <th>EPK <span id="epk-mes-atual"></span></th>
+                            <th>Acompanhamento<br>Instrutor</th>
+                            <th>Acompanhamento<br>Escolinha</th>
+                            <th>Tratativa<br>Supervisor</th>
+                            <th>Garagem</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-criticos"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="footer-note">
+        <i class="fa-solid fa-circle-info"></i> Os percentuais podem sofrer pequenas variações devido a arredondamentos.
+    </div>
+</div>
+<script>
+    Chart.register(ChartDataLabels);
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    // =========================================================================
+    // DADOS PARA PREENCHIMENTO MANUAL (JS)
+    // =========================================================================
+
+    //ATUALIZAÇÃO DOS DADOS
+    const dados = {
+        // 1. CONFIGURAÇÕES GERAIS
+        meta: "1,50",
+
+        // Escolha um mês existente na lista "meses".
+        // Quantidades e percentuais do resumo serão calculados automaticamente.
+        resumo: {
+            mes: "JUN/26",
+            media_epk: "1,43",
+            pior_epk: "10,17",
+            mediana_epk: "0,89"
+        },
+
+        // 2. DADOS MENSAIS
+        // Adicione uma linha por mês e informe somente as quantidades.
+        meses: [
+            { mes: "JAN/26", dentro_meta: 30,  proximos: 40,  criticos: 283, muito_criticos: 142 },
+            { mes: "FEV/26", dentro_meta: 24,  proximos: 61,  criticos: 735, muito_criticos: 316 },
+            { mes: "MAR/26", dentro_meta: 115, proximos: 169, criticos: 789, muito_criticos: 145 },
+            { mes: "ABR/26", dentro_meta: 492, proximos: 217, criticos: 480, muito_criticos: 40 },
+            { mes: "MAI/26", dentro_meta: 706, proximos: 209, criticos: 286, muito_criticos: 20 },
+            { mes: "JUN/26", dentro_meta: 791, proximos: 167, criticos: 180, muito_criticos: 7 }
+        ],
+
+        // 3. ACESSO AO SITE
+        // Basta informar o mês e quantos motoristas acessaram em cada faixa.
+        acesso_site: {
+            mes: "JUN/26",
+            dentro_meta: 733,
+            proximos: 141,
+            criticos: 139,
+            muito_criticos: 4
+        },
+
+        // 4. MOTORISTAS CRÍTICOS
+        // Para adicionar uma pessoa, copie um objeto completo entre { e }.
+        tabela_criticos: {
+            mes_referencia: "JUN/26",
+            motoristas: [
+                {
+                    colaborador: "ANDRE WILSON DA SILVA - 285578",
+                    km_rodado: "2216,53",
+                    epk_anterior: "4,83",
+                    epk_atual: "10,17",
+                    acompanhamento_instrutor: "2",
+                    acompanhamento_escolinha: "1",
+                    tratativa_supervisor: "1",
+                    garagem: "VITORINO",
+                    acao: "CONVERSA COM RAIMUNDO"
+                },
+                {
+                    colaborador: "DOUGLAS DE OLIVEIRA - 284144",
+                    km_rodado: "793,86",
+                    epk_anterior: "6,76",
+                    epk_atual: "9,63",
+                    acompanhamento_instrutor: "1",
+                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    tratativa_supervisor: "1",
+                    garagem: "VITORINO",
+                    acao: "DIRECIONAR PARA ESCOLINHA"
+                },
+                {
+                    colaborador: "MAURO JOSE DE PAULA - 284111",
+                    km_rodado: "2409,07",
+                    epk_anterior: "3,17",
+                    epk_atual: "9,56",
+                    acompanhamento_instrutor: "3",
+                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    tratativa_supervisor: "2",
+                    garagem: "VITORINO",
+                    acao: "CONVERSA COM O RAIMUNDO"
+                },
+                {
+                    colaborador: "PAULO VITOR DA SILVA - 3998",
+                    km_rodado: "1588,30",
+                    epk_anterior: "6,90",
+                    epk_atual: "9,14",
+                    acompanhamento_instrutor: "2",
+                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    tratativa_supervisor: "1",
+                    garagem: "VITORINO",
+                    acao: "DIRECIONAR ESCOLINHA"
+                },
+                {
+                    colaborador: "RAMON PORTES DOS SANTOS - 772806",
+                    km_rodado: "382,31",
+                    epk_anterior: "SEM DADOS",
+                    epk_atual: "8,60",
+                    acompanhamento_instrutor: "1",
+                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    tratativa_supervisor: "0",
+                    garagem: "SÃO FRANCISCO",
+                    acao: "CONVERSA COM O SUPERVISOR"
+                },
+                {
+                    colaborador: "CELIO BARBOSA ARAUJO - 4607",
+                    km_rodado: "206,27",
+                    epk_anterior: "6,15",
+                    epk_atual: "8,58",  
+                    acompanhamento_instrutor: "2",
+                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    tratativa_supervisor: "1",
+                    garagem: "SÃO FRANCISCO",
+                    acao: "CONVERSA COM RAIMUNDO"
+                },
+                {
+                    colaborador: "FERNANDO FIORAVANTE VIDAL PEREIRA - 3661",
+                    km_rodado: "2432,843",
+                    epk_anterior: "6,51",
+                    epk_atual: "8,25",
+                    acompanhamento_instrutor: "2",
+                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    tratativa_supervisor: "2",
+                    garagem: "VITORINO",
+                    acao: "CONVERSA COM RAIMUNDO"
+                }
+                
+            ]
+        }
+    };
+    // =========================================================================
+    // RENDERIZAÇÃO E CÁLCULOS AUTOMÁTICOS
+    // =========================================================================
+    function renderDashboard() {
+        const fP = valor => valor.toFixed(1).replace('.', ',') + '%';
+        const tituloMes = mes => {
+            const nomes = {
+                JAN: 'JANEIRO', FEV: 'FEVEREIRO', MAR: 'MARÇO',
+                ABR: 'ABRIL', MAI: 'MAIO', JUN: 'JUNHO',
+                JUL: 'JULHO', AGO: 'AGOSTO', SET: 'SETEMBRO',
+                OUT: 'OUTUBRO', NOV: 'NOVEMBRO', DEZ: 'DEZEMBRO'
+            };
+            const [abreviacao, ano] = mes.toUpperCase().split('/');
+            const anoCompleto = ano.length === 2 ? `20${ano}` : ano;
+            return `${nomes[abreviacao] || abreviacao}/${anoCompleto}`;
+        };
+        const buscarMes = mes => {
+            const indice = dados.meses.findIndex(item => item.mes === mes);
+            if (indice === -1) {
+                throw new Error(`O mês "${mes}" não foi encontrado na lista "meses".`);
+            }
+            return indice;
+        };
+
+        document.getElementById('top-meta').textContent = dados.meta;
+
+        // Converte a lista amigável de meses para as séries usadas no dashboard.
+        const d = {
+            meses: dados.meses.map(item => item.mes),
+            qtd_dentro: dados.meses.map(item => item.dentro_meta),
+            qtd_proximos: dados.meses.map(item => item.proximos),
+            qtd_criticos: dados.meses.map(item => item.criticos),
+            qtd_muito: dados.meses.map(item => item.muito_criticos)
+        };
+        const count = d.meses.length;
+        let p_dentro = [], p_proximos = [], p_criticos = [], p_muito = [], totais = [];
+        for (let i = 0; i < count; i++) {
+            const total = d.qtd_dentro[i] + d.qtd_proximos[i] + d.qtd_criticos[i] + d.qtd_muito[i];
+            totais.push(total);
+            p_dentro.push(d.qtd_dentro[i] / total * 100);
+            p_proximos.push(d.qtd_proximos[i] / total * 100);
+            p_criticos.push(d.qtd_criticos[i] / total * 100);
+            p_muito.push(d.qtd_muito[i] / total * 100);
+        }
+
+        // O resumo usa as quantidades do mês selecionado.
+        const rp = dados.resumo;
+        const indiceResumo = buscarMes(rp.mes);
+        document.getElementById('res-mes').textContent = tituloMes(rp.mes);
+        document.getElementById('res-media').textContent = rp.media_epk;
+        document.getElementById('res-pior').textContent = rp.pior_epk;
+        document.getElementById('res-mediana').textContent = rp.mediana_epk;
+        document.getElementById('res-d-pct').textContent = fP(p_dentro[indiceResumo]);
+        document.getElementById('res-d-qtd').textContent = d.qtd_dentro[indiceResumo] + ' motoristas';
+        document.getElementById('res-p-pct').textContent = fP(p_proximos[indiceResumo]);
+        document.getElementById('res-p-qtd').textContent = d.qtd_proximos[indiceResumo] + ' motoristas';
+        document.getElementById('res-c-pct').textContent = fP(p_criticos[indiceResumo]);
+        document.getElementById('res-c-qtd').textContent = d.qtd_criticos[indiceResumo] + ' motoristas';
+        document.getElementById('res-m-pct').textContent = fP(p_muito[indiceResumo]);
+        document.getElementById('res-m-qtd').textContent = d.qtd_muito[indiceResumo] + ' motoristas';
+        const chartTotals = document.getElementById('chart-totals');
+        chartTotals.style.gridTemplateColumns = `115px repeat(${count}, minmax(0, 1fr))`;
+        chartTotals.innerHTML =
+            '<div class="chart-total-label">TOTAL DE<br>MOTORISTAS</div>' +
+            totais.map(t => `<div class="chart-total-value">${t.toLocaleString('pt-BR')}</div>`).join('');
+        let thMeses = '', thCols = '';
+        for (let m of d.meses) {
+            thMeses += `<th colspan="2">${m}</th>`;
+            thCols += `<th>Qtd.</th><th>%</th>`;
+        }
+        let trDentro = `<td><span class="dot bg-green"></span> 0 - 1,5<br><small class="text-green">DENTRO DA META</small></td>`;
+        let trProx = `<td><span class="dot bg-yellow"></span> 1,5 - 2,5<br><small class="text-yellow">PRÓXIMOS</small></td>`;
+        let trCrit = `<td><span class="dot bg-orange"></span> 2,5 - 8<br><small class="text-orange">CRÍTICOS</small></td>`;
+        let trMuito = `<td><span class="dot bg-red"></span> > 8<br><small class="text-red">MUITO CRÍTICOS</small></td>`;
+        let trTotal = `<td>TOTAL</td>`;
+        for (let i = 0; i < count; i++) {
+            trDentro += `<td class="fw-bold">${d.qtd_dentro[i]}</td><td class="percent-cell">${fP(p_dentro[i])}</td>`;
+            trProx += `<td class="fw-bold">${d.qtd_proximos[i]}</td><td class="percent-cell">${fP(p_proximos[i])}</td>`;
+            trCrit += `<td class="fw-bold">${d.qtd_criticos[i]}</td><td class="percent-cell">${fP(p_criticos[i])}</td>`;
+            trMuito += `<td class="fw-bold">${d.qtd_muito[i]}</td><td class="percent-cell">${fP(p_muito[i])}</td>`;
+            trTotal += `<td class="fw-bold text-blue">${totais[i].toLocaleString('pt-BR')}</td><td class="fw-bold text-blue percent-cell">100%</td>`;
+        }
+        document.getElementById('table-detalhe').innerHTML = `
+            <thead><tr><th rowspan="2">FAIXA DE EPK</th>${thMeses}</tr><tr>${thCols}</tr></thead>
+            <tbody><tr>${trDentro}</tr><tr>${trProx}</tr><tr>${trCrit}</tr><tr>${trMuito}</tr><tr style="background:#f8faff;" class="text-blue fw-bold">${trTotal}</tr></tbody>
+        `;
+        drawChart(d.meses, p_dentro, p_proximos, p_criticos, p_muito, totais);
+        const acc = dados.acesso_site;
+        const refIdx = buscarMes(acc.mes);
+        document.getElementById('acesso-mes').textContent = tituloMes(acc.mes);
+        const tDentro = d.qtd_dentro[refIdx];
+        const tProx = d.qtd_proximos[refIdx];
+        const tCrit = d.qtd_criticos[refIdx];
+        const tMuito = d.qtd_muito[refIdx];
+        const sumAcc = acc.dentro_meta + acc.proximos + acc.criticos + acc.muito_criticos;
+        const sumTot = totais[refIdx];
+        const corTexto = c => {
+            if (c === 'bg-green') return '#388e3c';
+            if (c === 'bg-yellow') return '#fbc02d';
+            if (c === 'bg-orange') return '#ef6c00';
+            if (c === 'bg-red') return '#c62828';
+            return '#102a63';
+        };
+        const rowAcc = (lbl, sub, c, aV, tV) => `
+            <tr>
+                <td style="text-align: left;"><span class="dot ${c}"></span> ${lbl}<br><small style="color:${corTexto(c)}; font-weight:800;">${sub}</small></td>
+                <td class="fw-bold" style="font-size:1.1rem; color:${corTexto(c)};">${aV}</td>
+                <td class="fw-bold" style="font-size:1.1rem; color:#1e293b;">${tV}</td>
+                <td class="fw-bold" style="font-size:1.1rem; color:${corTexto(c)};">${fP(aV / tV * 100)}
+                    <div class="bar-wrap"><div class="bar-fill ${c}" style="width:${aV / tV * 100}%;"></div></div>
+                </td>
+            </tr>`;
+        let htmlAcc = rowAcc('0 - 1,5', '(Dentro da meta)', 'bg-green', acc.dentro_meta, tDentro);
+        htmlAcc += rowAcc('1,5 - 2,5', '(Próximos)', 'bg-yellow', acc.proximos, tProx);
+        htmlAcc += rowAcc('2,5 - 8', '(Críticos)', 'bg-orange', acc.criticos, tCrit);
+        htmlAcc += rowAcc('> 8', '(Muito críticos)', 'bg-red', acc.muito_criticos, tMuito);
+        htmlAcc += `<tr style="background:#f8faff;"><td class="fw-bold text-blue">TOTAL</td><td class="fw-bold text-blue" style="font-size:1.1rem;">${sumAcc}</td><td class="fw-bold text-blue" style="font-size:1.1rem;">${sumTot}</td><td class="fw-bold text-blue" style="font-size:1.1rem;">${fP(sumAcc / sumTot * 100)}<div class="bar-wrap"><div class="bar-fill bg-blue" style="width:${sumAcc / sumTot * 100}%;"></div></div></td></tr>`;
+        document.getElementById('tbody-acesso').innerHTML = htmlAcc;
+        const diffD = p_dentro[count - 1] - p_dentro[0];
+        document.getElementById('evo-d-1').textContent = fP(p_dentro[0]);
+        document.getElementById('evo-d-2').textContent = fP(p_dentro[count - 1]);
+        document.getElementById('evo-d-lbl1').textContent = d.meses[0];
+        document.getElementById('evo-d-lbl2').textContent = d.meses[count - 1];
+        document.getElementById('evo-d-diff').textContent = (diffD > 0 ? 'Aumento de ' : 'Redução de ') + Math.abs(diffD).toFixed(1).replace('.', ',') + ' pontos percentuais';
+        document.getElementById('evo-d-icon').className = `fa-solid ${diffD > 0 ? 'fa-arrow-trend-up text-green' : 'fa-arrow-trend-down text-red'} icon-trend`;
+        const pC1 = p_criticos[0] + p_muito[0];
+        const pC2 = p_criticos[count - 1] + p_muito[count - 1];
+        const diffC = pC2 - pC1;
+        document.getElementById('evo-c-1').textContent = fP(pC1);
+        document.getElementById('evo-c-2').textContent = fP(pC2);
+        document.getElementById('evo-c-lbl1').textContent = d.meses[0];
+        document.getElementById('evo-c-lbl2').textContent = d.meses[count - 1];
+        document.getElementById('evo-c-diff').textContent = (diffC > 0 ? 'Aumento de ' : 'Redução de ') + Math.abs(diffC).toFixed(1).replace('.', ',') + ' pontos percentuais';
+        document.getElementById('evo-c-icon').className = `fa-solid ${diffC > 0 ? 'fa-arrow-trend-up text-red' : 'fa-arrow-trend-down text-red'} icon-trend`;
+        const tabelaCriticos = dados.tabela_criticos;
+        const indiceMesCriticos = buscarMes(tabelaCriticos.mes_referencia);
+        const mesAnterior = d.meses[Math.max(0, indiceMesCriticos - 1)];
+        document.getElementById('crit-mes').textContent = tituloMes(tabelaCriticos.mes_referencia);
+        document.getElementById('epk-mes-anterior').textContent = mesAnterior.split('/')[0];
+        document.getElementById('epk-mes-atual').textContent = tabelaCriticos.mes_referencia.split('/')[0];
+        let htmlCrit = '';
+        for (let c of tabelaCriticos.motoristas) {
+            const epkColor = v => {
+                let n = parseFloat(v.replace(',', '.'));
+                return n < 8.5 ? 'bg-light-green' : (n < 10 ? 'bg-light-yellow' : (n < 12 ? 'bg-light-orange' : 'bg-light-red'));
+            };
+            const garColor = g => g.includes('SÃO') ? 'bg-green text-white' : (g.includes('VITORINO') ? 'bg-red text-white' : 'bg-cyan text-white');
+            htmlCrit += `
+            <tr>
+                <td style="text-align: left; font-size:0.55rem; color:var(--blue-primary); font-weight:800;">${c.colaborador}</td>
+                <td>${c.km_rodado}</td>
+                <td class="${epkColor(c.epk_anterior)}">${c.epk_anterior}</td>
+                <td class="${epkColor(c.epk_atual)}">${c.epk_atual}</td>
+                <td>${c.acompanhamento_instrutor}</td>
+                <td>${c.acompanhamento_escolinha}</td>
+                <td>${c.tratativa_supervisor}</td>
+                <td class="${garColor(c.garagem)}">${c.garagem}</td>
+                <td style="font-size:0.55rem;">${c.acao}</td>
+            </tr>`;
+        }
+        document.getElementById('tbody-criticos').innerHTML = htmlCrit;
+    }
+    function drawChart(lbls, dD, dP, dC, dM, totais) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        // Remove gráfico anterior caso renderize novamente
+        if (window.mainChartInstance) {
+            window.mainChartInstance.destroy();
+        }
+        const datasetsConfig = [
+            {
+                label: '0 – 1,5 DENTRO DA META',
+                data: dD,
+                color: '#16883a',
+                labels: [
+                    { dx: 0, dy: 18 },
+                    { dx: 0, dy: 18 },
+                    { dx: 0, dy: 22 },
+                    { dx: 22, dy: -18 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 }
+                ]
+            },
+            {
+                label: '1,5 – 2,5 PRÓXIMOS',
+                data: dP,
+                color: '#f5b400',
+                labels: [
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -22 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: 20 },
+                    { dx: 0, dy: 20 }
+                ]
+            },
+            {
+                label: '2,5 – 8 CRÍTICOS',
+                data: dC,
+                color: '#ff6b00',
+                labels: [
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 },
+                    { dx: -25, dy: -30 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 }
+                ]
+            },
+            {
+                label: '> 8 MUITO CRÍTICOS',
+                data: dM,
+                color: '#ff1f1f',
+                labels: [
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: 22 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 },
+                    { dx: 0, dy: -18 }
+                ]
+            }
+        ];
+        const labelManualPlugin = {
+            id: 'labelManualPlugin',
+            afterDatasetsDraw(chart) {
+                const { ctx, chartArea } = chart;
+                const minVerticalGap = 17;
+                const maxLabelWidth = 42;
+                const topLimit = chartArea.top + 8;
+                const bottomLimit = chartArea.bottom - 8;
+
+                ctx.save();
+                ctx.font = '900 11px Inter';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                for (let index = 0; index < chart.data.labels.length; index++) {
+                    const labelsDoMes = chart.data.datasets.map((dataset, datasetIndex) => {
+                        const point = chart.getDatasetMeta(datasetIndex).data[index];
+                        const config = datasetsConfig[datasetIndex];
+                        const value = dataset.data[index];
+                        const pos = config.labels[index] || { dx: 0, dy: -18 };
+                        const text = value.toFixed(1).replace('.', ',') + '%';
+                        return {
+                            text,
+                            color: config.color,
+                            x: point.x + pos.dx,
+                            y: point.y + pos.dy
+                        };
+                    });
+
+                    labelsDoMes.sort((a, b) => a.y - b.y);
+
+                    for (let i = 1; i < labelsDoMes.length; i++) {
+                        const anterior = labelsDoMes[i - 1];
+                        const atual = labelsDoMes[i];
+                        const muitoProximosNoX = Math.abs(atual.x - anterior.x) < maxLabelWidth;
+                        if (muitoProximosNoX && atual.y - anterior.y < minVerticalGap) {
+                            atual.y = anterior.y + minVerticalGap;
+                        }
+                    }
+
+                    const excessoInferior = labelsDoMes[labelsDoMes.length - 1].y - bottomLimit;
+                    if (excessoInferior > 0) {
+                        labelsDoMes.forEach(label => label.y -= excessoInferior);
+                    }
+
+                    for (let i = labelsDoMes.length - 2; i >= 0; i--) {
+                        const atual = labelsDoMes[i];
+                        const proximo = labelsDoMes[i + 1];
+                        const muitoProximosNoX = Math.abs(atual.x - proximo.x) < maxLabelWidth;
+                        if (muitoProximosNoX && proximo.y - atual.y < minVerticalGap) {
+                            atual.y = proximo.y - minVerticalGap;
+                        }
+                    }
+
+                    const excessoSuperior = topLimit - labelsDoMes[0].y;
+                    if (excessoSuperior > 0) {
+                        labelsDoMes.forEach(label => label.y += excessoSuperior);
+                    }
+
+                    labelsDoMes.forEach(label => {
+                        ctx.lineWidth = 4;
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.strokeText(label.text, label.x, label.y);
+                        ctx.fillStyle = label.color;
+                        ctx.fillText(label.text, label.x, label.y);
+                    });
+                }
+
+                ctx.restore();
+            }
+        };
+        const chartDatasets = datasetsConfig.map(item => ({
+            label: item.label,
+            data: item.data,
+            borderColor: item.color,
+            backgroundColor: item.color,
+            borderWidth: 3,
+            pointRadius: 6,
+            pointHoverRadius: 7,
+            pointStyle: 'circle',
+            tension: 0.25,
+            fill: false,
+            datalabels: { display: false }
+        }));
+        window.mainChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: lbls,
+                datasets: chartDatasets
+            },
+            plugins: [labelManualPlugin],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 38,
+                        right: 30,
+                        left: 12,
+                        bottom: 5
+                    }
+                },
+                plugins: {
+                    datalabels: { display: false },
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        afterBuildTicks: axis => {
+                            axis.ticks = [0, 20, 40, 60, 80, 100].map(v => ({ value: v }));
+                        },
+                        ticks: {
+                            callback: v => v + '%',
+                            color: '#102a63',
+                            font: { weight: '900', size: 11 }
+                        },
+                        grid: { color: '#eeeeee' },
+                        border: { display: false }
+                    },
+                    x: {
+                        offset: true,
+                        ticks: {
+                            color: '#102a63',
+                            padding: 8,
+                            font: { weight: '900', size: 12 }
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+    window.onload = renderDashboard;
+</script>
+</body>
+</html>
+

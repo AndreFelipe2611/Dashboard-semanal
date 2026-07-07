@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard KM/L e EPK Mensal - Apresentação</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js e Plugin DataLabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Fundo branco limpo, perfeito para recortes em apresentações */
+            --bg-color: #ffffff; 
+            --card-bg: #ffffff;
+            --primary-blue: #0f1c3f;
+            --secondary-blue: #2e4374;
+            --accent-red: #d32f2f;
+            --accent-green: #388e3c;
+            --text-dark: #222222;
+            --text-muted: #555555;
+            --border-color: #e0e0e0;
+            --font-family: 'Inter', sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding: 10px; /* Reduzido para preencher a tela inteira */
+        }
+        .dashboard-container {
+            max-width: 1650px; /* Aumentado para formato mais Widescreen */
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06); /* Sombra mais difusa e elegante */
+            padding: 20px;
+            border: 1px solid #f0f0f0;
+        }
+        /* Top Header and KPIs */
+        .top-row {
+            display: flex;
+            gap: 20px;
+        }
+        .header-card {
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            border-radius: 12px;
+            flex: 0 0 350px;
+        }
+        .header-card .icon {
+            font-size: 3rem;
+            margin-right: 20px;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-card h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .header-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.3;
+        }
+        .kpi-container {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+            padding: 15px; 
+        }
+        .kpi-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px 15px;
+            position: relative;
+        }
+        .kpi-card:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 15%;
+            height: 70%;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+        .kpi-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .kpi-value-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .kpi-icon {
+            font-size: 1.8rem;
+            margin-right: 5px;
+        }
+        .kpi-icon.target { color: var(--primary-blue); }
+        .kpi-icon.avg { color: var(--primary-blue); }
+        .kpi-icon.best { color: var(--accent-green); }
+        .kpi-icon.worst { color: var(--accent-red); }
+        .kpi-icon.calendar { color: var(--text-dark); }
+        .kpi-value {
+            font-size: 3rem; /* Fonte Gigante para impacto visual */
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .kpi-value.red { color: var(--accent-red); }
+        .kpi-value.green { color: var(--accent-green); }
+        
+        .kpi-unit {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+        .kpi-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        /* Middle Section: Main Chart & Sidebar */
+        .middle-row {
+            display: flex;
+            gap: 20px;
+        }
+        .main-chart-card {
+            flex: 1;
+            position: relative;
+        }
+        
+        .chart-title {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-card {
+            flex: 0 0 300px; /* Mais largo para não quebrar linha */
+            background-color: #f8faff; /* Fundo levemente azulado */
+            border: 1px solid #dce4f7;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 25px;
+        }
+        .sidebar-title {
+            font-size: 1.15rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            color: var(--primary-blue);
+        }
+        .sidebar-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #dce4f7;
+        }
+        .sidebar-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .sidebar-section h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        .sidebar-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            letter-spacing: -1px;
+        }
+        
+        .sidebar-value.red { color: var(--accent-red); }
+        .sidebar-unit {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .sidebar-subtext {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+        /* Bottom Charts Section */
+        .bottom-charts-row {
+            display: flex;
+            gap: 20px;
+        }
+        .bottom-chart-card {
+            flex: 1;
+            height: 400px; /* Aumentado para 400px */
+        }
+        /* Footer Highlights Section */
+        .footer-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        .footer-highlight {
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            border-radius: 12px;
+            flex: 0 0 380px;
+        }
+        .footer-highlight .icon {
+            font-size: 3rem;
+            margin-right: 20px;
+            color: #ffc107; /* Destaque em Amarelo Dourado */
+        }
+        .footer-highlight-text h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        
+        .footer-highlight-text p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            opacity: 0.95;
+            font-weight: 600;
+        }
+        .footer-metrics {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+        }
+        .footer-metric-card {
+            flex: 1;
+            background-color: var(--primary-blue);
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .footer-metric-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .footer-metric-value.green { color: #4ade80; }
+        .footer-metric-value.blue { color: #60a5fa; }
+        .footer-metric-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            opacity: 0.9;
+            line-height: 1.3;
+        }
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: calc(100% - 40px); /* Ajustado pro título maior */
+            width: 100%;
+        }
+        
+        .main-chart-container {
+            height: 420px; /* Aumentado */
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    
+    <!-- Top Row: Header & KPIs -->
+    <div class="top-row">
+        <div class="header-card">
+            <div class="icon">
+                <i class="fa-solid fa-gas-pump"></i>
+            </div>
+            <div>
+                <h1>KM/L E EPK MENSAL</h1>
+                <p id="data-header-subtitle">Acompanhamento do desempenho de KM/L e EPK em relação a meta</p>
+            </div>
+        </div>
+        <div class="kpi-container card">
+            <div class="kpi-card">
+                <div class="kpi-title">META DA EMPRESA<br>(ATUAL)</div>
+                <div class="kpi-value-row">
+                    <i class="fa-solid fa-bullseye kpi-icon target"></i>
+                    <span class="kpi-value red" id="data-meta-atual">2,96</span>
+                    <span class="kpi-unit red">Km/L</span>
+                </div>
+                <div class="kpi-subtitle" id="data-meta-atual-sub">A partir de jan/26<br>(antes 3,04 até dez/25)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">MÉDIA <span id="data-label-ano">2026</span></div>
+                <div class="kpi-value-row">
+                    <i class="fa-solid fa-chart-line kpi-icon avg"></i>
+                    <span class="kpi-value" id="data-media">2,98</span>
+                    <span class="kpi-unit">Km/L</span>
+                </div>
+                <div class="kpi-subtitle" id="data-media-sub">jan a jun/26<br>(antes 2,97)</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">MELHOR RESULTADO<br><span id="data-label-melhor-ano">2026</span></div>
+                <div class="kpi-value-row">
+                    <i class="fa-solid fa-arrow-trend-up kpi-icon best"></i>
+                    <span class="kpi-value green" id="data-melhor">3,05</span>
+                    <span class="kpi-unit green">Km/L</span>
+                </div>
+                <div class="kpi-subtitle" id="data-melhor-sub">mai/26</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">MENOR RESULTADO<br><span id="data-label-menor-ano">2026</span></div>
+                <div class="kpi-value-row">
+                    <i class="fa-solid fa-arrow-trend-down kpi-icon worst"></i>
+                    <span class="kpi-value red" id="data-menor">2,93</span>
+                    <span class="kpi-unit red">Km/L</span>
+                </div>
+                <div class="kpi-subtitle" id="data-menor-sub">fev/26</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">PERÍODO ANALISADO</div>
+                <div class="kpi-value-row">
+                    <i class="fa-regular fa-calendar kpi-icon calendar"></i>
+                </div>
+                <div class="kpi-subtitle" style="font-weight:800; color:var(--text-dark); font-size:0.9rem;" id="data-periodo">JAN/2025 A JUN/2026</div>
+                <div class="kpi-subtitle" style="margin-top:5px; font-size:0.8rem;" id="data-periodo-meses">18 meses</div>
+            </div>
+        </div>
+    </div>
+    <!-- Middle Row: Main Chart & Sidebar -->
+    <div class="middle-row">
+        <div class="card main-chart-card">
+            <h2 class="chart-title">EVOLUÇÃO DO KM/L REALIZADO VS META</h2>
+            <div class="chart-container main-chart-container">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+        <div class="card sidebar-card">
+            <div class="sidebar-title">
+                <i class="fa-solid fa-bullseye" style="color:var(--text-dark);"></i> PROJEÇÃO E METAS
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 id="data-projecao-titulo">PROJEÇÃO DO TRIMESTRE<br>(MAI/26 A JUL/26)</h3>
+                <div>
+                    <span class="sidebar-value" id="data-projecao-valor">3,00</span>
+                    <span class="sidebar-unit">Km/L</span>
+                </div>
+                <div class="sidebar-subtext">Meta projetada</div>
+            </div>
+            <div class="sidebar-section" style="border:none;">
+                <h3>META FINAL DESEJADA</h3>
+                <div>
+                    <span class="sidebar-value red" id="data-meta-final-valor">3,04</span>
+                    <span class="sidebar-unit red">Km/L</span>
+                </div>
+                <div class="sidebar-subtext">Meta estratégica a ser atingida</div>
+            </div>
+        </div>
+    </div>
+    <!-- Bottom Row: 2 Charts -->
+    <div class="bottom-charts-row">
+        <div class="card bottom-chart-card">
+            <h2 class="chart-title" style="font-size:1.1rem;">EVOLUÇÃO DO EPK (Eventos por Km) GERAL</h2>
+            <div class="chart-container">
+                <canvas id="epkChart"></canvas>
+            </div>
+        </div>
+        <div class="card bottom-chart-card">
+            <h2 class="chart-title" style="font-size:1.1rem;">COMPARATIVO KM/L: REDE CAN X ABASTECIMENTO</h2>
+            <div class="chart-container">
+                <canvas id="compChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Footer Row: Highlights -->
+    <div class="footer-row">
+        <div class="footer-highlight">
+            <div class="icon">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div class="footer-highlight-text">
+                <h4>DESTAQUE DO PERÍODO</h4>
+                <p id="data-destaque-texto"></p>
+            </div>
+        </div>
+        <div class="footer-metrics">
+            <div class="footer-metric-card">
+                <div class="footer-metric-value green" id="data-rodape-1-val"><i class="fa-solid fa-arrow-up"></i> <span></span></div>
+                <div class="footer-metric-label" id="data-rodape-1-lbl">EVOLUÇÃO TOTAL AMPL<br>(JAN/25 a MAI/26)</div>
+            </div>
+            <div class="footer-metric-card">
+                <div class="footer-metric-value green" id="data-rodape-2-val"><i class="fa-solid fa-arrow-down"></i> <span></span></div>
+                <div class="footer-metric-label" id="data-rodape-2-lbl">EVOLUÇÃO TOTAL EPK<br>(JAN/26 a MAI/26)</div>
+            </div>
+            <div class="footer-metric-card">
+                <div class="footer-metric-value green" id="data-rodape-3-val"><i class="fa-solid fa-arrow-up"></i> <span></span></div>
+                <div class="footer-metric-label" id="data-rodape-3-lbl">EVOLUÇÃO PERCENTUAL KM/L<br>(+ pior/melhor Jan/25 a Mai/26)</div>
+            </div>
+            <div class="footer-metric-card">
+                <div class="footer-metric-value green" id="data-rodape-4-val"><i class="fa-solid fa-arrow-down"></i> <span></span></div>
+                <div class="footer-metric-label" id="data-rodape-4-lbl">EVOLUÇÃO PERCENTUAL EPK<br>(JAN/26 e MAI/26)</div>
+            </div>
+            <div class="footer-metric-card">
+                <div class="footer-metric-value blue" id="data-rodape-5-val"><span></span></div>
+                <div class="footer-metric-label" id="data-rodape-5-lbl">MELHOR RESULTADO KM/L<br>(Geral)</div>
+            </div>
+            <div class="footer-metric-card">
+                <div class="footer-metric-value blue" id="data-rodape-6-val"><span></span></div>
+                <div class="footer-metric-label" id="data-rodape-6-lbl">MELHOR RESULTADO EPK<br>(Geral)</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- SCRIPT: DADOS E CONFIGURAÇÃO DOS GRÁFICOS -->
+<script>
+    // Registra o plugin de DataLabels
+    Chart.register(ChartDataLabels);
+    // =========================================================================
+    // DADOS PARA ALTERAÇÃO MANUAL (HTML)
+    // Altere os valores nestes objetos para atualizar os gráficos dinamicamente.
+    // Os KPIs e textos serão calculados automaticamente baseados nestes arrays.
+    // =========================================================================
+    
+    //atualização kml
+    const dadosMainChart = {
+        labels: ['Média 25', 'Média 26', 'jan/25', 'fev/25', 'mar/25', 'abr/25', 'mai/25', 'jun/25', 'jul/25', 'ago/25', 'set/25', 'out/25', 'nov/25', 'dez/25', '', 'jan/26', 'fev/26', 'mar/26', 'abr/26', 'mai/26', 'jun/26'],
+        kmlRealizado: [2.86, 2.98, 2.89, 2.84, 2.88, 2.84, 2.86, 2.88, 2.92, 2.89, 2.88, 2.90, 2.90, 2.90, 2.92, 2.98, 2.93, 2.95, 3.00, 3.05, 3.08],
+        meta: [null, null, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 2.96, 2.96, 2.96, 2.96, 2.96, 2.96]
+    };
+    //atualização epk eventos
+    const dadosEpkChart = {
+        labels: ['jan/26', 'fev/26', 'mar/26', 'abr/26', 'mai/26', 'jun/26'],
+        valores: [6.56, 6.54, 4.63, 2.67, 1.84, 1.49]
+    };
+    //atualização rede can x abastecimento
+    const dadosCompChart = {
+        labels: ['DEZ/25', 'JAN/26', 'FEV/26', 'MAR/26', 'ABR/26', 'MAI/26', 'JUN/26'],
+        abastecimento: [2.92, 2.98, 2.93, 2.95, 3.00, 3.05, 3.08],
+        redeCan: [2.80, 2.89, 2.78, 2.70, 3.03, 3.11, 3.18]
+    };
+    // =========================================================================
+    // CÁLCULO AUTOMÁTICO DOS INDICADORES E TEXTOS
+    // =========================================================================
+    
+    const formatNumber = (num) => num.toFixed(2).replace('.', ',');
+    
+    const kmlValidos = dadosMainChart.kmlRealizado.filter(v => typeof v === 'number' && !isNaN(v));
+    
+    // Pega os últimos 5 meses
+    const qtdMesesRecentes = 5; 
+    const ultimosMesesKML = kmlValidos.slice(-qtdMesesRecentes);
+    const mediaRecente = ultimosMesesKML.reduce((a, b) => a + b, 0) / ultimosMesesKML.length;
+    const melhorRecente = Math.max(...ultimosMesesKML);
+    const menorRecente = Math.min(...ultimosMesesKML);
+    
+    // Atualiza Top KPIs
+    document.getElementById('data-media').textContent = formatNumber(mediaRecente);
+    document.getElementById('data-melhor').textContent = formatNumber(melhorRecente);
+    document.getElementById('data-menor').textContent = formatNumber(menorRecente);
+    
+    const indexMelhor = dadosMainChart.kmlRealizado.lastIndexOf(melhorRecente);
+    const indexMenor = dadosMainChart.kmlRealizado.lastIndexOf(menorRecente);
+    document.getElementById('data-melhor-sub').textContent = dadosMainChart.labels[indexMelhor];
+    document.getElementById('data-menor-sub').textContent = dadosMainChart.labels[indexMenor];
+    // Cálculos de Rodapé
+    const kmlInicial = kmlValidos[0]; 
+    const kmlFinal = kmlValidos[kmlValidos.length - 1];
+    const evolucaoKML = kmlFinal - kmlInicial;
+    const evolucaoPercentualKML = (evolucaoKML / kmlInicial) * 100;
+    
+    const epkInicial = dadosEpkChart.valores[0];
+    const epkFinal = dadosEpkChart.valores[dadosEpkChart.valores.length - 1];
+    const evolucaoEPK = epkFinal - epkInicial;
+    const evolucaoPercentualEPK = (evolucaoEPK / epkInicial) * 100;
+    
+    const melhorKMLGeral = Math.max(...kmlValidos);
+    const piorKMLGeral = Math.min(...kmlValidos);
+    const melhorEPKGeral = Math.min(...dadosEpkChart.valores); 
+    
+    const setFooterVal = (id, val, isPercent = false) => {
+        const el = document.getElementById(id);
+        const icon = val > 0 ? '<i class="fa-solid fa-arrow-up"></i> ' : (val < 0 ? '<i class="fa-solid fa-arrow-down"></i> ' : '');
+        const numStr = isPercent ? (Number(Math.abs(val).toFixed(1)).toString().replace('.', ',') + '%') : Math.abs(val).toFixed(2).replace('.', ',');
+        el.innerHTML = icon + '<span>' + (val < 0 ? '-' : '') + numStr + '</span>';
+    };
+    setFooterVal('data-rodape-1-val', evolucaoKML);
+    setFooterVal('data-rodape-2-val', evolucaoEPK);
+    setFooterVal('data-rodape-3-val', evolucaoPercentualKML, true);
+    setFooterVal('data-rodape-4-val', evolucaoPercentualEPK, true);
+    
+    document.getElementById('data-rodape-5-val').innerHTML = '<span>' + formatNumber(melhorKMLGeral) + '</span>';
+    document.getElementById('data-rodape-6-val').innerHTML = '<span>' + formatNumber(melhorEPKGeral) + '</span>';
+    // Destaque Texto Principal
+    const kmlMetaAtual = dadosMainChart.meta[dadosMainChart.meta.length - 1];
+    const indexPiorGeral = dadosMainChart.kmlRealizado.indexOf(piorKMLGeral);
+    const indexMelhorGeral = dadosMainChart.kmlRealizado.lastIndexOf(melhorKMLGeral);
+    
+    const lblPior = dadosMainChart.labels[indexPiorGeral];
+    const lblMelhor = dadosMainChart.labels[indexMelhorGeral];
+    document.getElementById('data-destaque-texto').textContent = 
+        `O KM/L APRESENTOU MELHORA DE ${formatNumber(melhorKMLGeral - piorKMLGeral)} ENTRE O PIOR RESULTADO (${formatNumber(piorKMLGeral)} EM ${lblPior.toUpperCase()}) E O MELHOR (${formatNumber(melhorKMLGeral)} EM ${lblMelhor.toUpperCase()}), ULTRAPASSANDO A META VIGENTE DA EMPRESA DE ${formatNumber(kmlMetaAtual)}`;
+    // =========================================================================
+    // CONFIGURAÇÃO DOS GRÁFICOS
+    // =========================================================================
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#333';
+    // 1. Gráfico Principal
+    const ctxMain = document.getElementById('mainChart').getContext('2d');
+    new Chart(ctxMain, {
+        type: 'line',
+        data: {
+            labels: dadosMainChart.labels,
+            datasets: [
+                {
+                    label: 'KM/L Realizado',
+                    data: dadosMainChart.kmlRealizado,
+                    borderColor: '#0f1c3f',
+                    backgroundColor: '#0f1c3f',
+                    borderWidth: 3, // Engrossado para apresentação
+                    pointRadius: 6, // Maior visibilidade
+                    pointBackgroundColor: '#0f1c3f',
+                    tension: 0,
+                    datalabels: {
+                        color: 'white',
+                        backgroundColor: '#0f1c3f',
+                        borderRadius: 4,
+                        font: { weight: 'bold', size: 13 }, // Fonte Maior
+                        padding: 5,
+                        offset: 6,
+                        align: function(context) {
+                            var realValue = context.dataset.data[context.dataIndex];
+                            var metaValue = context.chart.data.datasets[1].data[context.dataIndex];
+                            if (metaValue === null || realValue === null) return 'bottom';
+                            return realValue > metaValue ? 'top' : 'bottom';
+                        },
+                        anchor: function(context) {
+                            var realValue = context.dataset.data[context.dataIndex];
+                            var metaValue = context.chart.data.datasets[1].data[context.dataIndex];
+                            if (metaValue === null || realValue === null) return 'bottom';
+                            return realValue > metaValue ? 'top' : 'bottom';
+                        },
+                        formatter: function(value) {
+                            if (value === null) return null;
+                            return value.toFixed(2).replace('.', ',');
+                        }
+                    }
+                },
+                {
+                    label: 'Meta',
+                    data: dadosMainChart.meta,
+                    borderColor: '#d32f2f',
+                    backgroundColor: '#d32f2f',
+                    borderWidth: 3, // Engrossado
+                    borderDash: [5, 5], // Tracejado mais visível
+                    pointRadius: 0,
+                    stepped: false,
+                    spanGaps: true,
+                    datalabels: {
+                        color: 'white',
+                        backgroundColor: '#d32f2f',
+                        borderRadius: 4,
+                        font: { weight: 'bold', size: 13 }, // Fonte Maior
+                        padding: 5,
+                        offset: 6,
+                        align: function(context) {
+                            var metaValue = context.dataset.data[context.dataIndex];
+                            var realValue = context.chart.data.datasets[0].data[context.dataIndex];
+                            if (realValue === null || metaValue === null) return 'top';
+                            return metaValue >= realValue ? 'top' : 'bottom';
+                        },
+                        anchor: function(context) {
+                            var metaValue = context.dataset.data[context.dataIndex];
+                            var realValue = context.chart.data.datasets[0].data[context.dataIndex];
+                            if (realValue === null || metaValue === null) return 'top';
+                            return metaValue >= realValue ? 'top' : 'bottom';
+                        },
+                        formatter: function(value) {
+                            if (value === null) return null;
+                            return value.toFixed(2).replace('.', ',');
+                        }
+                    }
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, font: { size: 14, weight: 'bold' } } },
+                tooltip: { enabled: true }
+            },
+            scales: {
+                y: {
+                    min: 2.60,
+                    max: 3.20,
+                    ticks: { font: { size: 13, weight: 'bold' }, stepSize: 0.10, callback: function(value) { return value.toFixed(2).replace('.', ','); } },
+                    grid: { color: '#e5e5e5' }
+                },
+                x: { grid: { display: false, drawBorder: false }, ticks: { font: { size: 13, weight: 'bold' } } }
+            }
+        }
+    });
+    // 2. Gráfico EPK
+    const ctxEpk = document.getElementById('epkChart').getContext('2d');
+    new Chart(ctxEpk, {
+        type: 'line',
+        data: {
+            labels: dadosEpkChart.labels,
+            datasets: [{
+                label: 'EPK',
+                data: dadosEpkChart.valores,
+                borderColor: '#4682B4',
+                backgroundColor: '#4682B4',
+                borderWidth: 4, // Mais grosso
+                pointRadius: 6, // Mais visível
+                datalabels: {
+                    align: 'top',
+                    anchor: 'top',
+                    offset: 8,
+                    color: '#111',
+                    font: { weight: '900', size: 14 }, // Fonte bem destacada
+                    formatter: function(value) { return value.toFixed(2).replace('.', ','); }
+                }
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false, min: 0, max: 8 },
+                x: { grid: { display: false }, ticks: { font: { size: 13, weight: 'bold' } } }
+            }
+        }
+    });
+    // 3. Gráfico Comparativo (Linha)
+    const ctxComp = document.getElementById('compChart').getContext('2d');
+    new Chart(ctxComp, {
+        type: 'line', 
+        data: {
+            labels: dadosCompChart.labels,
+            datasets: [
+                {
+                    label: 'Abastecimento (Transnet)',
+                    data: dadosCompChart.abastecimento,
+                    borderColor: '#0f1c3f',
+                    backgroundColor: '#0f1c3f',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    datalabels: {
+                        color: '#0f1c3f',
+                        offset: 6,
+                        font: { weight: '900', size: 13 },
+                        align: function(context) {
+                            var val1 = context.dataset.data[context.dataIndex];
+                            var val2 = context.chart.data.datasets[1].data[context.dataIndex];
+                            return val1 >= val2 ? 'top' : 'bottom';
+                        },
+                        anchor: function(context) {
+                            var val1 = context.dataset.data[context.dataIndex];
+                            var val2 = context.chart.data.datasets[1].data[context.dataIndex];
+                            return val1 >= val2 ? 'top' : 'bottom';
+                        },
+                        formatter: function(value) { return value.toFixed(2).replace('.', ','); }
+                    }
+                },
+                {
+                    label: 'Rede Can',
+                    data: dadosCompChart.redeCan,
+                    borderColor: '#a0a0a0',
+                    backgroundColor: '#a0a0a0',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    datalabels: {
+                        color: '#555555',
+                        offset: 6,
+                        font: { weight: '900', size: 13 },
+                        align: function(context) {
+                            var val2 = context.dataset.data[context.dataIndex];
+                            var val1 = context.chart.data.datasets[0].data[context.dataIndex];
+                            return val2 > val1 ? 'top' : 'bottom';
+                        },
+                        anchor: function(context) {
+                            var val2 = context.dataset.data[context.dataIndex];
+                            var val1 = context.chart.data.datasets[0].data[context.dataIndex];
+                            return val2 > val1 ? 'top' : 'bottom';
+                        },
+                        formatter: function(value) { return value.toFixed(2).replace('.', ','); }
+                    }
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, font: { size: 14, weight: 'bold' } } } },
+            scales: {
+                y: {
+                    min: 2.20, max: 3.40,
+                    ticks: { font: { size: 13, weight: 'bold' }, stepSize: 0.20, callback: function(value) { return value.toFixed(2).replace('.', ','); } },
+                    grid: { color: '#e5e5e5' }
+                },
+                x: { grid: { display: false }, ticks: { font: { size: 13, weight: 'bold' } } }
+            }
+        }
+    });
+</script>
+</body>
+</html>

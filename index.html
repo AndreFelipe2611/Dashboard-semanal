@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Principal - Sistema</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --primary-blue: #0f1c3f;
+            --hover-bg: #e2e8f0;
+            --border-color: #e0e0e0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+        p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        /* Grid 4x4 Simples e Funcional */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        /* Botões / Cards */
+        .grid-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+        .grid-item:hover {
+            background-color: var(--hover-bg);
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+        .grid-item i {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+        .grid-item span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hub de Dashboards</h1>
+            <p>Selecione um módulo para visualizar</p>
+        </header>
+        <div class="grid-container">
+            <!-- 4 Botões Principais -->
+            <a href="./dashboard.html" class="grid-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard KM/L</span>
+            </a>
+            <a href="./dashboard2.html" class="grid-item">
+                <i class="fa-solid fa-car-burst"></i>
+                <span>Desempenho EPK</span>
+            </a>
+            <a href="./dashboard3.html" class="grid-item">
+                <i class="fa-solid fa-warehouse"></i>
+                <span>Desempenho Garagem</span>
+            </a>
+            <a href="./dashboard4.html" class="grid-item">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>Telemetria</span>
+            </a>
+             <a href="./dashboard5.html" class="grid-item">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>Telemetria</span>
+            </a>
+            <!-- 12 Slots Restantes para fechar o 4x4 (apenas visuais) -->
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+            <div class="grid-item" style="opacity: 0.5; cursor: not-allowed;">
+                <i class="fa-solid fa-lock"></i><span>Em breve</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

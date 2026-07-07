@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso ao Site da Telemetria</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js e Plugin DataLabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --dark-blue: #0a1930;
+            --card-bg: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --accent-green: #388e3c;
+            --accent-red: #d32f2f;
+            --border-color: #e0e0e0;
+            --font-family: 'Inter', sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        /* Header Block */
+        .header-section {
+            background-color: var(--dark-blue);
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .header-left h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .header-left p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        .header-period {
+            text-align: right;
+            margin-right: 20px;
+            padding-right: 20px;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        .period-label {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .period-value {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .header-kpis {
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            padding: 15px 30px;
+            align-items: center;
+            gap: 25px;
+            color: var(--dark-blue);
+        }
+        .kpi {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .kpi .icon {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+        }
+        .circle-icon {
+            border: 3px solid var(--dark-blue);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+        }
+        .kpi-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+        .kpi-sub {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+        }
+        .divider {
+            width: 1px;
+            height: 50px;
+            background: var(--border-color);
+        }
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 320px;
+            gap: 20px;
+        }
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-card {
+            border: 1px solid var(--border-color);
+        }
+        .card-header {
+            background: var(--dark-blue);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-header i {
+            font-size: 1.3rem;
+        }
+        .card-subtitle {
+            padding: 20px 30px 10px;
+            font-size: 0.85rem;
+            color: #1a4a8c;
+            text-align: center;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .chart-wrapper {
+            padding: 10px 20px 20px;
+            flex: 1;
+            position: relative;
+            min-height: 400px;
+        }
+        .card-footer {
+            background: #f8fafc;
+            padding: 15px 20px;
+            font-size: 0.75rem;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+        .card-footer i {
+            font-size: 1.2rem;
+        }
+        /* Sidebar Summary */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .summary-card {
+            padding: 25px 20px;
+            flex: 1;
+            border: 1px solid var(--border-color);
+            justify-content: center;
+        }
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--dark-blue);
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+        .summary-header .icon-circle {
+            background: var(--dark-blue);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .summary-content {
+            padding: 0 10px;
+        }
+        .summary-item {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .summary-item.main-item {
+            border-bottom: none;
+            margin-bottom: 10px;
+            padding-bottom: 0;
+        }
+        .sum-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dark-blue);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .sum-value {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+        }
+        .sum-value.large {
+            font-size: 2.2rem;
+        }
+        .summary-growth {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .growth-val {
+            display: block;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+        .growth-val.green { color: var(--accent-green); }
+        .growth-val.red { color: var(--accent-red); }
+        .growth-sub {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        /* Footer Alert */
+        .info-alert {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        .info-alert .icon-large {
+            font-size: 2.5rem;
+            color: var(--dark-blue);
+        }
+        .info-alert strong {
+            display: block;
+            color: var(--dark-blue);
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .info-alert p {
+            font-size: 0.85rem;
+            color: var(--dark-blue);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    
+    <!-- Header -->
+    <div class="header-section">
+        <div style="display:flex; align-items:center;">
+            <div class="header-left">
+                <h1>ACESSO AO SITE DA TELEMETRIA</h1>
+                <p>Panorama geral de acessos ao site da telemetria</p>
+            </div>
+            
+            <div class="header-period">
+                <span class="period-label">PERÍODO DE ANÁLISE:</span>
+                <span class="period-value" id="data-periodo"></span>
+            </div>
+        </div>
+        <div class="header-kpis">
+            <div class="kpi">
+                <i class="fa-solid fa-users icon"></i>
+                <div>
+                    <div class="kpi-title">USUÁRIOS CADASTRADOS</div>
+                    <div class="kpi-value" id="data-cadastrados"></div>
+                    <div class="kpi-sub" id="data-cadastrados-sub"></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="kpi">
+                <i class="fa-solid fa-user-check icon"></i>
+                <div>
+                    <div class="kpi-title">USUÁRIOS ÚNICOS</div>
+                    <div class="kpi-value" id="data-unicos"></div>
+                    <div class="kpi-sub" id="data-unicos-sub"></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="kpi">
+                <div class="circle-icon">%</div>
+                <div>
+                    <div class="kpi-title">% DE USUÁRIOS QUE ACESSARAM</div>
+                    <div class="kpi-value" id="data-percentual"></div>
+                    <div class="kpi-sub" id="data-percentual-sub"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Chart 1: Acessos Totais -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <i class="fa-solid fa-globe"></i> EVOLUÇÃO DE ACESSOS TOTAIS
+            </div>
+            <p class="card-subtitle">Conta todas as entradas, incluindo quando a mesma pessoa acessa mais de uma vez.</p>
+            <div class="chart-wrapper">
+                <canvas id="chartAcessos"></canvas>
+            </div>
+            <div class="card-footer">
+                <i class="fa-solid fa-circle-info"></i> Observação: Conta todas as entradas, incluindo quando a mesma pessoa acessa mais de uma vez.
+            </div>
+        </div>
+        <!-- Chart 2: Usuários Únicos -->
+        <div class="card chart-card">
+            <div class="card-header">
+                <i class="fa-solid fa-user"></i> EVOLUÇÃO DE USUÁRIOS ÚNICOS
+            </div>
+            <p class="card-subtitle">Conta cada pessoa apenas uma vez dentro do período selecionado.</p>
+            <div class="chart-wrapper">
+                <canvas id="chartUnicos"></canvas>
+            </div>
+            <div class="card-footer">
+                <i class="fa-solid fa-circle-info"></i> Observação: Conta cada pessoa apenas uma vez dentro do período selecionado.
+            </div>
+        </div>
+        <!-- Sidebar Summary -->
+        <div class="sidebar">
+            <div class="card summary-card">
+                <div class="summary-header">
+                    <div class="icon-circle"><i class="fa-solid fa-chart-column"></i></div>
+                    RESUMO – ACESSOS TOTAIS
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <span class="sum-label" id="data-res-acessos-mes-ant"></span>
+                        <span class="sum-value" id="data-res-acessos-val-ant"></span>
+                    </div>
+                    <div class="summary-item main-item">
+                        <span class="sum-label" id="data-res-acessos-mes-atual"></span>
+                        <span class="sum-value large" id="data-res-acessos-val-atual"></span>
+                    </div>
+                    <div class="summary-growth">
+                        <span class="growth-val" id="data-res-acessos-var"></span>
+                        <span class="growth-sub" id="data-res-acessos-ref"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card summary-card">
+                <div class="summary-header">
+                    <div class="icon-circle"><i class="fa-solid fa-user-circle"></i></div>
+                    RESUMO – USUÁRIOS ÚNICOS
+                </div>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <span class="sum-label" id="data-res-unicos-mes-ant"></span>
+                        <span class="sum-value" id="data-res-unicos-val-ant"></span>
+                    </div>
+                    <div class="summary-item main-item">
+                        <span class="sum-label" id="data-res-unicos-mes-atual"></span>
+                        <span class="sum-value large" id="data-res-unicos-val-atual"></span>
+                    </div>
+                    <div class="summary-growth">
+                        <span class="growth-val" id="data-res-unicos-var"></span>
+                        <span class="growth-sub" id="data-res-unicos-ref"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer Alert -->
+    <div class="info-alert">
+        <i class="fa-solid fa-circle-info icon-large"></i>
+        <div>   
+            <strong>IMPORTANTE</strong>
+            <p>A diferença entre acessos totais e usuários únicos ocorre porque uma mesma pessoa pode acessar o site mais de uma vez dentro do período analisado.</p>
+        </div>
+    </div>
+</div>
+<!-- SCRIPT: DADOS E CONFIGURAÇÃO DOS GRÁFICOS -->
+<script>
+    // Registra o plugin de DataLabels
+    Chart.register(ChartDataLabels);
+    // =========================================================================
+    // DADOS PARA ALTERAÇÃO MANUAL (HTML)
+    // Altere os valores nestes objetos para atualizar os gráficos e resumos dinamicamente.
+    // =========================================================================
+
+    //ATUALIZAÇÃO DO DADOS DOS DOIS GRÁFICOS
+    const dadosGerais = {
+        labels: ['Maio 2026', 'Junho 2026'],
+        labelsCurtas: ['mai/26', 'jun/26'], // Usado apenas no "Período de Análise"
+        acessosTotais: [7164, 23862],
+        usuariosUnicos: [893, 1124],
+        usuariosCadastrados: 1304 // Pode ser alterado e o % recalculará automaticamente
+    };
+    // =========================================================================
+    // CÁLCULO AUTOMÁTICO DOS INDICADORES E TEXTOS
+    // =========================================================================
+    const formatNumber = (num) => num.toLocaleString('pt-BR');
+    const formatPercentArrow = (num) => num.toFixed(1).replace('.', ',') + '%';
+    const count = dadosGerais.labels.length;
+    // Assume que compara com o mês anterior. Se houver apenas 1 mês no array, evita erro matemático.
+    const idxAnt = count > 1 ? count - 2 : 0; 
+    const idxAtual = count - 1;
+    const mesAnterior = dadosGerais.labels[idxAnt];
+    const mesAtual = dadosGerais.labels[idxAtual];
+    // Cálculos
+    const acessosAnt = dadosGerais.acessosTotais[idxAnt];
+    const acessosAtual = dadosGerais.acessosTotais[idxAtual];
+    const varAcessos = count > 1 ? ((acessosAtual - acessosAnt) / acessosAnt) * 100 : 0;
+    const unicosAnt = dadosGerais.usuariosUnicos[idxAnt];
+    const unicosAtual = dadosGerais.usuariosUnicos[idxAtual];
+    const varUnicos = count > 1 ? ((unicosAtual - unicosAnt) / unicosAnt) * 100 : 0;
+    const pctAcesso = (unicosAtual / dadosGerais.usuariosCadastrados) * 100;
+    // Atualizando o DOM (Header KPIs)
+    const mesAtualUpper = mesAtual.toUpperCase();
+    document.getElementById('data-cadastrados').textContent = formatNumber(dadosGerais.usuariosCadastrados);
+    document.getElementById('data-cadastrados-sub').textContent = mesAtualUpper;
+    
+    document.getElementById('data-unicos').textContent = formatNumber(unicosAtual);
+    document.getElementById('data-unicos-sub').textContent = mesAtualUpper;
+    
+    document.getElementById('data-percentual').textContent = pctAcesso.toFixed(1).replace('.', ',') + '%';
+    document.getElementById('data-percentual-sub').textContent = mesAtualUpper;
+    // Atualizando Período
+    const labelInicial = dadosGerais.labelsCurtas[0];
+    const labelFinal = dadosGerais.labelsCurtas[idxAtual];
+    document.getElementById('data-periodo').textContent = `${labelInicial} a ${labelFinal}`;
+    // Atualizando Resumos (Acessos Totais)
+    document.getElementById('data-res-acessos-mes-ant').textContent = mesAnterior;
+    document.getElementById('data-res-acessos-val-ant').textContent = formatNumber(acessosAnt);
+    document.getElementById('data-res-acessos-mes-atual').textContent = mesAtual;
+    document.getElementById('data-res-acessos-val-atual').textContent = formatNumber(acessosAtual);
+    
+    const elVarAcessos = document.getElementById('data-res-acessos-var');
+    const iconAcessos = varAcessos >= 0 ? '<i class="fa-solid fa-arrow-up"></i> ' : '<i class="fa-solid fa-arrow-down"></i> ';
+    if(count > 1) {
+        elVarAcessos.innerHTML = iconAcessos + formatPercentArrow(Math.abs(varAcessos));
+        elVarAcessos.className = 'growth-val ' + (varAcessos >= 0 ? 'green' : 'red');
+        document.getElementById('data-res-acessos-ref').textContent = `em relação a ${mesAnterior}`;
+    }
+    // Atualizando Resumos (Usuários Únicos)
+    document.getElementById('data-res-unicos-mes-ant').textContent = mesAnterior;
+    document.getElementById('data-res-unicos-val-ant').textContent = formatNumber(unicosAnt);
+    document.getElementById('data-res-unicos-mes-atual').textContent = mesAtual;
+    document.getElementById('data-res-unicos-val-atual').textContent = formatNumber(unicosAtual);
+    const elVarUnicos = document.getElementById('data-res-unicos-var');
+    const iconUnicos = varUnicos >= 0 ? '<i class="fa-solid fa-arrow-up"></i> ' : '<i class="fa-solid fa-arrow-down"></i> ';
+    if(count > 1) {
+        elVarUnicos.innerHTML = iconUnicos + formatPercentArrow(Math.abs(varUnicos));
+        elVarUnicos.className = 'growth-val ' + (varUnicos >= 0 ? 'green' : 'red');
+        document.getElementById('data-res-unicos-ref').textContent = `em relação a ${mesAnterior}`;
+    }
+    // =========================================================================
+    // CONFIGURAÇÃO DOS GRÁFICOS
+    // =========================================================================
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = '#0a1930';
+    // Opções base para os gráficos idênticas à imagem
+    const baseChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: { top: 45, right: 30, left: 10, bottom: 10 } 
+        },
+        plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                border: { display: false }, 
+                title: {
+                    display: true,
+                    text: 'NÚMERO DE ACESSOS',
+                    font: { weight: '800', size: 10 },
+                    color: '#0a1930',
+                    padding: { bottom: 15 } 
+                },
+                ticks: {
+                    callback: function(value) { return value.toLocaleString('pt-BR'); },
+                    font: { size: 11, weight: '500' },
+                    color: '#666',
+                    padding: 8
+                },
+                grid: {
+                    color: '#e0e0e0',
+                    drawTicks: false 
+                }
+            },
+            x: {
+                offset: true, // <--- ADICIONADO PARA DESCOLAR OS PONTOS DAS BORDAS LATERAIS
+                border: { display: true, color: '#e0e0e0' }, 
+                grid: {
+                    display: true, 
+                    color: '#e0e0e0',
+                    drawTicks: false
+                },
+                ticks: {
+                    font: { weight: '800', size: 11 },
+                    color: '#0a1930',
+                    padding: 10
+                }
+            }
+        }
+    };
+    // 1. Gráfico de Acessos Totais
+    const ctxAcessos = document.getElementById('chartAcessos').getContext('2d');
+    const optionsAcessos = JSON.parse(JSON.stringify(baseChartOptions));
+    
+    const maxAcessos = Math.max(...dadosGerais.acessosTotais);
+    const stepAcessos = Math.ceil(maxAcessos / 6 / 1000) * 1000 || 2000; 
+    optionsAcessos.scales.y.suggestedMax = stepAcessos * 6;
+    optionsAcessos.scales.y.ticks.stepSize = stepAcessos;
+    new Chart(ctxAcessos, {
+        type: 'line',
+        data: {
+            labels: dadosGerais.labels.map(l => l.toUpperCase()),
+            datasets: [{
+                data: dadosGerais.acessosTotais,
+                borderColor: '#0a1930',
+                backgroundColor: '#0a1930',
+                borderWidth: 2,
+                pointRadius: 6,
+                datalabels: {
+                    align: 225, // <--- POSICIONA TOP-LEFT IGUAL NA IMAGEM
+                    anchor: 'center',
+                    offset: 10,
+                    color: '#0a1930',
+                    font: { weight: '800', size: 13 },
+                    formatter: function(value) { return value.toLocaleString('pt-BR'); }
+                }
+            }]
+        },
+        options: optionsAcessos
+    });
+    // 2. Gráfico de Usuários Únicos
+    const ctxUnicos = document.getElementById('chartUnicos').getContext('2d');
+    const optionsUnicos = JSON.parse(JSON.stringify(baseChartOptions));
+    optionsUnicos.scales.y.title.text = 'NÚMERO DE USUÁRIOS';
+    
+    const maxUnicos = Math.max(...dadosGerais.usuariosUnicos);
+    let stepUnicos = Math.ceil(maxUnicos / 6 / 100) * 100 || 200;
+    if (stepUnicos === 100 && maxUnicos > 600) stepUnicos = 200; 
+    optionsUnicos.scales.y.suggestedMax = stepUnicos * 6;
+    optionsUnicos.scales.y.ticks.stepSize = stepUnicos;
+    new Chart(ctxUnicos, {
+        type: 'line',
+        data: {
+            labels: dadosGerais.labels.map(l => l.toUpperCase()),
+            datasets: [{
+                data: dadosGerais.usuariosUnicos,
+                borderColor: '#0a1930',
+                backgroundColor: '#0a1930',
+                borderWidth: 2,
+                pointRadius: 6,
+                datalabels: {
+                    align: 225, // <--- POSICIONA TOP-LEFT IGUAL NA IMAGEM
+                    anchor: 'center',
+                    offset: 10,
+                    color: '#0a1930',
+                    font: { weight: '800', size: 13 },
+                    formatter: function(value) { return value.toLocaleString('pt-BR'); }
+                }
+            }]
+        },
+        options: optionsUnicos
+    });
+</script>
+</body>
+</html>

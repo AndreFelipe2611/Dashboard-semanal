@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desempenho Operacional por Garagem</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js & DataLabels -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f5f7fa;
+            --header-bg: #071529;
+            --text-dark: #1e293b;
+            --color-green: #2c6e3c;
+            --color-red: #b31b1b;
+            --border-color: #cbd5e1;
+            --font-main: 'Inter', sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+        .dashboard {
+            max-width: 1550px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        /* Top Header */
+        .top-header {
+            background-color: var(--header-bg);
+            color: white;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            padding: 15px 25px;
+            border-radius: 10px;
+            gap: 20px;
+        }
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .header-titles h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; text-transform: uppercase; }
+        .header-titles h2 { font-size: 0.95rem; font-weight: 400; opacity: 0.9; }
+        .top-kpis {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+        .kpi-card {
+            background: white;
+            color: var(--text-dark);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 140px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .kpi-card .icon { font-size: 1.8rem; }
+        .text-green { color: var(--color-green) !important; }
+        .text-red { color: var(--color-red) !important; }
+        .text-black { color: #333 !important; }
+        .kpi-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+        .kpi-text .lbl { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; }
+        .kpi-text .sub { font-size: 0.65rem; font-weight: 700; color: #475569; margin-top: 2px; }
+        .kpi-text .val { font-size: 1.4rem; font-weight: 900; margin: 2px 0; line-height: 1.1; }
+        .kpi-text .val.green { color: var(--color-green); }
+        .kpi-text .val.red { color: var(--color-red); }
+        .kpi-text .unt { font-size: 0.6rem; font-weight: 600; color: #475569; }
+        /* Main Rows Container */
+        .rows-container { margin-top: 15px; display: flex; flex-direction: column; gap: 15px; }
+        /* Row Layout */
+        .row-container {
+            display: grid;
+            grid-template-columns: 260px 1fr 340px;
+            gap: 15px;
+        }
+        /* Left Column (Stats) */
+        .col-left { display: flex; flex-direction: column; gap: 10px; }
+        .garage-pill {
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-wrapper {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: #fff;
+            flex: 1;
+        }
+        .stat-box {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            text-align: center;
+            flex: 1;
+        }
+        .stat-item { padding: 10px 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .stat-item.border-left { border-left: 1px solid var(--border-color); }
+        .stat-title { font-size: 0.55rem; font-weight: 800; color: #334155; margin-bottom: 5px; text-transform: uppercase; }
+        .stat-val { font-size: 1.3rem; font-weight: 900; color: #0f172a; }
+        .stat-sub { font-size: 0.6rem; font-weight: 700; margin-top: 3px; color: #64748b; }
+        /* Middle Column (Charts) */
+        .col-charts {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 15px;
+            background: #fff;
+        }
+        .chart-box { display: flex; flex-direction: column; position: relative; }
+        .chart-box.right { border-left: 1px solid var(--border-color); padding-left: 15px; margin-left: 15px; }
+        .chart-title { text-align: center; font-size: 0.8rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; text-transform: uppercase; }
+        .canvas-wrap { flex: 1; min-height: 180px; position: relative; }
+        /* Right Column (Analysis) */
+        .col-analysis {
+            border-radius: 10px;
+            padding: 20px 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .analysis-header {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+        .analysis-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .analysis-list li {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            gap: 8px;
+            line-height: 1.4;
+        }
+        .icon-star { font-size: 0.9rem; margin-top: 2px; }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- Header Global KPIs -->
+    <header class="top-header">
+        <div class="header-titles">
+            <h1>DESEMPENHO OPERACIONAL POR GARAGEM</h1>
+            <h2>EPK e KM/L - Evolução Mensal</h2>
+        </div>
+        <div class="top-kpis">
+            <div class="kpi-card">
+                <i class="fa-solid fa-trophy icon text-green"></i>
+                <div class="kpi-text">
+                    <span class="lbl">MELHOR EPK ATUAL</span>
+                    <span class="sub" id="hdr-epk-nome"></span>
+                    <span class="val" id="hdr-epk-val"></span>
+                    <span class="unt">Eventos por Km</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="fa-solid fa-gauge-high icon text-black"></i>
+                <div class="kpi-text">
+                    <span class="lbl">MELHOR KM/L ATUAL</span>
+                    <span class="sub" id="hdr-kml-nome"></span>
+                    <span class="val" id="hdr-kml-val"></span>
+                    <span class="unt">Km por Litro</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="fa-solid fa-arrow-trend-up icon text-green"></i>
+                <div class="kpi-text">
+                    <span class="lbl">MAIOR EVOLUÇÃO NO EPK</span>
+                    <span class="sub" id="hdr-evo-nome"></span>
+                    <span class="val" id="hdr-evo-val"></span>
+                    <span class="unt" id="hdr-evo-meses"></span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="fa-solid fa-triangle-exclamation icon text-red"></i>
+                <div class="kpi-text">
+                    <span class="lbl">GARAGEM CRÍTICA (NO EPK)</span>
+                    <span class="sub" id="hdr-crit-nome"></span>
+                    <span class="val red" id="hdr-crit-val"></span>
+                    <span class="unt">Eventos por Km</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="fa-solid fa-bullseye icon text-black"></i>
+                <div class="kpi-text">
+                    <span class="lbl">META EPK (EVENTOS POR KM)</span>
+                    <span class="sub">&nbsp;</span>
+                    <span class="val" id="hdr-meta-val"></span>
+                    <span class="unt">Eventos por Km</span>
+                </div>
+            </div>
+            <div class="kpi-card">
+                <i class="fa-solid fa-calendar-days icon text-black"></i>
+                <div class="kpi-text">
+                    <span class="lbl">PERÍODO ANALISADO</span>
+                    <span class="sub">&nbsp;</span>
+                    <span class="val" style="font-size: 0.95rem; margin-top: 5px;" id="hdr-periodo"></span>
+                    <span class="unt">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Container for dynamic rows -->
+    <div class="rows-container" id="rows-container"></div>
+</div>
+<script>
+    Chart.register(ChartDataLabels);
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    // =========================================================================
+    // DADOS PARA ALTERAÇÃO MANUAL (HTML)
+    // =========================================================================
+
+    //ATUALIZAR PERÍODO DO ANO E DADOS DAS GARAGENS
+    const dados = {
+        periodo: ['Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        ano: 2026,
+        metaEpk: 1.50,
+        garagens: [
+            {
+                id: 'bandeirantes',
+                nome: 'Bandeirantes',
+                cor: '#38668c', // Azul
+                corClara: '#f0f5fa',
+                metaKml: 2.96,
+                epk: [7.37, 4.07, 2.07, 1.29, 1.14],
+                kml: [2.71, 2.77, 2.82, 2.86, 2.87]
+            },
+            {
+                id: 'vitorino',
+                nome: 'Vitorino',
+                cor: '#b31b1b', // Vermelho
+                corClara: '#fdf2f2',
+                metaKml: 2.98,
+                epk: [6.52, 4.83, 2.91, 2.08, 1.67],
+                kml: [2.86, 2.94, 2.94, 2.97, 2.99]
+            },
+            {
+                id: 'sao_francisco',
+                nome: 'São Francisco',
+                cor: '#2c6e3c', // Verde
+                corClara: '#f0f9f2',
+                metaKml: 3.05,
+                epk: [6.24, 4.74, 2.90, 1.91, 1.53],
+                kml: [3.18, 3.19, 3.21, 3.29, 3.31]
+            }
+        ]
+    };
+    // Utils
+    const fNum = n => n.toFixed(2).replace('.', ',');
+    const fSign = n => (n > 0 ? '+' : '') + fNum(n);
+    // =========================================================================
+    // CÁLCULO E RENDERIZAÇÃO
+    // =========================================================================
+    function renderDashboard() {
+        const lastIdx = dados.periodo.length - 1;
+        // 1. CALCULATE TOP KPIs
+        const melhorEpk = [...dados.garagens].sort((a,b) => a.epk[lastIdx] - b.epk[lastIdx])[0];
+        document.getElementById('hdr-epk-nome').textContent = melhorEpk.nome;
+        document.getElementById('hdr-epk-val').textContent = fNum(melhorEpk.epk[lastIdx]);
+        const melhorKml = [...dados.garagens].sort((a,b) => b.kml[lastIdx] - a.kml[lastIdx])[0];
+        document.getElementById('hdr-kml-nome').textContent = melhorKml.nome;
+        document.getElementById('hdr-kml-val').textContent = fNum(melhorKml.kml[lastIdx]);
+        const evoList = dados.garagens.map(g => ({ nome: g.nome, evo: ((g.epk[lastIdx] - g.epk[0]) / g.epk[0]) * 100 }));
+        const melhorEvo = evoList.sort((a,b) => a.evo - b.evo)[0]; // Menor é melhor (redução)
+        document.getElementById('hdr-evo-nome').textContent = melhorEvo.nome;
+        document.getElementById('hdr-evo-val').textContent = melhorEvo.evo.toFixed(1).replace('.', ',') + '%';
+        document.getElementById('hdr-evo-val').className = 'val ' + (melhorEvo.evo <= 0 ? 'green' : 'red');
+        document.getElementById('hdr-evo-meses').textContent = `${dados.periodo[0].substring(0,3)} → ${dados.periodo[lastIdx].substring(0,3)}`;
+        const piorEpk = [...dados.garagens].sort((a,b) => b.epk[lastIdx] - a.epk[lastIdx])[0];
+        document.getElementById('hdr-crit-nome').textContent = piorEpk.nome;
+        document.getElementById('hdr-crit-val').textContent = fNum(piorEpk.epk[lastIdx]);
+        document.getElementById('hdr-meta-val').textContent = fNum(dados.metaEpk);
+        document.getElementById('hdr-periodo').innerHTML = `${dados.periodo[0]} a ${dados.periodo[lastIdx]}<br>${dados.ano}`;
+        // 2. GENERATE ROWS DYNAMICALLY
+        const container = document.getElementById('rows-container');
+        let html = '';
+        dados.garagens.forEach(g => {
+            const epkAtual = g.epk[lastIdx];
+            const kmlAtual = g.kml[lastIdx];
+            
+            // Distances
+            const distEpk = epkAtual - dados.metaEpk;
+            const epkClass = distEpk <= 0 ? 'text-green' : 'text-red';
+            const epkLbl = distEpk <= 0 ? 'Abaixo da meta' : 'Acima da meta';
+            const distKml = kmlAtual - g.metaKml;
+            const kmlClass = distKml >= 0 ? 'text-green' : 'text-red';
+            const kmlLbl = distKml >= 0 ? 'Acima da meta' : 'Não atingiu a meta';
+            // Evolution Text
+            const evoEpk = ((epkAtual - g.epk[0]) / g.epk[0]) * 100;
+            const evoPct = Math.abs(evoEpk).toFixed(1).replace('.',',');
+            // Analysis Generator
+            let analisesHtml = `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Redução de <strong>${evoPct}%</strong> no EPK entre ${dados.periodo[0].toLowerCase()} e ${dados.periodo[lastIdx].toLowerCase()}.</span></li>`;
+            if (epkAtual <= dados.metaEpk) {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Alcançou e superou a meta de EPK em ${dados.periodo[lastIdx].toLowerCase()}.</span></li>`;
+            } else {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Ainda acima da meta de EPK em ${dados.periodo[lastIdx].toLowerCase()}.</span></li>`;
+            }
+            if (kmlAtual >= g.metaKml) {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Melhor desempenho de KM/L entre as garagens, superando a meta.</span></li>`;
+            } else if (kmlAtual >= g.metaKml * 0.95) {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Evolução do KM/L está muito próxima da meta, com leve evolução.</span></li>`;
+            } else {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>KM/L ainda abaixo da meta, mas em crescimento.</span></li>`;
+            }
+            if (epkAtual <= dados.metaEpk && kmlAtual >= g.metaKml) {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Desempenho sólido e consistente.</span></li>`;
+            } else if (epkAtual > dados.metaEpk) {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Necessário manter foco na redução do EPK.</span></li>`;
+            } else {
+                analisesHtml += `<li><i class="fa-solid fa-star icon-star" style="color: ${g.cor}"></i> <span>Evolução consistente e expressiva em EPK.</span></li>`;
+            }
+            html += `
+            <div class="row-container">
+                <div class="col-left">
+                    <div class="garage-pill" style="background-color: ${g.cor};">
+                        <i class="fa-solid fa-bus"></i> ${g.nome}
+                    </div>
+                    <div class="stats-wrapper">
+                        <!-- EPK -->
+                        <div class="stat-box">
+                            <div class="stat-item">
+                                <span class="stat-title">EPK ATUAL</span>
+                                <span class="stat-val">${fNum(epkAtual)}</span>
+                                <span class="stat-sub">Eventos por Km</span>
+                            </div>
+                            <div class="stat-item border-left">
+                                <span class="stat-title">META EPK</span>
+                                <span class="stat-val">${fNum(dados.metaEpk)}</span>
+                            </div>
+                            <div class="stat-item border-left">
+                                <span class="stat-title">DISTÂNCIA DA META</span>
+                                <span class="stat-val ${epkClass}">${fSign(distEpk)}</span>
+                                <span class="stat-sub ${epkClass}">${epkLbl}</span>
+                            </div>
+                        </div>
+                        <!-- KML -->
+                        <div class="stat-box">
+                            <div class="stat-item">
+                                <span class="stat-title">KM/L ATUAL</span>
+                                <span class="stat-val">${fNum(kmlAtual)}</span>
+                                <span class="stat-sub">Km por Litro</span>
+                            </div>
+                            <div class="stat-item border-left">
+                                <span class="stat-title">META KM/L</span>
+                                <span class="stat-val">${fNum(g.metaKml)}</span>
+                            </div>
+                            <div class="stat-item border-left">
+                                <span class="stat-title">DISTÂNCIA DA META</span>
+                                <span class="stat-val ${kmlClass}">${fSign(distKml)}</span>
+                                <span class="stat-sub ${kmlClass}">${kmlLbl}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-charts">
+                    <div class="chart-box">
+                        <div class="chart-title">EVOLUÇÃO DO EPK <span style="font-size:0.7rem; font-weight:600; color:#666;">(Eventos por Km)</span></div>
+                        <div class="canvas-wrap">
+                            <canvas id="chart-epk-${g.id}"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-box right">
+                        <div class="chart-title">EVOLUÇÃO DO KM/L <span style="font-size:0.7rem; font-weight:600; color:#666;">(Km por Litro)</span></div>
+                        <div class="canvas-wrap">
+                            <canvas id="chart-kml-${g.id}"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-analysis" style="background-color: ${g.corClara}; border: 1px solid ${g.cor}33;">
+                    <div class="analysis-header" style="color: ${g.cor};">
+                        <i class="fa-regular fa-clipboard"></i> ANÁLISE
+                    </div>
+                    <ul class="analysis-list">
+                        ${analisesHtml}
+                    </ul>
+                </div>
+            </div>
+            `;
+        });
+        container.innerHTML = html;
+        // 3. DRAW CHARTS
+        dados.garagens.forEach(g => {
+            drawChart(`chart-epk-${g.id}`, g.epk, dados.metaEpk, g.cor, 0, 10, 2, 'EPK');
+            drawChart(`chart-kml-${g.id}`, g.kml, g.metaKml, g.cor, 2.00, 4.00, 0.5, 'KM/L');
+        });
+    }
+    function drawChart(canvasId, dataArr, targetVal, color, min, max, step, legendLabel) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        const targetArray = dados.periodo.map(() => targetVal);
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dados.periodo,
+                datasets: [
+                    {
+                        label: legendLabel,
+                        data: dataArr,
+                        borderColor: color,
+                        backgroundColor: color,
+                        borderWidth: 2.5,
+                        pointRadius: 5,
+                        datalabels: {
+                            align: 'top',
+                            anchor: 'center',
+                            offset: 8,
+                            color: '#1e293b',
+                            font: { weight: '800', size: 12 },
+                            formatter: v => v.toFixed(2).replace('.', ',')
+                        }
+                    },
+                    {
+                        label: `Meta (${fNum(targetVal)})`,
+                        data: targetArray,
+                        borderColor: '#94a3b8',
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        datalabels: {
+                            display: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1,
+                            formatter: () => `META: ${fNum(targetVal)}`,
+                            align: 'right', // <--- POSICIONA TEXTO DA META SEMPRE À DIREITA
+                            anchor: 'center', // Alinhado ao centro da linha tracejada
+                            offset: 8, // Afasta um pouquinho pra direita
+                            color: '#475569',
+                            font: { weight: '800', size: 10 }
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                // Aumentado o padding na direita (right: 65) para caber a palavra "META" sem cortar na borda!
+                layout: { padding: { top: 25, right: 65, left: 10 } },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 25, boxHeight: 3, font: { weight: '800', size: 11, family: 'Inter' } }
+                    },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: {
+                        min: min, max: max,
+                        border: { display: false },
+                        ticks: {
+                            stepSize: step,
+                            callback: v => v.toFixed(2).replace('.', ','),
+                            font: { size: 11, weight: '600' },
+                            color: '#64748b'
+                        },
+                        grid: { color: '#e2e8f0', drawTicks: false }
+                    },
+                    x: {
+                        offset: true,
+                        border: { display: true, color: '#e2e8f0' },
+                        grid: { display: true, color: '#f1f5f9', drawTicks: false },
+                        ticks: { font: { size: 11, weight: '700' }, color: '#1e293b' }
+                    }
+                }
+            }
+        });
+    }
+    // Initialize
+    window.onload = renderDashboard;
+</script>
+</body>
+</html>
