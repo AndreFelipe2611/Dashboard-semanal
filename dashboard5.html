@@ -265,7 +265,7 @@
                 <i class="fa-solid fa-bullseye"></i>
                 <div class="meta-text">
                     <span class="lbl">NOSSA META</span>
-                    <span class="val" id="top-meta">1,50</span>
+                    <span class="val" id="top-meta">1,00</span>
                     <span class="unt">eventos por km</span>
                 </div>
             </div>
@@ -298,7 +298,7 @@
             <div class="res-item border-left flex-row">
                 <div class="icon-circle bg-green"><i class="fa-solid fa-arrow-up"></i></div>
                 <div style="display:flex; flex-direction:column;">
-                    <span class="lbl">DENTRO DA META (0 - 1,5)</span>
+                    <span class="lbl">DENTRO DA META (0 - 1,0)</span>
                     <span class="val text-green" id="res-d-pct"></span>
                     <span class="sub text-green" id="res-d-qtd"></span>
                 </div>
@@ -314,7 +314,7 @@
             <div class="res-item border-left flex-row">
                 <div class="icon-circle bg-orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
                 <div style="display:flex; flex-direction:column;">
-                    <span class="lbl">CRÍTICOS (2,5 - 8)</span>
+                    <span class="lbl">CRÍTICOS (2,5 - 5)</span>
                     <span class="val text-orange" id="res-c-pct"></span>
                     <span class="sub text-orange" id="res-c-qtd"></span>
                 </div>
@@ -339,9 +339,9 @@
                     <canvas id="mainChart"></canvas>
                 </div>
                 <div class="chart-legend" aria-label="Legenda do gráfico">
-                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#16883a"></span><span>0 - 1,5<br>DENTRO DA META</span></div>
+                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#16883a"></span><span>0 - 1,0<br>DENTRO DA META</span></div>
                     <div class="chart-legend-item"><span class="chart-legend-line" style="background:#f5b400"></span><span>1,5 - 2,5<br>PRÓXIMOS</span></div>
-                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#ff6b00"></span><span>2,5 - 8<br>CRÍTICOS</span></div>
+                    <div class="chart-legend-item"><span class="chart-legend-line" style="background:#ff6b00"></span><span>2,5 - 5<br>CRÍTICOS</span></div>
                     <div class="chart-legend-item"><span class="chart-legend-line" style="background:#ff1f1f"></span><span>&gt; 8<br>MUITO CRÍTICOS</span></div>
                 </div>
                 <div class="chart-totals" id="chart-totals"></div>
@@ -373,7 +373,7 @@
             <div class="box-title">EVOLUÇÃO DOS PRINCIPAIS INDICADORES</div>
             <div class="box-content evo-content">
                 <div class="evo-block">
-                    <div class="evo-title text-green">DENTRO DA META (0 - 1,5)</div>
+                    <div class="evo-title text-green">DENTRO DA META (0 - 1,0)</div>
                     <div class="evo-flex">
                         <i id="evo-d-icon"></i>
                         <div class="evo-data"><span class="m-lbl" id="evo-d-lbl1"></span><span class="m-val text-green" id="evo-d-1"></span></div>
@@ -451,15 +451,15 @@
     //ATUALIZAÇÃO DOS DADOS
     const dados = {
         // 1. CONFIGURAÇÕES GERAIS
-        meta: "1,50",
+        meta: "1,00",
 
         // Escolha um mês existente na lista "meses".
         // Quantidades e percentuais do resumo serão calculados automaticamente.
         resumo: {
             mes: "JUN/26",
-            media_epk: "1,43",
-            pior_epk: "10,17",
-            mediana_epk: "0,89"
+            media_epk: "1,20",
+            pior_epk: "11,11",
+            mediana_epk: "0,75"
         },
 
         // 2. DADOS MENSAIS
@@ -470,100 +470,79 @@
             { mes: "MAR/26", dentro_meta: 115, proximos: 169, criticos: 789, muito_criticos: 145 },
             { mes: "ABR/26", dentro_meta: 492, proximos: 217, criticos: 480, muito_criticos: 40 },
             { mes: "MAI/26", dentro_meta: 706, proximos: 209, criticos: 286, muito_criticos: 20 },
-            { mes: "JUN/26", dentro_meta: 791, proximos: 167, criticos: 180, muito_criticos: 7 }
+            { mes: "JUN/26", dentro_meta: 791, proximos: 167, criticos: 180, muito_criticos: 7 },
+            { mes: "JUL/26", dentro_meta: 848, proximos: 147, criticos: 134, muito_criticos: 5 }
         ],
 
         // 3. ACESSO AO SITE
         // Basta informar o mês e quantos motoristas acessaram em cada faixa.
         acesso_site: {
-            mes: "JUN/26",
-            dentro_meta: 733,
-            proximos: 141,
-            criticos: 139,
-            muito_criticos: 4
+            mes: "JUL/26",
+            dentro_meta: 689,
+            proximos: 99,
+            criticos: 80,
+            muito_criticos: 2
         },
 
         // 4. MOTORISTAS CRÍTICOS
         // Para adicionar uma pessoa, copie um objeto completo entre { e }.
         tabela_criticos: {
-            mes_referencia: "JUN/26",
+            mes_referencia: "JUL/26",
             motoristas: [
                 {
-                    colaborador: "ANDRE WILSON DA SILVA - 285578",
-                    km_rodado: "2216,53",
-                    epk_anterior: "4,83",
-                    epk_atual: "10,17",
-                    acompanhamento_instrutor: "2",
-                    acompanhamento_escolinha: "1",
-                    tratativa_supervisor: "1",
-                    garagem: "VITORINO",
-                    acao: "CONVERSAR COM RAIMUNDO"
-                },
-                {
-                    colaborador: "DOUGLAS DE OLIVEIRA - 284144",
-                    km_rodado: "793,86",
-                    epk_anterior: "6,76",
-                    epk_atual: "9,63",
+                    colaborador: "ANDRE MOURA DE ASSIS - 51586",
+                    km_rodado: "400,54",
+                    epk_anterior: "7,43",
+                    epk_atual: "11,11",
                     acompanhamento_instrutor: "1",
-                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    acompanhamento_escolinha: "0",
                     tratativa_supervisor: "1",
                     garagem: "VITORINO",
                     acao: "DIRECIONAR PARA ESCOLINHA"
                 },
                 {
-                    colaborador: "MAURO JOSE DE PAULA - 284111",
-                    km_rodado: "2409,07",
-                    epk_anterior: "3,17",
-                    epk_atual: "9,56",
+                    colaborador: "ERNESTO LEONCIO BARBOSA - 4148",
+                    km_rodado: "852,21",
+                    epk_anterior: "4,85",
+                    epk_atual: "9,71",
+                    acompanhamento_instrutor: "2",
+                    acompanhamento_escolinha: "0",
+                    tratativa_supervisor: "2",
+                    garagem: "SÃO FRANCISCO",
+                    acao: "CONVERSA COM O RAIMUNDO"
+                },
+                {
+                    colaborador: "ANDRE WILSON DA SILVA - 285578",
+                    km_rodado: "1000,94",
+                    epk_anterior: "10,17",
+                    epk_atual: "8,93",
                     acompanhamento_instrutor: "3",
-                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    acompanhamento_escolinha: "1",
                     tratativa_supervisor: "2",
                     garagem: "VITORINO",
                     acao: "CONVERSAR COM O RAIMUNDO"
                 },
                 {
-                    colaborador: "PAULO VITOR DA SILVA - 3998",
-                    km_rodado: "1588,30",
-                    epk_anterior: "6,90",
-                    epk_atual: "9,14",
+                    colaborador: "EDINILSON DA SILVA - 4367",
+                    km_rodado: "981,03",
+                    epk_anterior: "6,59",
+                    epk_atual: "8,65",
                     acompanhamento_instrutor: "2",
-                    acompanhamento_escolinha: "SEM ESCOLINHA",
-                    tratativa_supervisor: "1",
-                    garagem: "VITORINO",
-                    acao: "DIRECIONAR PARA ESCOLINHA"
-                },
-                {
-                    colaborador: "RAMON PORTES DOS SANTOS - 772806",
-                    km_rodado: "382,31",
-                    epk_anterior: "SEM DADOS",
-                    epk_atual: "8,60",
-                    acompanhamento_instrutor: "1",
-                    acompanhamento_escolinha: "SEM ESCOLINHA",
-                    tratativa_supervisor: "0",
-                    garagem: "SÃO FRANCISCO",
-                    acao: "CONVERSAR COM O SUPERVISOR"
-                },
-                {
-                    colaborador: "CELIO BARBOSA ARAUJO - 4607",
-                    km_rodado: "206,27",
-                    epk_anterior: "6,15",
-                    epk_atual: "8,58",  
-                    acompanhamento_instrutor: "2",
-                    acompanhamento_escolinha: "SEM ESCOLINHA",
-                    tratativa_supervisor: "1",
-                    garagem: "SÃO FRANCISCO",
-                    acao: "CONVERSAR COM RAIMUNDO"
-                },
-                {
-                    colaborador: "FERNANDO FIORAVANTE VIDAL PEREIRA - 3661",
-                    km_rodado: "2432,843",
-                    epk_anterior: "6,51",
-                    epk_atual: "8,25",
-                    acompanhamento_instrutor: "2",
-                    acompanhamento_escolinha: "SEM ESCOLINHA",
+                    acompanhamento_escolinha: "0",
                     tratativa_supervisor: "2",
                     garagem: "VITORINO",
-                    acao: "CONVERSAR COM RAIMUNDO"
+                    acao: "CONVERSA COM O RAIMUNDO"
+                },
+                {
+                    colaborador: "MAURO JOSE DE PAULA - 284111",
+                    km_rodado: "753,91",
+                    epk_anterior: "9,57",
+                    epk_atual: "8,36",
+                    acompanhamento_instrutor: "3",
+                    acompanhamento_escolinha: "0",
+                    tratativa_supervisor: "3",
+                    garagem: "VITORINO",
+                    acao: "CONVERSAR COM O RAIMUNDO"
                 }
                 
             ]
@@ -639,9 +618,9 @@
             thMeses += `<th colspan="2">${m}</th>`;
             thCols += `<th>Qtd.</th><th>%</th>`;
         }
-        let trDentro = `<td><span class="dot bg-green"></span> 0 - 1,5<br><small class="text-green">DENTRO DA META</small></td>`;
+        let trDentro = `<td><span class="dot bg-green"></span> 0 - 1,0<br><small class="text-green">DENTRO DA META</small></td>`;
         let trProx = `<td><span class="dot bg-yellow"></span> 1,5 - 2,5<br><small class="text-yellow">PRÓXIMOS</small></td>`;
-        let trCrit = `<td><span class="dot bg-orange"></span> 2,5 - 8<br><small class="text-orange">CRÍTICOS</small></td>`;
+        let trCrit = `<td><span class="dot bg-orange"></span> 2,5 - 5,0<br><small class="text-orange">CRÍTICOS</small></td>`;
         let trMuito = `<td><span class="dot bg-red"></span> > 8<br><small class="text-red">MUITO CRÍTICOS</small></td>`;
         let trTotal = `<td>TOTAL</td>`;
         for (let i = 0; i < count; i++) {
@@ -681,9 +660,9 @@
                     <div class="bar-wrap"><div class="bar-fill ${c}" style="width:${aV / tV * 100}%;"></div></div>
                 </td>
             </tr>`;
-        let htmlAcc = rowAcc('0 - 1,5', '(Dentro da meta)', 'bg-green', acc.dentro_meta, tDentro);
+        let htmlAcc = rowAcc('0 - 1,0', '(Dentro da meta)', 'bg-green', acc.dentro_meta, tDentro);
         htmlAcc += rowAcc('1,5 - 2,5', '(Próximos)', 'bg-yellow', acc.proximos, tProx);
-        htmlAcc += rowAcc('2,5 - 8', '(Críticos)', 'bg-orange', acc.criticos, tCrit);
+        htmlAcc += rowAcc('2,5 - 5', '(Críticos)', 'bg-orange', acc.criticos, tCrit);
         htmlAcc += rowAcc('> 8', '(Muito críticos)', 'bg-red', acc.muito_criticos, tMuito);
         htmlAcc += `<tr style="background:#f8faff;"><td class="fw-bold text-blue">TOTAL</td><td class="fw-bold text-blue" style="font-size:1.1rem;">${sumAcc}</td><td class="fw-bold text-blue" style="font-size:1.1rem;">${sumTot}</td><td class="fw-bold text-blue" style="font-size:1.1rem;">${fP(sumAcc / sumTot * 100)}<div class="bar-wrap"><div class="bar-fill bg-blue" style="width:${sumAcc / sumTot * 100}%;"></div></div></td></tr>`;
         document.getElementById('tbody-acesso').innerHTML = htmlAcc;
@@ -739,7 +718,7 @@
         }
         const datasetsConfig = [
             {
-                label: '0 – 1,5 DENTRO DA META',
+                label: '0 – 1,0 DENTRO DA META',
                 data: dD,
                 color: '#16883a',
                 labels: [
@@ -765,7 +744,7 @@
                 ]
             },
             {
-                label: '2,5 – 8 CRÍTICOS',
+                label: '2,5 – 5 CRÍTICOS',
                 data: dC,
                 color: '#ff6b00',
                 labels: [

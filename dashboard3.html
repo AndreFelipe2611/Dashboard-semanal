@@ -252,12 +252,11 @@
     // =========================================================================
     // DADOS PARA ALTERAÇÃO MANUAL (HTML)
     // =========================================================================
-
     //ATUALIZAR PERÍODO DO ANO E DADOS DAS GARAGENS
     const dados = {
-        periodo: ['Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        periodo: ['Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
         ano: 2026,
-        metaEpk: 1.50,
+        metaEpk: 1.00,
         garagens: [
             {
                 id: 'bandeirantes',
@@ -265,8 +264,8 @@
                 cor: '#38668c', // Azul
                 corClara: '#f0f5fa',
                 metaKml: 2.96,
-                epk: [7.37, 4.07, 2.07, 1.29, 1.14],
-                kml: [2.71, 2.77, 2.82, 2.86, 2.87]
+                epk: [7.37, 4.07, 2.07, 1.29, 1.14, 1.01],
+                kml: [2.71, 2.77, 2.82, 2.86, 2.88, 2.88]
             },
             {
                 id: 'vitorino',
@@ -274,8 +273,8 @@
                 cor: '#b31b1b', // Vermelho
                 corClara: '#fdf2f2',
                 metaKml: 2.98,
-                epk: [6.52, 4.83, 2.91, 2.08, 1.67],
-                kml: [2.86, 2.94, 2.94, 2.97, 2.99]
+                epk: [6.52, 4.83, 2.91, 2.08, 1.67, 1.43],
+                kml: [2.86, 2.94, 2.94, 2.97, 3.00, 3.02]
             },
             {
                 id: 'sao_francisco',
@@ -283,8 +282,8 @@
                 cor: '#2c6e3c', // Verde
                 corClara: '#f0f9f2',
                 metaKml: 3.05,
-                epk: [6.24, 4.74, 2.90, 1.91, 1.53],
-                kml: [3.18, 3.19, 3.21, 3.29, 3.31]
+                epk: [6.24, 4.74, 2.90, 1.91, 1.53, 1.26],
+                kml: [3.18, 3.19, 3.21, 3.29, 3.31, 3.33]
             }
         ]
     };
@@ -295,7 +294,9 @@
     // CÁLCULO E RENDERIZAÇÃO
     // =========================================================================
     function renderDashboard() {
-        const lastIdx = dados.periodo.length - 1;
+        // CORREÇÃO: Garante que o último índice seja baseado na quantidade real de dados informada
+        const lastIdx = Math.min(dados.periodo.length, dados.garagens[0].epk.length) - 1;
+        
         // 1. CALCULATE TOP KPIs
         const melhorEpk = [...dados.garagens].sort((a,b) => a.epk[lastIdx] - b.epk[lastIdx])[0];
         document.getElementById('hdr-epk-nome').textContent = melhorEpk.nome;
@@ -449,7 +450,7 @@
                             offset: 8,
                             color: '#1e293b',
                             font: { weight: '800', size: 12 },
-                            formatter: v => v.toFixed(2).replace('.', ',')
+                            formatter: v => v ? v.toFixed(2).replace('.', ',') : '' // Proteção para valores vazios
                         }
                     },
                     {
