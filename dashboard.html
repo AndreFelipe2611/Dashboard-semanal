@@ -329,10 +329,10 @@
                 <div class="kpi-title">META DA EMPRESA<br>(ATUAL)</div>
                 <div class="kpi-value-row">
                     <i class="fa-solid fa-bullseye kpi-icon target"></i>
-                    <span class="kpi-value red" id="data-meta-atual">2,96</span>
+                    <span class="kpi-value red" id="data-meta-atual">3,00</span>
                     <span class="kpi-unit red">Km/L</span>
                 </div>
-                <div class="kpi-subtitle" id="data-meta-atual-sub">A partir de jan/26<br>(antes 3,04 até dez/25)</div>
+                <div class="kpi-subtitle" id="data-meta-atual-sub">A partir de jul/26<br>(antes 2,96 até jun/26)</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">MÉDIA <span id="data-label-ano">2026</span></div>
@@ -341,7 +341,7 @@
                     <span class="kpi-value" id="data-media">2,98</span>
                     <span class="kpi-unit">Km/L</span>
                 </div>
-                <div class="kpi-subtitle" id="data-media-sub">jan a jun/26<br>(antes 2,97)</div>
+                <div class="kpi-subtitle" id="data-media-sub">jan a jun/26<br>(antes 2,96)</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-title">MELHOR RESULTADO<br><span id="data-label-melhor-ano">2026</span></div>
@@ -366,7 +366,7 @@
                 <div class="kpi-value-row">
                     <i class="fa-regular fa-calendar kpi-icon calendar"></i>
                 </div>
-                <div class="kpi-subtitle" style="font-weight:800; color:var(--text-dark); font-size:0.9rem;" id="data-periodo">JAN/2025 A JUN/2026</div>
+                <div class="kpi-subtitle" style="font-weight:800; color:var(--text-dark); font-size:0.9rem;" id="data-periodo">JAN/2025 A AGO/2026</div>
                 <div class="kpi-subtitle" style="margin-top:5px; font-size:0.8rem;" id="data-periodo-meses">18 meses</div>
             </div>
         </div>
@@ -385,9 +385,9 @@
             </div>
             
             <div class="sidebar-section">
-                <h3 id="data-projecao-titulo">PROJEÇÃO DO TRIMESTRE<br>(MAI/26 A JUL/26)</h3>
+                <h3 id="data-projecao-titulo">PROJEÇÃO DO TRIMESTRE<br>(JUL/26 A SET/26)</h3>
                 <div>
-                    <span class="sidebar-value" id="data-projecao-valor">3,00</span>
+                    <span class="sidebar-value" id="data-projecao-valor">3,07</span>
                     <span class="sidebar-unit">Km/L</span>
                 </div>
                 <div class="sidebar-subtext">Meta projetada</div>
@@ -395,7 +395,7 @@
             <div class="sidebar-section" style="border:none;">
                 <h3>META FINAL DESEJADA</h3>
                 <div>
-                    <span class="sidebar-value red" id="data-meta-final-valor">3,04</span>
+                    <span class="sidebar-value red" id="data-meta-final-valor">3,10</span>
                     <span class="sidebar-unit red">Km/L</span>
                 </div>
                 <div class="sidebar-subtext">Meta estratégica a ser atingida</div>
@@ -468,20 +468,20 @@
     
     //atualização kml
     const dadosMainChart = {
-        labels: ['Média 25', 'Média 26', 'jan/25', 'fev/25', 'mar/25', 'abr/25', 'mai/25', 'jun/25', 'jul/25', 'ago/25', 'set/25', 'out/25', 'nov/25', 'dez/25', '', 'jan/26', 'fev/26', 'mar/26', 'abr/26', 'mai/26', 'jun/26', 'jul/26'],
-        kmlRealizado: [2.86, 2.98, 2.89, 2.84, 2.88, 2.84, 2.86, 2.88, 2.92, 2.89, 2.88, 2.90, 2.90, 2.90, 2.92, 2.98, 2.93, 2.95, 3.00, 3.05, 3.07, 3.13],
-        meta: [null, null, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 2.96, 2.96, 2.96, 2.96, 2.96, 2.96, 3.00]
+        labels: ['Média 25', 'Média 26', 'jan/25', 'fev/25', 'mar/25', 'abr/25', 'mai/25', 'jun/25', 'jul/25', 'ago/25', 'set/25', 'out/25', 'nov/25', 'dez/25', '', 'jan/26', 'fev/26', 'mar/26', 'abr/26', 'mai/26', 'jun/26', 'jul/26', 'ago/26'],
+        kmlRealizado: [2.86, 2.98, 2.89, 2.84, 2.88, 2.84, 2.86, 2.88, 2.92, 2.89, 2.88, 2.90, 2.90, 2.90, 2.92, 2.98, 2.93, 2.95, 3.00, 3.05, 3.07, 3.13, 3.12],
+        meta: [null, null, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 3.04, 2.96, 2.96, 2.96, 2.96, 2.96, 2.96, 3.00, 3.00]
     };
     //atualização epk eventos
     const dadosEpkChart = {
-        labels: ['jan/26', 'fev/26', 'mar/26', 'abr/26', 'mai/26', 'jun/26', 'jul/26'],
-        valores: [6.56, 6.54, 4.63, 2.67, 1.84, 1.49, 1.22]
+        labels: ['jan/26', 'fev/26', 'mar/26', 'abr/26', 'mai/26', 'jun/26', 'jul/26', 'ago/26'],
+        valores: [6.56, 6.54, 4.63, 2.67, 1.84, 1.49, 1.22, 1.34]
     };
     //atualização rede can x abastecimento
     const dadosCompChart = {
-        labels: ['DEZ/25', 'JAN/26', 'FEV/26', 'MAR/26', 'ABR/26', 'MAI/26', 'JUN/26', 'JUL/26'],
-        abastecimento: [2.92, 2.98, 2.93, 2.95, 3.00, 3.05, 3.07, 3.13],
-        redeCan: [2.80, 2.89, 2.78, 2.70, 3.03, 3.11, 3.16, 3.19]
+        labels: ['DEZ/25', 'JAN/26', 'FEV/26', 'MAR/26', 'ABR/26', 'MAI/26', 'JUN/26', 'JUL/26', 'AGO/26'],
+        abastecimento: [2.92, 2.98, 2.93, 2.95, 3.00, 3.05, 3.07, 3.13, 3.12],
+        redeCan: [2.80, 2.89, 2.78, 2.70, 3.03, 3.11, 3.16, 3.19, 2.97]
     };
     // =========================================================================
     // CÁLCULO AUTOMÁTICO DOS INDICADORES E TEXTOS
@@ -492,7 +492,7 @@
     const kmlValidos = dadosMainChart.kmlRealizado.filter(v => typeof v === 'number' && !isNaN(v));
     
     // Pega os últimos 5 meses
-    const qtdMesesRecentes = 5; 
+    const qtdMesesRecentes = 8; 
     const ultimosMesesKML = kmlValidos.slice(-qtdMesesRecentes);
     const mediaRecente = ultimosMesesKML.reduce((a, b) => a + b, 0) / ultimosMesesKML.length;
     const melhorRecente = Math.max(...ultimosMesesKML);
@@ -507,6 +507,7 @@
     const indexMenor = dadosMainChart.kmlRealizado.lastIndexOf(menorRecente);
     document.getElementById('data-melhor-sub').textContent = dadosMainChart.labels[indexMelhor];
     document.getElementById('data-menor-sub').textContent = dadosMainChart.labels[indexMenor];
+    
     // Cálculos de Rodapé
     const kmlInicial = kmlValidos[0]; 
     const kmlFinal = kmlValidos[kmlValidos.length - 1];

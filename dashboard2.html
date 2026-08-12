@@ -30,22 +30,22 @@
         }
         body {
             font-family: var(--font-family);
-            background-color: var(--bg-color);
+            background: linear-gradient(180deg, #f4f7fb 0%, var(--bg-color) 100%);
             color: var(--text-dark);
-            padding: 20px;
+            padding: 10px;
         }
         .dashboard-container {
-            max-width: 1400px;
+            max-width: 1800px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
         }
         /* Header Block */
         .header-section {
             background-color: var(--dark-blue);
-            border-radius: 12px;
-            padding: 20px 30px;
+            border-radius: 10px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -53,96 +53,96 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .header-left h1 {
-            font-size: 1.6rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-transform: uppercase;
         }
         .header-left p {
-            font-size: 0.95rem;
+            font-size: 0.78rem;
             opacity: 0.9;
         }
         .header-period {
             text-align: right;
-            margin-right: 20px;
-            padding-right: 20px;
+            margin-right: 14px;
+            padding-right: 14px;
             border-right: 1px solid rgba(255,255,255,0.2);
         }
         .period-label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.68rem;
             opacity: 0.8;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             font-weight: 600;
         }
         .period-value {
             display: block;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
         }
         .header-kpis {
             background: white;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
-            padding: 15px 30px;
+            padding: 9px 18px;
             align-items: center;
-            gap: 25px;
+            gap: 18px;
             color: var(--dark-blue);
         }
         .kpi {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
         .kpi .icon {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--dark-blue);
         }
         .circle-icon {
             border: 3px solid var(--dark-blue);
             border-radius: 50%;
-            width: 45px;
-            height: 45px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 800;
             color: var(--dark-blue);
         }
         .kpi-title {
-            font-size: 0.65rem;
+            font-size: 0.56rem;
             font-weight: 800;
             margin-bottom: 2px;
             text-transform: uppercase;
         }
         .kpi-value {
-            font-size: 1.8rem;
+            font-size: 1.45rem;
             font-weight: 800;
         }
         .kpi-sub {
-            font-size: 0.65rem;
+            font-size: 0.56rem;
             font-weight: 700;
             color: #888;
             text-transform: uppercase;
         }
         .divider {
             width: 1px;
-            height: 50px;
+            height: 38px;
             background: var(--border-color);
         }
         /* Main Content Grid */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr 320px;
-            gap: 20px;
+            grid-template-columns: 1fr 1fr 280px;
+            gap: 12px;
         }
         /* Cards */
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            box-shadow: 0 5px 14px rgba(10,25,48,0.06);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -153,52 +153,109 @@
         .card-header {
             background: var(--dark-blue);
             color: white;
-            padding: 15px 20px;
-            font-size: 1rem;
+            padding: 10px 14px;
+            font-size: 0.85rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .card-header i {
-            font-size: 1.3rem;
+            font-size: 0.88rem;
         }
         .card-subtitle {
-            padding: 20px 30px 10px;
-            font-size: 0.85rem;
+            padding: 10px 18px 4px;
+            font-size: 0.72rem;
             color: #1a4a8c;
             text-align: center;
             font-weight: 600;
-            line-height: 1.4;
+            line-height: 1.25;
         }
         .chart-wrapper {
-            padding: 10px 20px 20px;
+            padding: 4px 12px 10px;
             flex: 1;
             position: relative;
-            min-height: 400px;
+            min-height: 260px;
+        }
+        .module-charts-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .module-section-heading {
+            background: var(--dark-blue);
+            color: white;
+            border-radius: 10px;
+            padding: 10px 16px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+        .module-section-heading h2 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .module-section-heading p {
+            margin-top: 2px;
+            font-size: 0.68rem;
+            opacity: 0.85;
+        }
+        .module-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .module-chart-card:last-child {
+            grid-column: auto;
+        }
+        .module-chart-wrapper {
+            min-height: 200px;
+            padding: 5px 6px 8px;
+        }
+        .module-chart-card {
+            border-color: color-mix(in srgb, var(--module-color) 28%, white);
+            box-shadow: 0 7px 18px color-mix(in srgb, var(--module-color) 13%, transparent);
+        }
+        .module-chart-card .card-header {
+            justify-content: center;
+            background: linear-gradient(135deg, var(--module-color), var(--module-accent));
+            letter-spacing: 0.025em;
+        }
+        .module-telemetria { --module-color: #12355b; --module-accent: #2f80ed; }
+        .module-escala { --module-color: #00695c; --module-accent: #38b2ac; }
+        .module-treinamentos { --module-color: #a84b08; --module-accent: #f59e0b; }
+        .module-fichas { --module-color: #5b21b6; --module-accent: #9b6cf6; }
+        .module-banheiros { --module-color: #a51452; --module-accent: #ec4899; }
+        @supports not (color: color-mix(in srgb, black, white)) {
+            .module-chart-card {
+                border-color: var(--module-color);
+                box-shadow: 0 7px 18px rgba(10,25,48,0.08);
+            }
         }
         .card-footer {
             background: #f8fafc;
-            padding: 15px 20px;
-            font-size: 0.75rem;
+            padding: 8px 12px;
+            font-size: 0.64rem;
             color: var(--dark-blue);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             border-top: 1px solid var(--border-color);
             font-weight: 500;
         }
         .card-footer i {
-            font-size: 1.2rem;
+            font-size: 0.95rem;
         }
         /* Sidebar Summary */
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
         }
         .summary-card {
-            padding: 25px 20px;
+            padding: 10px 12px;
             flex: 1;
             border: 1px solid var(--border-color);
             justify-content: center;
@@ -206,99 +263,158 @@
         .summary-header {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 8px;
             color: var(--dark-blue);
             font-weight: 800;
-            font-size: 0.9rem;
-            margin-bottom: 25px;
+            font-size: 0.68rem;
+            margin-bottom: 8px;
             text-transform: uppercase;
         }
         .summary-header .icon-circle {
             background: var(--dark-blue);
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 0.85rem;
             flex-shrink: 0;
         }
         .summary-content {
-            padding: 0 10px;
+            padding: 0 4px;
         }
         .summary-item {
             text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
+            margin-bottom: 6px;
+            padding-bottom: 6px;
             border-bottom: 1px solid var(--border-color);
         }
         .summary-item.main-item {
             border-bottom: none;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
             padding-bottom: 0;
         }
         .sum-label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.68rem;
             color: var(--dark-blue);
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
         .sum-value {
             display: block;
-            font-size: 1.8rem;
+            font-size: 1.25rem;
             font-weight: 800;
             color: var(--dark-blue);
         }
         .sum-value.large {
-            font-size: 2.2rem;
+            font-size: 1.45rem;
         }
         .summary-growth {
-            margin-top: 15px;
+            margin-top: 5px;
             text-align: center;
         }
         .growth-val {
             display: block;
-            font-size: 1.6rem;
+            font-size: 1.1rem;
             font-weight: 800;
         }
         .growth-val.green { color: var(--accent-green); }
         .growth-val.red { color: var(--accent-red); }
         .growth-sub {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             color: var(--dark-blue);
             font-weight: 600;
-            margin-top: 5px;
+            margin-top: 1px;
         }
         /* Footer Alert */
         .info-alert {
             background: white;
-            border-radius: 12px;
-            padding: 20px 25px;
+            border-radius: 10px;
+            padding: 9px 15px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
         }
         .info-alert .icon-large {
-            font-size: 2.5rem;
+            font-size: 1.6rem;
             color: var(--dark-blue);
         }
         .info-alert strong {
             display: block;
             color: var(--dark-blue);
-            font-size: 0.95rem;
-            margin-bottom: 5px;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
             text-transform: uppercase;
         }
         .info-alert p {
-            font-size: 0.85rem;
+            font-size: 0.68rem;
             color: var(--dark-blue);
             opacity: 0.9;
+        }
+        @media (max-width: 1120px) {
+            .module-charts-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            .module-chart-wrapper {
+                min-height: 220px;
+            }
+        }
+        @media (max-width: 980px) {
+            .header-section,
+            .header-kpis {
+                flex-wrap: wrap;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .module-charts-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .module-chart-card:last-child {
+                grid-column: auto;
+            }
+            .module-chart-wrapper {
+                min-height: 240px;
+                padding-inline: 12px;
+            }
+        }
+        @media (max-width: 620px) {
+            .module-charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @page {
+            size: A3 landscape;
+            margin: 6mm;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .dashboard-container {
+                max-width: none;
+                gap: 8px;
+            }
+            .module-charts-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 7px;
+            }
+            .module-chart-wrapper {
+                min-height: 190px;
+            }
+            .card,
+            .header-section,
+            .module-section-heading,
+            .info-alert {
+                break-inside: avoid;
+            }
         }
     </style>
 </head>
@@ -325,15 +441,6 @@
                     <div class="kpi-title">USUÁRIOS CADASTRADOS</div>
                     <div class="kpi-value" id="data-cadastrados"></div>
                     <div class="kpi-sub" id="data-cadastrados-sub"></div>
-                </div>
-            </div>
-            <div class="divider"></div>
-            <div class="kpi">
-                <i class="fa-solid fa-user-check icon"></i>
-                <div>
-                    <div class="kpi-title">USUÁRIOS ÚNICOS</div>
-                    <div class="kpi-value" id="data-unicos"></div>
-                    <div class="kpi-sub" id="data-unicos-sub"></div>
                 </div>
             </div>
             <div class="divider"></div>
@@ -419,6 +526,42 @@
             </div>
         </div>
     </div>
+
+    <!-- Gráficos mensais por área: Total x Usuários Únicos -->
+    <section class="module-charts-section">
+        <div class="module-section-heading">
+            <h2><i class="fa-solid fa-chart-line"></i> ACESSOS POR ÁREA</h2>
+            <p>Cada gráfico compara acessos totais e usuários únicos seguindo a mesma sequência de meses.</p>
+        </div>
+
+        <div class="module-charts-grid">
+            <div class="card chart-card module-chart-card module-telemetria">
+                <div class="card-header"><i class="fa-solid fa-satellite-dish"></i> TELEMETRIA</div>
+                <div class="chart-wrapper module-chart-wrapper"><canvas id="chartModuloTelemetria"></canvas></div>
+            </div>
+
+            <div class="card chart-card module-chart-card module-escala">
+                <div class="card-header"><i class="fa-solid fa-calendar-check"></i> ESCALA</div>
+                <div class="chart-wrapper module-chart-wrapper"><canvas id="chartModuloEscala"></canvas></div>
+            </div>
+
+            <div class="card chart-card module-chart-card module-treinamentos">
+                <div class="card-header"><i class="fa-solid fa-graduation-cap"></i> TREINAMENTOS</div>
+                <div class="chart-wrapper module-chart-wrapper"><canvas id="chartModuloTreinamentos"></canvas></div>
+            </div>
+
+            <div class="card chart-card module-chart-card module-fichas">
+                <div class="card-header"><i class="fa-solid fa-file-lines"></i> FICHAS</div>
+                <div class="chart-wrapper module-chart-wrapper"><canvas id="chartModuloFichas"></canvas></div>
+            </div>
+
+            <div class="card chart-card module-chart-card module-banheiros">
+                <div class="card-header"><i class="fa-solid fa-restroom"></i> BANHEIROS</div>
+                <div class="chart-wrapper module-chart-wrapper"><canvas id="chartModuloBanheiros"></canvas></div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer Alert -->
     <div class="info-alert">
         <i class="fa-solid fa-circle-info icon-large"></i>
@@ -437,18 +580,51 @@
     // Altere os valores nestes objetos para atualizar os gráficos e resumos dinamicamente.
     // =========================================================================
 
-    //ATUALIZAÇÃO DO DADOS DOS DOIS GRÁFICOS
+    // ATUALIZAÇÃO DOS DADOS DO PAINEL
     const dadosGerais = {
-        labels: ['Maio 2026', 'Junho 2026', 'Julho 2026'],
-        labelsCurtas: ['mai/26', 'jun/26', 'jul/26'], // Usado apenas no "Período de Análise"
-        acessosTotais: [7164, 23862, 27097],
-        usuariosUnicos: [893, 1124, 1125],
-        usuariosCadastrados: 1310 // Pode ser alterado e o % recalculará automaticamente
+        labels: ['Maio 2026', 'Junho 2026', 'Julho 2026', 'Agosto 2026'],
+        labelsCurtas: ['mai/26', 'jun/26', 'jul/26', 'ago/26'], // Usado apenas no "Período de Análise"
+        
+        // DADOS DOS DOIS GRÁFICOS GRANDES, KPIs E RESUMOS
+        // Estes dados são independentes das tabelinhas manuais abaixo.
+        acessosTotais: [7164, 23862, 27097, 9208],
+        usuariosUnicos: [893, 1124, 1125, 1007],
+        usuariosCadastrados: 1308, // Pode ser alterado e o % recalculará automaticamente
+
+        // TABELINHAS MANUAIS POR ÁREA
+        // Em cada área, mantenha um valor por mês na mesma ordem de "labels".
+        // Use null quando o dado ainda não existir; não use zero como preenchimento.
+        modulos: {
+            telemetria: {
+                acessosTotais: [7133],
+                usuariosUnicos: [881]
+            },
+            escala: {
+                acessosTotais: [1896],
+                usuariosUnicos: [625]
+            },
+            treinamentos: {
+                acessosTotais: [1272],
+                usuariosUnicos: [467]
+            },
+            fichas: {
+                acessosTotais: [1029],
+                usuariosUnicos: [516]
+            },
+            banheiros: {
+                acessosTotais: [650],
+                usuariosUnicos: [416]
+            }
+        }
     };
     // =========================================================================
     // CÁLCULO AUTOMÁTICO DOS INDICADORES E TEXTOS
     // =========================================================================
     const formatNumber = (num) => num.toLocaleString('pt-BR');
+    const formatCompactNumber = (num) => new Intl.NumberFormat('pt-BR', {
+        notation: 'compact',
+        maximumFractionDigits: 1
+    }).format(num);
     const formatPercentArrow = (num) => num.toFixed(1).replace('.', ',') + '%';
     const count = dadosGerais.labels.length;
     // Assume que compara com o mês anterior. Se houver apenas 1 mês no array, evita erro matemático.
@@ -468,9 +644,6 @@
     const mesAtualUpper = mesAtual.toUpperCase();
     document.getElementById('data-cadastrados').textContent = formatNumber(dadosGerais.usuariosCadastrados);
     document.getElementById('data-cadastrados-sub').textContent = mesAtualUpper;
-    
-    document.getElementById('data-unicos').textContent = formatNumber(unicosAtual);
-    document.getElementById('data-unicos-sub').textContent = mesAtualUpper;
     
     document.getElementById('data-percentual').textContent = pctAcesso.toFixed(1).replace('.', ',') + '%';
     document.getElementById('data-percentual-sub').textContent = mesAtualUpper;
@@ -513,7 +686,7 @@
         responsive: true,
         maintainAspectRatio: false,
         layout: {
-            padding: { top: 45, right: 30, left: 10, bottom: 10 } 
+            padding: { top: 30, right: 20, left: 6, bottom: 4 } 
         },
         plugins: {
             legend: { display: false },
@@ -532,9 +705,10 @@
                 },
                 ticks: {
                     callback: function(value) { return value.toLocaleString('pt-BR'); },
-                    font: { size: 11, weight: '500' },
+                    font: { size: 9, weight: '500' },
                     color: '#666',
-                    padding: 8
+                    padding: 6,
+                    maxTicksLimit: 6
                 },
                 grid: {
                     color: '#e0e0e0',
@@ -550,9 +724,11 @@
                     drawTicks: false
                 },
                 ticks: {
-                    font: { weight: '800', size: 11 },
+                    font: { weight: '800', size: 9 },
                     color: '#0a1930',
-                    padding: 10
+                    padding: 7,
+                    autoSkip: false,
+                    maxRotation: 0
                 }
             }
         }
@@ -574,13 +750,13 @@
                 borderColor: '#0a1930',
                 backgroundColor: '#0a1930',
                 borderWidth: 2,
-                pointRadius: 6,
+                pointRadius: 5,
                 datalabels: {
                     align: 225, // <--- POSICIONA TOP-LEFT IGUAL NA IMAGEM
                     anchor: 'center',
                     offset: 10,
                     color: '#0a1930',
-                    font: { weight: '800', size: 13 },
+                    font: { weight: '800', size: 10 },
                     formatter: function(value) { return value.toLocaleString('pt-BR'); }
                 }
             }]
@@ -606,19 +782,222 @@
                 borderColor: '#0a1930',
                 backgroundColor: '#0a1930',
                 borderWidth: 2,
-                pointRadius: 6,
+                pointRadius: 5,
                 datalabels: {
                     align: 225, // <--- POSICIONA TOP-LEFT IGUAL NA IMAGEM
                     anchor: 'center',
                     offset: 10,
                     color: '#0a1930',
-                    font: { weight: '800', size: 13 },
+                    font: { weight: '800', size: 10 },
                     formatter: function(value) { return value.toLocaleString('pt-BR'); }
                 }
             }]
         },
         options: optionsUnicos
     });
+
+    // 3 a 7. Gráficos por área: cada um compara Total x Usuários Únicos
+    // Completa automaticamente com null caso uma série tenha menos valores que os meses.
+    const normalizarSerieMensal = (serie) => dadosGerais.labels.map((_, indice) => {
+        const valor = Array.isArray(serie) ? serie[indice] : null;
+        return Number.isFinite(valor) ? valor : null;
+    });
+
+    const graficosPorArea = [
+        {
+            canvasId: 'chartModuloTelemetria',
+            acessosTotais: dadosGerais.modulos.telemetria.acessosTotais,
+            usuariosUnicos: dadosGerais.modulos.telemetria.usuariosUnicos,
+            corTotal: '#12355b',
+            corUnicos: '#2f80ed'
+        },
+        {
+            canvasId: 'chartModuloEscala',
+            acessosTotais: dadosGerais.modulos.escala.acessosTotais,
+            usuariosUnicos: dadosGerais.modulos.escala.usuariosUnicos,
+            corTotal: '#00695c',
+            corUnicos: '#38b2ac'
+        },
+        {
+            canvasId: 'chartModuloTreinamentos',
+            acessosTotais: dadosGerais.modulos.treinamentos.acessosTotais,
+            usuariosUnicos: dadosGerais.modulos.treinamentos.usuariosUnicos,
+            corTotal: '#a84b08',
+            corUnicos: '#f59e0b'
+        },
+        {
+            canvasId: 'chartModuloFichas',
+            acessosTotais: dadosGerais.modulos.fichas.acessosTotais,
+            usuariosUnicos: dadosGerais.modulos.fichas.usuariosUnicos,
+            corTotal: '#5b21b6',
+            corUnicos: '#9b6cf6'
+        },
+        {
+            canvasId: 'chartModuloBanheiros',
+            acessosTotais: dadosGerais.modulos.banheiros.acessosTotais,
+            usuariosUnicos: dadosGerais.modulos.banheiros.usuariosUnicos,
+            corTotal: '#a51452',
+            corUnicos: '#ec4899'
+        }
+    ];
+
+    const hexParaRgba = (hex, alpha) => {
+        const numero = parseInt(hex.replace('#', ''), 16);
+        const vermelho = (numero >> 16) & 255;
+        const verde = (numero >> 8) & 255;
+        const azul = numero & 255;
+        return `rgba(${vermelho}, ${verde}, ${azul}, ${alpha})`;
+    };
+
+    const mensagemSemDadosPlugin = {
+        id: 'mensagemSemDados',
+        afterDraw(chart) {
+            const possuiDados = chart.data.datasets.some((dataset) =>
+                dataset.data.some((valor) => Number.isFinite(valor))
+            );
+            if (possuiDados || !chart.chartArea) return;
+
+            const { ctx, chartArea } = chart;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#98a2b3';
+            ctx.font = "700 10px 'Inter', sans-serif";
+            ctx.fillText(
+                'AGUARDANDO DADOS',
+                (chartArea.left + chartArea.right) / 2,
+                (chartArea.top + chartArea.bottom) / 2
+            );
+            ctx.restore();
+        }
+    };
+
+    const criarGraficoPorArea = ({ canvasId, acessosTotais, usuariosUnicos, corTotal, corUnicos }) => {
+        const contexto = document.getElementById(canvasId).getContext('2d');
+
+        new Chart(contexto, {
+            type: 'line',
+            data: {
+                labels: dadosGerais.labels.map(label => label.toUpperCase()),
+                datasets: [
+                    {
+                        label: 'Acessos Totais',
+                        data: normalizarSerieMensal(acessosTotais),
+                        yAxisID: 'y',
+                        borderColor: corTotal,
+                        backgroundColor: hexParaRgba(corTotal, 0.11),
+                        borderWidth: 3,
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: corTotal,
+                        pointBorderWidth: 2,
+                        tension: 0.35,
+                        datalabels: {
+                            align: 'top',
+                            anchor: 'center',
+                            offset: 9,
+                            clamp: true,
+                            color: corTotal
+                        }
+                    },
+                    {
+                        label: 'Usuários Únicos',
+                        data: normalizarSerieMensal(usuariosUnicos),
+                        yAxisID: 'y',
+                        borderColor: corUnicos,
+                        backgroundColor: corUnicos,
+                        borderWidth: 2.5,
+                        borderDash: [6, 4],
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: corUnicos,
+                        pointBorderWidth: 2,
+                        tension: 0.35,
+                        datalabels: {
+                            align: 'bottom',
+                            anchor: 'center',
+                            offset: 9,
+                            clamp: true,
+                            color: corUnicos
+                        }
+                    }
+                ]
+            },
+            plugins: [mensagemSemDadosPlugin],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                layout: {
+                    padding: { top: 22, right: 4, left: 4, bottom: 4 }
+                },
+                plugins: {
+                    datalabels: {
+                        display: (context) => context.dataset.data[context.dataIndex] !== null,
+                        font: { size: 8, weight: '800' },
+                        formatter: (value) => formatNumber(value)
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 7,
+                            boxHeight: 7,
+                            padding: 8,
+                            font: { size: 8, weight: '700' },
+                            color: '#0a1930'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                if (context.raw === null) return '';
+                                return `${context.dataset.label}: ${formatNumber(context.parsed.y)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        offset: true,
+                        border: { display: true, color: '#e0e0e0' },
+                        grid: { display: false },
+                        ticks: {
+                            font: { weight: '800', size: 8 },
+                            color: '#0a1930',
+                            padding: 5,
+                            autoSkip: false,
+                            maxRotation: 0
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: true,
+                        border: { display: false },
+                        title: { display: false },
+                        ticks: {
+                            callback: (value) => formatCompactNumber(value),
+                            color: '#667085',
+                            font: { size: 8 },
+                            maxTicksLimit: 4
+                        },
+                        grid: { color: '#e8edf4' },
+                        grace: '18%'
+                    }
+                }
+            }
+        });
+    };
+
+    graficosPorArea.forEach(criarGraficoPorArea);
 </script>
 </body>
 </html>
