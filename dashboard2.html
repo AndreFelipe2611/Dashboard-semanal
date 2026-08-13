@@ -531,7 +531,7 @@
     <section class="module-charts-section">
         <div class="module-section-heading">
             <h2><i class="fa-solid fa-chart-line"></i> ACESSOS POR ÁREA</h2>
-            <p>Cada gráfico compara acessos totais e usuários únicos seguindo a mesma sequência de meses.</p>
+            <p>Cada gráfico compara acessos totais e usuários únicos a partir de agosto de 2026.</p>
         </div>
 
         <div class="module-charts-grid">
@@ -584,6 +584,12 @@
     const dadosGerais = {
         labels: ['Maio 2026', 'Junho 2026', 'Julho 2026', 'Agosto 2026'],
         labelsCurtas: ['mai/26', 'jun/26', 'jul/26', 'ago/26'], // Usado apenas no "Período de Análise"
+
+        // MESES EXCLUSIVOS DOS 5 GRÁFICOS INFERIORES
+        // Como esses gráficos são novos, o histórico deles começa em agosto de 2026.
+        // Para adicionar os próximos meses, inclua-os aqui e acrescente um valor
+        // na mesma posição em cada array de "modulos".
+        labelsModulos: ['Agosto 2026'],
         
         // DADOS DOS DOIS GRÁFICOS GRANDES, KPIs E RESUMOS
         // Estes dados são independentes das tabelinhas manuais abaixo.
@@ -592,7 +598,7 @@
         usuariosCadastrados: 1308, // Pode ser alterado e o % recalculará automaticamente
 
         // TABELINHAS MANUAIS POR ÁREA
-        // Em cada área, mantenha um valor por mês na mesma ordem de "labels".
+        // Em cada área, mantenha um valor por mês na mesma ordem de "labelsModulos".
         // Use null quando o dado ainda não existir; não use zero como preenchimento.
         modulos: {
             telemetria: {
@@ -797,8 +803,8 @@
     });
 
     // 3 a 7. Gráficos por área: cada um compara Total x Usuários Únicos
-    // Completa automaticamente com null caso uma série tenha menos valores que os meses.
-    const normalizarSerieMensal = (serie) => dadosGerais.labels.map((_, indice) => {
+    // Completa automaticamente com null caso uma série tenha menos valores que os meses dos módulos.
+    const normalizarSerieMensal = (serie) => dadosGerais.labelsModulos.map((_, indice) => {
         const valor = Array.isArray(serie) ? serie[indice] : null;
         return Number.isFinite(valor) ? valor : null;
     });
@@ -878,7 +884,7 @@
         new Chart(contexto, {
             type: 'line',
             data: {
-                labels: dadosGerais.labels.map(label => label.toUpperCase()),
+                labels: dadosGerais.labelsModulos.map(label => label.toUpperCase()),
                 datasets: [
                     {
                         label: 'Acessos Totais',
