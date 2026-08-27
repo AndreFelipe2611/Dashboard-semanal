@@ -1,2854 +1,2772 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Desempenho dos Motoristas - EPK</title>
+    <title>Desempenho dos Motoristas - EPK</title>
 
-<link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<link
-href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
-<style>
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --navy: #071529;
+            --blue: #102a63;
+            --border: #cbd5e1;
 
-:root{
-    --bg:#f5f7fa;
-    --navy:#071529;
-    --blue:#102a63;
-    --border:#cbd5e1;
+            --green1: #006837;
+            --green2: #00a878;
+            --blue2: #0077b6;
+            --yellow: #f2b701;
+            --orange: #f77f00;
+            --red: #e63946;
+            --wine: #6a040f;
 
-    --green1:#006837;
-    --green2:#00a878;
-    --blue2:#0077b6;
-    --yellow:#f2b701;
-    --orange:#f77f00;
-    --red:#e63946;
-    --wine:#6a040f;
+            --font: 'Inter', sans-serif;
+        }
 
-    --font:'Inter',sans-serif;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
+        body {
+            background: var(--bg);
+            font-family: var(--font);
+            color: #1e293b;
+            padding: 8px;
+        }
 
-body{
-    background:var(--bg);
-    font-family:var(--font);
-    color:#1e293b;
-    padding:8px;
-}
+        .dashboard {
+            width: 100%;
+            max-width: 1600px;
+            margin: auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 7px;
+        }
 
-.dashboard{
-    width:100%;
-    max-width:1600px;
-    margin:auto;
-    background:#fff;
-    border-radius:8px;
-    padding:7px;
-}
-
-/* =========================================================
+        /* =========================================================
 HEADER
 ========================================================= */
 
-.header{
-    height:54px;
+        .header {
+            height: 54px;
 
-    background:var(--navy);
-    color:white;
+            background: var(--navy);
+            color: white;
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-    padding:7px 18px;
+            padding: 7px 18px;
 
-    border-radius:7px;
-}
+            border-radius: 7px;
+        }
 
-.header-left h1{
-    font-size:21px;
-    font-weight:900;
-    margin-bottom:2px;
-}
+        .header-left h1 {
+            font-size: 21px;
+            font-weight: 900;
+            margin-bottom: 2px;
+        }
 
-.header-left p{
-    font-size:11px;
-    color:#dbe4ef;
-    font-weight:500;
-}
+        .header-left p {
+            font-size: 11px;
+            color: #dbe4ef;
+            font-weight: 500;
+        }
 
-.header-right{
-    display:flex;
-    align-items:center;
-    gap:18px;
-}
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
 
-.meta-box{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
+        .meta-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.meta-box i{
-    font-size:21px;
-}
+        .meta-box i {
+            font-size: 21px;
+        }
 
-.meta-info{
-    display:flex;
-    flex-direction:column;
-}
+        .meta-info {
+            display: flex;
+            flex-direction: column;
+        }
 
-.meta-info small{
-    font-size:8px;
-    font-weight:900;
-}
+        .meta-info small {
+            font-size: 8px;
+            font-weight: 900;
+        }
 
-.meta-info strong{
-    color:#4ade80;
-    font-size:21px;
-    line-height:20px;
-}
+        .meta-info strong {
+            color: #4ade80;
+            font-size: 21px;
+            line-height: 20px;
+        }
 
-.meta-info span{
-    font-size:8px;
-}
+        .meta-info span {
+            font-size: 8px;
+        }
 
-.insight{
-    border-left:1px solid rgba(255,255,255,.25);
+        .insight {
+            border-left: 1px solid rgba(255, 255, 255, .25);
 
-    padding-left:15px;
+            padding-left: 15px;
 
-    font-size:9px;
-    line-height:1.25;
-}
+            font-size: 9px;
+            line-height: 1.25;
+        }
 
-.insight strong{
-    display:block;
-    font-size:8px;
-}
+        .insight strong {
+            display: block;
+            font-size: 8px;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 RESUMO
 ========================================================= */
 
-.summary{
-    margin-top:6px;
+        .summary {
+            margin-top: 6px;
 
-    border:1px solid var(--blue);
+            border: 1px solid var(--blue);
 
-    border-radius:6px;
+            border-radius: 6px;
 
-    overflow:hidden;
-}
+            overflow: hidden;
+        }
 
-.summary-title{
-    height:20px;
+        .summary-title {
+            height: 20px;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    background:#eef3ff;
+            background: #eef3ff;
 
-    color:var(--blue);
+            color: var(--blue);
 
-    font-size:10px;
-    font-weight:900;
-}
+            font-size: 10px;
+            font-weight: 900;
+        }
 
-.summary-grid{
-    display:grid;
+        .summary-grid {
+            display: grid;
 
-    grid-template-columns:repeat(8,1fr);
-}
+            grid-template-columns: repeat(8, 1fr);
+        }
 
-.summary-card{
-    min-height:54px;
+        .summary-card {
+            min-height: 54px;
 
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-    text-align:center;
+            text-align: center;
 
-    border-right:1px solid #dce3ec;
+            border-right: 1px solid #dce3ec;
 
-    padding:2px;
-}
+            padding: 2px;
+        }
 
-.summary-card:last-child{
-    border-right:none;
-}
+        .summary-card:last-child {
+            border-right: none;
+        }
 
-.summary-card .label{
-    color:var(--blue);
+        .summary-card .label {
+            color: var(--blue);
 
-    font-size:7.5px;
-    font-weight:900;
+            font-size: 7.5px;
+            font-weight: 900;
 
-    text-transform:uppercase;
-}
+            text-transform: uppercase;
+        }
 
-.summary-card .value{
-    font-size:20px;
-    font-weight:900;
-    line-height:20px;
-}
+        .summary-card .value {
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 20px;
+        }
 
-.summary-card .sub{
-    font-size:8px;
-    font-weight:800;
-}
+        .summary-card .sub {
+            font-size: 8px;
+            font-weight: 800;
+        }
 
-.green{color:var(--green1);}
-.yellow{color:#d89400;}
-.orange{color:var(--orange);}
-.red{color:var(--red);}
-.blue{color:var(--blue);}
+        .green {
+            color: var(--green1);
+        }
+
+        .yellow {
+            color: #d89400;
+        }
+
+        .orange {
+            color: var(--orange);
+        }
+
+        .red {
+            color: var(--red);
+        }
+
+        .blue {
+            color: var(--blue);
+        }
 
 
-/* =========================================================
+        /* =========================================================
 TÍTULOS
 ========================================================= */
 
-.section-title{
-    min-height:25px;
+        .section-title {
+            min-height: 25px;
 
-    background:var(--blue);
+            background: var(--blue);
 
-    color:#fff;
+            color: #fff;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    text-align:center;
+            text-align: center;
 
-    font-size:10px;
-    font-weight:900;
+            font-size: 10px;
+            font-weight: 900;
 
-    padding:4px 7px;
+            padding: 4px 7px;
 
-    text-transform:uppercase;
-}
+            text-transform: uppercase;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 GRID PRINCIPAL
 ========================================================= */
 
-.main-grid{
-    margin-top:7px;
+        .main-grid {
+            margin-top: 7px;
 
-    display:grid;
+            display: grid;
 
-    grid-template-columns:
-        minmax(0,3.1fr)
-        minmax(360px,1fr);
+            grid-template-columns:
+                minmax(0, 3.1fr) minmax(360px, 1fr);
 
-    gap:8px;
+            gap: 8px;
 
-    align-items:stretch;
-}
+            align-items: stretch;
+        }
 
-.panel{
-    border:1px solid var(--border);
+        .panel {
+            border: 1px solid var(--border);
 
-    border-radius:6px;
+            border-radius: 6px;
 
-    overflow:hidden;
+            overflow: hidden;
 
-    background:#fff;
-}
+            background: #fff;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 EVOLUÇÃO MÊS ANTERIOR X MÊS ATUAL
 ========================================================= */
 
-.evolution{
-    display:grid;
+        .evolution {
+            display: grid;
 
-    grid-template-columns:1fr 1fr;
+            grid-template-columns: 1fr 1fr;
 
-    gap:6px;
+            gap: 6px;
 
-    padding:5px 6px;
+            padding: 5px 6px;
 
-    background:#fff;
-}
+            background: #fff;
+        }
 
-.evolution-box{
-    min-height:47px;
+        .evolution-box {
+            min-height: 47px;
 
-    background:#f7f9fd;
+            background: #f7f9fd;
 
-    border:1px solid #dfe6f0;
+            border: 1px solid #dfe6f0;
 
-    border-radius:6px;
+            border-radius: 6px;
 
-    display:flex;
+            display: flex;
 
-    justify-content:center;
+            justify-content: center;
 
-    align-items:center;
+            align-items: center;
 
-    gap:9px;
+            gap: 9px;
 
-    padding:4px 8px;
-}
+            padding: 4px 8px;
+        }
 
-.evo-name{
-    color:var(--blue);
+        .evo-name {
+            color: var(--blue);
 
-    font-size:8px;
+            font-size: 8px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    text-align:center;
+            text-align: center;
 
-    min-width:105px;
-}
+            min-width: 105px;
+        }
 
-.evo-icon{
-    font-size:17px;
-}
+        .evo-icon {
+            font-size: 17px;
+        }
 
-.evo-period{
-    display:flex;
+        .evo-period {
+            display: flex;
 
-    flex-direction:column;
+            flex-direction: column;
 
-    align-items:center;
-}
+            align-items: center;
+        }
 
-.evo-period small{
-    font-size:7px;
+        .evo-period small {
+            font-size: 7px;
 
-    color:#64748b;
+            color: #64748b;
 
-    font-weight:900;
-}
+            font-weight: 900;
+        }
 
-.evo-period strong{
-    font-size:17px;
+        .evo-period strong {
+            font-size: 17px;
 
-    line-height:18px;
-}
+            line-height: 18px;
+        }
 
-.evo-arrow{
-    font-size:13px;
+        .evo-arrow {
+            font-size: 13px;
 
-    color:#cbd5e1;
-}
+            color: #cbd5e1;
+        }
 
-.evo-result{
-    max-width:120px;
+        .evo-result {
+            max-width: 120px;
 
-    color:#64748b;
+            color: #64748b;
 
-    text-align:center;
+            text-align: center;
 
-    font-size:7px;
+            font-size: 7px;
 
-    font-weight:800;
+            font-weight: 800;
 
-    line-height:1.15;
-}
+            line-height: 1.15;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 ANÁLISE AUTOMÁTICA
 ========================================================= */
 
-.auto-analysis{
-    display:grid;
+        .auto-analysis {
+            display: grid;
 
-    grid-template-columns:
-        1.25fr
-        1fr
-        1fr;
+            grid-template-columns:
+                1.25fr 1fr 1fr;
 
-    gap:6px;
+            gap: 6px;
 
-    padding:0 6px 6px;
-}
+            padding: 0 6px 6px;
+        }
 
-.analysis-card{
-    min-height:61px;
+        .analysis-card {
+            min-height: 61px;
 
-    border-radius:6px;
+            border-radius: 6px;
 
-    border:1px solid #dfe6f0;
+            border: 1px solid #dfe6f0;
 
-    padding:6px 8px;
+            padding: 6px 8px;
 
-    display:flex;
+            display: flex;
 
-    flex-direction:column;
+            flex-direction: column;
 
-    justify-content:center;
-}
+            justify-content: center;
+        }
 
-.analysis-status{
-    background:#f5f8fc;
-}
+        .analysis-status {
+            background: #f5f8fc;
+        }
 
-.analysis-positive{
-    background:#f0faf3;
+        .analysis-positive {
+            background: #f0faf3;
 
-    border-color:#ccebd4;
-}
+            border-color: #ccebd4;
+        }
 
-.analysis-attention{
-    background:#fff7ed;
+        .analysis-attention {
+            background: #fff7ed;
 
-    border-color:#fed7aa;
-}
+            border-color: #fed7aa;
+        }
 
-.analysis-label{
-    font-size:7px;
+        .analysis-label {
+            font-size: 7px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    color:#64748b;
+            color: #64748b;
 
-    text-transform:uppercase;
+            text-transform: uppercase;
 
-    margin-bottom:2px;
-}
+            margin-bottom: 2px;
+        }
 
-.analysis-title{
-    font-size:12px;
+        .analysis-title {
+            font-size: 12px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    color:var(--blue);
+            color: var(--blue);
 
-    line-height:1.1;
+            line-height: 1.1;
 
-    margin-bottom:3px;
-}
+            margin-bottom: 3px;
+        }
 
-.analysis-positive .analysis-title{
-    color:#16883a;
-}
+        .analysis-positive .analysis-title {
+            color: #16883a;
+        }
 
-.analysis-attention .analysis-title{
-    color:#d95700;
-}
+        .analysis-attention .analysis-title {
+            color: #d95700;
+        }
 
-.analysis-text{
-    font-size:8px;
+        .analysis-text {
+            font-size: 8px;
 
-    line-height:1.25;
+            line-height: 1.25;
 
-    font-weight:700;
+            font-weight: 700;
 
-    color:#475569;
-}
+            color: #475569;
+        }
 
-.status-pill{
-    display:inline-flex;
+        .status-pill {
+            display: inline-flex;
 
-    align-items:center;
+            align-items: center;
 
-    justify-content:center;
+            justify-content: center;
 
-    width:max-content;
+            width: max-content;
 
-    border-radius:20px;
+            border-radius: 20px;
 
-    padding:3px 9px;
+            padding: 3px 9px;
 
-    margin-bottom:4px;
+            margin-bottom: 4px;
 
-    font-size:9px;
+            font-size: 9px;
 
-    font-weight:900;
-}
+            font-weight: 900;
+        }
 
-.status-good{
-    background:#dcfce7;
-    color:#166534;
-}
+        .status-good {
+            background: #dcfce7;
+            color: #166534;
+        }
 
-.status-bad{
-    background:#fee2e2;
-    color:#b91c1c;
-}
+        .status-bad {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
 
-.status-mixed{
-    background:#fef3c7;
-    color:#92400e;
-}
+        .status-mixed {
+            background: #fef3c7;
+            color: #92400e;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 DETALHAMENTO MENSAL
 ========================================================= */
 
-.detail-wrapper{
-    width:100%;
-    overflow:hidden;
-}
+        .detail-wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
 
-.detail-table{
-    width:100%;
+        .detail-table {
+            width: 100%;
 
-    border-collapse:collapse;
+            border-collapse: collapse;
 
-    table-layout:fixed;
-}
+            table-layout: fixed;
+        }
 
-.detail-table th{
-    background:#f5f7fb;
+        .detail-table th {
+            background: #f5f7fb;
 
-    color:var(--blue);
+            color: var(--blue);
 
-    border-right:1px solid #dce3ec;
+            border-right: 1px solid #dce3ec;
 
-    border-bottom:1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
 
-    padding:3px 2px;
+            padding: 3px 2px;
 
-    text-align:center;
+            text-align: center;
 
-    font-size:7.5px;
+            font-size: 7.5px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    line-height:1.05;
+            line-height: 1.05;
 
-    height:20px;
-}
+            height: 20px;
+        }
 
-.detail-table th:first-child{
-    width:120px;
+        .detail-table th:first-child {
+            width: 120px;
 
-    text-align:left;
+            text-align: left;
 
-    padding-left:5px;
-}
+            padding-left: 5px;
+        }
 
-.detail-table td{
-    border-right:1px solid #e1e7ef;
+        .detail-table td {
+            border-right: 1px solid #e1e7ef;
 
-    border-bottom:1px solid #e5eaf1;
+            border-bottom: 1px solid #e5eaf1;
 
-    padding:3px 2px;
+            padding: 3px 2px;
 
-    text-align:center;
+            text-align: center;
 
-    font-size:8px;
+            font-size: 8px;
 
-    font-weight:700;
+            font-weight: 700;
 
-    height:22px;
+            height: 22px;
 
-    line-height:1.05;
-}
+            line-height: 1.05;
+        }
 
-.detail-table td:first-child{
-    text-align:left;
+        .detail-table td:first-child {
+            text-align: left;
 
-    padding-left:5px;
-}
+            padding-left: 5px;
+        }
 
-.range-title{
-    font-size:8px;
+        .range-title {
+            font-size: 8px;
 
-    font-weight:900;
-}
+            font-weight: 900;
+        }
 
-.range-sub{
-    display:block;
+        .range-sub {
+            display: block;
 
-    font-size:6.5px;
+            font-size: 6.5px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    margin-top:2px;
-}
+            margin-top: 2px;
+        }
 
-.dot{
-    width:8px;
+        .dot {
+            width: 8px;
 
-    height:8px;
+            height: 8px;
 
-    display:inline-block;
+            display: inline-block;
 
-    margin-right:4px;
+            margin-right: 4px;
 
-    border-radius:50%;
-}
+            border-radius: 50%;
+        }
 
-.total-row{
-    background:#f4f7fb;
+        .total-row {
+            background: #f4f7fb;
 
-    color:var(--blue);
+            color: var(--blue);
 
-    font-weight:900;
-}
+            font-weight: 900;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 ACESSO AO SITE
 ========================================================= */
 
-.access-wrapper{
-    padding:4px 6px 5px;
-}
+        .access-wrapper {
+            padding: 4px 6px 5px;
+        }
 
-.access-table{
-    width:100%;
+        .access-table {
+            width: 100%;
 
-    border-collapse:collapse;
+            border-collapse: collapse;
 
-    table-layout:fixed;
-}
+            table-layout: fixed;
+        }
 
-.access-table col:nth-child(1){
-    width:40%;
-}
+        .access-table col:nth-child(1) {
+            width: 40%;
+        }
 
-.access-table col:nth-child(2){
-    width:20%;
-}
+        .access-table col:nth-child(2) {
+            width: 20%;
+        }
 
-.access-table col:nth-child(3){
-    width:17%;
-}
+        .access-table col:nth-child(3) {
+            width: 17%;
+        }
 
-.access-table col:nth-child(4){
-    width:23%;
-}
+        .access-table col:nth-child(4) {
+            width: 23%;
+        }
 
-.access-table th{
-    color:var(--blue);
+        .access-table th {
+            color: var(--blue);
 
-    border-bottom:1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
 
-    padding:4px 2px;
+            padding: 4px 2px;
 
-    font-size:7px;
+            font-size: 7px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    text-align:center;
+            text-align: center;
 
-    height:26px;
-}
+            height: 26px;
+        }
 
-.access-table td{
-    border-bottom:1px solid #e5eaf1;
+        .access-table td {
+            border-bottom: 1px solid #e5eaf1;
 
-    padding:4px 3px;
+            padding: 4px 3px;
 
-    text-align:center;
+            text-align: center;
 
-    font-size:8.5px;
+            font-size: 8.5px;
 
-    font-weight:800;
+            font-weight: 800;
 
-    height:31px;
-}
+            height: 31px;
+        }
 
-.access-table td:first-child{
-    text-align:left;
-}
+        .access-table td:first-child {
+            text-align: left;
+        }
 
-.access-name{
-    font-size:8px;
+        .access-name {
+            font-size: 8px;
 
-    font-weight:900;
-}
+            font-weight: 900;
+        }
 
-.access-sub{
-    display:block;
+        .access-sub {
+            display: block;
 
-    font-size:6.5px;
+            font-size: 6.5px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    margin-top:1px;
-}
+            margin-top: 1px;
+        }
 
-.access-number{
-    font-size:12px;
+        .access-number {
+            font-size: 12px;
 
-    font-weight:900;
-}
+            font-weight: 900;
+        }
 
-.progress{
-    margin-top:3px;
+        .progress {
+            margin-top: 3px;
 
-    width:100%;
+            width: 100%;
 
-    height:5px;
+            height: 5px;
 
-    background:#dfe5ed;
+            background: #dfe5ed;
 
-    border-radius:5px;
+            border-radius: 5px;
 
-    overflow:hidden;
-}
+            overflow: hidden;
+        }
 
-.progress span{
-    height:100%;
+        .progress span {
+            height: 100%;
 
-    display:block;
+            display: block;
 
-    border-radius:5px;
-}
+            border-radius: 5px;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 MOTORISTAS > 5
 ========================================================= */
 
-.critical-panel{
-    margin-top:7px;
+        .critical-panel {
+            margin-top: 7px;
 
-    border:1px solid var(--border);
+            border: 1px solid var(--border);
 
-    border-radius:6px;
+            border-radius: 6px;
 
-    overflow:hidden;
-}
+            overflow: hidden;
+        }
 
-.critical-title{
-    min-height:25px;
+        .critical-title {
+            min-height: 25px;
 
-    background:var(--blue);
+            background: var(--blue);
 
-    color:white;
+            color: white;
 
-    display:flex;
+            display: flex;
 
-    align-items:center;
+            align-items: center;
 
-    justify-content:center;
+            justify-content: center;
 
-    font-size:10px;
+            font-size: 10px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    text-transform:uppercase;
-}
+            text-transform: uppercase;
+        }
 
-.critical-table{
-    width:100%;
+        .critical-table {
+            width: 100%;
 
-    border-collapse:collapse;
+            border-collapse: collapse;
 
-    table-layout:fixed;
-}
+            table-layout: fixed;
+        }
 
-.critical-table th{
-    height:21px;
+        .critical-table th {
+            height: 21px;
 
-    background:#f5f7fb;
+            background: #f5f7fb;
 
-    color:var(--blue);
+            color: var(--blue);
 
-    border-right:1px solid #dce3ec;
+            border-right: 1px solid #dce3ec;
 
-    border-bottom:1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
 
-    font-size:7px;
+            font-size: 7px;
 
-    font-weight:900;
+            font-weight: 900;
 
-    padding:2px;
+            padding: 2px;
 
-    text-align:center;
-}
+            text-align: center;
+        }
 
-.critical-table td{
-    height:17px;
+        .critical-table td {
+            height: 17px;
 
-    border-right:1px solid #e1e7ef;
+            border-right: 1px solid #e1e7ef;
 
-    border-bottom:1px solid #e5eaf1;
+            border-bottom: 1px solid #e5eaf1;
 
-    padding:2px 4px;
+            padding: 2px 4px;
 
-    text-align:center;
+            text-align: center;
 
-    font-size:7.2px;
+            font-size: 7.2px;
 
-    font-weight:700;
+            font-weight: 700;
 
-    line-height:1.05;
-}
+            line-height: 1.05;
+        }
 
-.critical-table td:first-child{
-    color:var(--blue);
+        .critical-table td:first-child {
+            color: var(--blue);
 
-    font-weight:900;
+            font-weight: 900;
 
-    text-align:left;
-}
+            text-align: left;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 CORES EPK
 ========================================================= */
 
-.epk-green{
-    background:#e8f5e9;
-}
+        .epk-green {
+            background: #e8f5e9;
+        }
 
-.epk-yellow{
-    background:#fffde7;
-}
+        .epk-yellow {
+            background: #fffde7;
+        }
 
-.epk-orange{
-    background:#fff3e0;
-}
+        .epk-orange {
+            background: #fff3e0;
+        }
 
-.epk-red{
-    background:#ffebee;
-}
+        .epk-red {
+            background: #ffebee;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 GARAGEM
 ========================================================= */
 
-.gar-vitorino{
-    background:#d62828;
+        .gar-vitorino {
+            background: #d62828;
 
-    color:white;
-}
+            color: white;
+        }
 
-.gar-sf{
-    background:#259647;
+        .gar-sf {
+            background: #259647;
 
-    color:white;
-}
+            color: white;
+        }
 
-.gar-band{
-    background:#00a8bd;
+        .gar-band {
+            background: #00a8bd;
 
-    color:white;
-}
+            color: white;
+        }
 
-.gar-fret{
-    background:#009688;
+        .gar-fret {
+            background: #009688;
 
-    color:white;
-}
+            color: white;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 RODAPÉ
 ========================================================= */
 
-.footer{
-    margin-top:4px;
+        .footer {
+            margin-top: 4px;
 
-    text-align:right;
+            text-align: right;
 
-    font-size:6.5px;
+            font-size: 6.5px;
 
-    color:#64748b;
+            color: #64748b;
 
-    font-weight:600;
-}
+            font-weight: 600;
+        }
 
 
-/* =========================================================
+        /* =========================================================
 RESPONSIVO
 ========================================================= */
 
-@media(max-width:1000px){
+        @media(max-width:1000px) {
 
-    .main-grid{
-        grid-template-columns:1fr;
-    }
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
 
-    .summary-grid{
-        grid-template-columns:repeat(4,1fr);
-    }
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
 
-}
-
-</style>
+        }
+    </style>
 
 </head>
 
 <body>
 
-<div class="dashboard">
+    <div class="dashboard">
 
 
-<!-- =========================================================
+        <!-- =========================================================
 HEADER
 ========================================================= -->
 
-<header class="header">
+        <header class="header">
 
-<div class="header-left">
+            <div class="header-left">
 
-<h1>
-DESEMPENHO DOS MOTORISTAS – EVENTOS POR KM (EPK)
-</h1>
+                <h1>
+                    DESEMPENHO DOS MOTORISTAS – EVENTOS POR KM (EPK)
+                </h1>
 
-<p>
-Análise de distribuição do EPK por motoristas
-</p>
+                <p>
+                    Análise de distribuição do EPK por motoristas
+                </p>
 
-</div>
-
-
-<div class="header-right">
-
-<div class="meta-box">
-
-<i class="fa-solid fa-bullseye"></i>
-
-<div class="meta-info">
-
-<small>
-NOSSA META
-</small>
-
-<strong id="top-meta"></strong>
-
-<span>
-eventos por km
-</span>
-
-</div>
-
-</div>
+            </div>
 
 
-<div class="insight">
+            <div class="header-right">
 
-<strong>
-INSIGHT PRINCIPAL
-</strong>
+                <div class="meta-box">
 
-Quanto menor o EPK, melhor.
+                    <i class="fa-solid fa-bullseye"></i>
 
-<br>
+                    <div class="meta-info">
 
-Motoristas abaixo da meta são mais eficientes,
-seguros e econômicos.
+                        <small>
+                            NOSSA META
+                        </small>
 
-</div>
+                        <strong id="top-meta"></strong>
 
-</div>
+                        <span>
+                            eventos por km
+                        </span>
 
-</header>
+                    </div>
+
+                </div>
 
 
-<!-- =========================================================
+                <div class="insight">
+
+                    <strong>
+                        INSIGHT PRINCIPAL
+                    </strong>
+
+                    Quanto menor o EPK, melhor.
+
+                    <br>
+
+                    Motoristas abaixo da meta são mais eficientes,
+                    seguros e econômicos.
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================================================
 RESUMO
 ========================================================= -->
 
-<section class="summary">
+        <section class="summary">
 
-<div class="summary-title">
+            <div class="summary-title">
 
-RESUMO DE PERFORMANCE
-(<span id="res-mes"></span>)
+                RESUMO DE PERFORMANCE
+                (<span id="res-mes"></span>)
 
-</div>
-
-
-<div class="summary-grid">
+            </div>
 
 
-<div class="summary-card">
-
-<span class="label">
-MÉDIA EPK
-</span>
-
-<span
-class="value green"
-id="res-media">
-</span>
-
-</div>
+            <div class="summary-grid">
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-PIOR EPK
-</span>
+                    <span class="label">
+                        MÉDIA EPK
+                    </span>
 
-<span
-class="value red"
-id="res-pior">
-</span>
+                    <span class="value green" id="res-media">
+                    </span>
 
-</div>
+                </div>
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-MEDIANA
-</span>
+                    <span class="label">
+                        PIOR EPK
+                    </span>
 
-<span
-class="value blue"
-id="res-mediana">
-</span>
+                    <span class="value red" id="res-pior">
+                    </span>
 
-</div>
+                </div>
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-DENTRO DA META
-<br>
-0 - 1,00
-</span>
+                    <span class="label">
+                        MEDIANA
+                    </span>
 
-<span
-class="value green"
-id="res-d-pct">
-</span>
+                    <span class="value blue" id="res-mediana">
+                    </span>
 
-<span
-class="sub green"
-id="res-d-qtd">
-</span>
-
-</div>
+                </div>
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-PRÓXIMOS
-<br>
-1,00 - 2,50
-</span>
+                    <span class="label">
+                        DENTRO DA META
+                        <br>
+                        0 - 1,00
+                    </span>
 
-<span
-class="value yellow"
-id="res-p-pct">
-</span>
+                    <span class="value green" id="res-d-pct">
+                    </span>
 
-<span
-class="sub yellow"
-id="res-p-qtd">
-</span>
+                    <span class="sub green" id="res-d-qtd">
+                    </span>
 
-</div>
+                </div>
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-MEDIANOS
-<br>
-2,50 - 5,00
-</span>
+                    <span class="label">
+                        PRÓXIMOS
+                        <br>
+                        1,00 - 2,50
+                    </span>
 
-<span
-class="value orange"
-id="res-med-pct">
-</span>
+                    <span class="value yellow" id="res-p-pct">
+                    </span>
 
-<span
-class="sub orange"
-id="res-med-qtd">
-</span>
+                    <span class="sub yellow" id="res-p-qtd">
+                    </span>
 
-</div>
+                </div>
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-CRÍTICOS
-<br>
-5,00 - 8,00
-</span>
+                    <span class="label">
+                        MEDIANOS
+                        <br>
+                        2,50 - 5,00
+                    </span>
 
-<span
-class="value red"
-id="res-c-pct">
-</span>
+                    <span class="value orange" id="res-med-pct">
+                    </span>
 
-<span
-class="sub red"
-id="res-c-qtd">
-</span>
+                    <span class="sub orange" id="res-med-qtd">
+                    </span>
 
-</div>
+                </div>
 
 
-<div class="summary-card">
+                <div class="summary-card">
 
-<span class="label">
-MUITO CRÍTICOS
-<br>
-&gt; 8,00
-</span>
+                    <span class="label">
+                        CRÍTICOS
+                        <br>
+                        5,00 - 8,00
+                    </span>
 
-<span
-class="value red"
-id="res-m-pct">
-</span>
+                    <span class="value red" id="res-c-pct">
+                    </span>
 
-<span
-class="sub red"
-id="res-m-qtd">
-</span>
+                    <span class="sub red" id="res-c-qtd">
+                    </span>
 
-</div>
+                </div>
 
 
-</div>
+                <div class="summary-card">
 
-</section>
+                    <span class="label">
+                        MUITO CRÍTICOS
+                        <br>
+                        &gt; 8,00
+                    </span>
+
+                    <span class="value red" id="res-m-pct">
+                    </span>
+
+                    <span class="sub red" id="res-m-qtd">
+                    </span>
+
+                </div>
 
 
-<!-- =========================================================
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
 TABELA + ACESSO
 ========================================================= -->
 
-<div class="main-grid">
+        <div class="main-grid">
 
 
-<!-- =====================================================
+            <!-- =====================================================
 DETALHAMENTO
 ===================================================== -->
 
-<section class="panel">
+            <section class="panel">
 
-<div class="section-title">
+                <div class="section-title">
 
-DETALHAMENTO MENSAL –
-QUANTIDADE E PERCENTUAL POR FAIXA DE EPK
+                    DETALHAMENTO MENSAL –
+                    QUANTIDADE E PERCENTUAL POR FAIXA DE EPK
 
-</div>
+                </div>
 
 
-<!-- =====================================================
+                <!-- =====================================================
 EVOLUÇÃO MÊS ANTERIOR X ATUAL
 ===================================================== -->
 
-<div class="evolution">
+                <div class="evolution">
 
 
-<div class="evolution-box">
+                    <div class="evolution-box">
 
-<div class="evo-name">
+                        <div class="evo-name">
 
-DENTRO DA META
-<br>
-(0 - 1,00)
+                            DENTRO DA META
+                            <br>
+                            (0 - 1,00)
 
-</div>
+                        </div>
 
-<i
-id="evo-d-icon"
-class="fa-solid fa-arrow-trend-up evo-icon">
-</i>
+                        <i id="evo-d-icon" class="fa-solid fa-arrow-trend-up evo-icon">
+                        </i>
 
 
-<div class="evo-period">
+                        <div class="evo-period">
 
-<small id="evo-d-m1"></small>
+                            <small id="evo-d-m1"></small>
 
-<strong
-class="green"
-id="evo-d-v1">
-</strong>
+                            <strong class="green" id="evo-d-v1">
+                            </strong>
 
-</div>
+                        </div>
 
 
-<div class="evo-arrow">
+                        <div class="evo-arrow">
 
-➜
+                            ➜
 
-</div>
-
-
-<div class="evo-period">
-
-<small id="evo-d-m2"></small>
-
-<strong
-class="green"
-id="evo-d-v2">
-</strong>
-
-</div>
+                        </div>
 
 
-<div
-class="evo-result"
-id="evo-d-result">
-</div>
+                        <div class="evo-period">
 
-</div>
+                            <small id="evo-d-m2"></small>
 
+                            <strong class="green" id="evo-d-v2">
+                            </strong>
 
-<div class="evolution-box">
-
-<div class="evo-name">
-
-CRÍTICOS + MUITO CRÍTICOS
-<br>
-(&gt; 5,00)
-
-</div>
-
-<i
-id="evo-c-icon"
-class="fa-solid fa-arrow-trend-down evo-icon">
-</i>
+                        </div>
 
 
-<div class="evo-period">
+                        <div class="evo-result" id="evo-d-result">
+                        </div>
 
-<small id="evo-c-m1"></small>
-
-<strong
-class="red"
-id="evo-c-v1">
-</strong>
-
-</div>
+                    </div>
 
 
-<div class="evo-arrow">
+                    <div class="evolution-box">
 
-➜
+                        <div class="evo-name">
 
-</div>
+                            CRÍTICOS + MUITO CRÍTICOS
+                            <br>
+                            (&gt; 5,00)
 
+                        </div>
 
-<div class="evo-period">
-
-<small id="evo-c-m2"></small>
-
-<strong
-class="red"
-id="evo-c-v2">
-</strong>
-
-</div>
+                        <i id="evo-c-icon" class="fa-solid fa-arrow-trend-down evo-icon">
+                        </i>
 
 
-<div
-class="evo-result"
-id="evo-c-result">
-</div>
+                        <div class="evo-period">
 
-</div>
+                            <small id="evo-c-m1"></small>
+
+                            <strong class="red" id="evo-c-v1">
+                            </strong>
+
+                        </div>
 
 
-</div>
+                        <div class="evo-arrow">
+
+                            ➜
+
+                        </div>
 
 
-<!-- =====================================================
+                        <div class="evo-period">
+
+                            <small id="evo-c-m2"></small>
+
+                            <strong class="red" id="evo-c-v2">
+                            </strong>
+
+                        </div>
+
+
+                        <div class="evo-result" id="evo-c-result">
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =====================================================
 ANÁLISE AUTOMÁTICA
 ===================================================== -->
 
-<div class="auto-analysis">
+                <div class="auto-analysis">
 
 
-<div class="analysis-card analysis-status">
+                    <div class="analysis-card analysis-status">
 
-<span class="analysis-label">
+                        <span class="analysis-label">
 
-LEITURA AUTOMÁTICA DO MÊS
+                            LEITURA AUTOMÁTICA DO MÊS
 
-</span>
+                        </span>
 
-<div
-id="analysis-status-pill"
-class="status-pill">
-</div>
+                        <div id="analysis-status-pill" class="status-pill">
+                        </div>
 
-<div
-class="analysis-text"
-id="analysis-summary">
-</div>
+                        <div class="analysis-text" id="analysis-summary">
+                        </div>
 
-</div>
+                    </div>
 
 
-<div class="analysis-card analysis-positive">
+                    <div class="analysis-card analysis-positive">
 
-<span class="analysis-label">
+                        <span class="analysis-label">
 
-PRINCIPAL AVANÇO
+                            PRINCIPAL AVANÇO
 
-</span>
+                        </span>
 
-<div
-class="analysis-title"
-id="analysis-positive-title">
-</div>
+                        <div class="analysis-title" id="analysis-positive-title">
+                        </div>
 
-<div
-class="analysis-text"
-id="analysis-positive-text">
-</div>
+                        <div class="analysis-text" id="analysis-positive-text">
+                        </div>
 
-</div>
+                    </div>
 
 
-<div class="analysis-card analysis-attention">
+                    <div class="analysis-card analysis-attention">
 
-<span class="analysis-label">
+                        <span class="analysis-label">
 
-PONTO DE ATENÇÃO
+                            PONTO DE ATENÇÃO
 
-</span>
+                        </span>
 
-<div
-class="analysis-title"
-id="analysis-attention-title">
-</div>
+                        <div class="analysis-title" id="analysis-attention-title">
+                        </div>
 
-<div
-class="analysis-text"
-id="analysis-attention-text">
-</div>
+                        <div class="analysis-text" id="analysis-attention-text">
+                        </div>
 
-</div>
+                    </div>
 
 
-</div>
+                </div>
 
 
-<!-- =====================================================
+                <!-- =====================================================
 TABELA
 ===================================================== -->
 
-<div class="detail-wrapper">
+                <div class="detail-wrapper">
 
-<table
-class="detail-table"
-id="detail-table">
-</table>
+                    <table class="detail-table" id="detail-table">
+                    </table>
 
-</div>
+                </div>
 
 
-</section>
+            </section>
 
 
-<!-- =====================================================
+            <!-- =====================================================
 ACESSO AO SITE
 ===================================================== -->
 
-<section class="panel">
+            <section class="panel">
 
-<div class="section-title">
+                <div class="section-title">
 
-ACESSO AO SITE POR FAIXA DE EPK
-(<span id="access-month"></span>)
+                    ACESSO AO SITE POR FAIXA DE EPK
+                    (<span id="access-month"></span>)
 
-</div>
-
-
-<div class="access-wrapper">
-
-<table class="access-table">
-
-<colgroup>
-<col>
-<col>
-<col>
-<col>
-</colgroup>
+                </div>
 
 
-<thead>
+                <div class="access-wrapper">
 
-<tr>
+                    <table class="access-table">
 
-<th>
-FAIXA DE EPK
-</th>
-
-<th>
-MOTORISTAS QUE
-<br>
-ACESSARAM
-</th>
-
-<th>
-MOTORISTAS
-<br>
-TOTAIS
-</th>
-
-<th>
-% DE MOTORISTAS
-<br>
-QUE ACESSARAM
-</th>
-
-</tr>
-
-</thead>
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
 
 
-<tbody id="access-body">
-</tbody>
+                        <thead>
 
-</table>
+                            <tr>
 
-</div>
+                                <th>
+                                    FAIXA DE EPK
+                                </th>
 
-</section>
+                                <th>
+                                    MOTORISTAS QUE
+                                    <br>
+                                    ACESSARAM
+                                </th>
+
+                                <th>
+                                    MOTORISTAS
+                                    <br>
+                                    TOTAIS
+                                </th>
+
+                                <th>
+                                    % DE MOTORISTAS
+                                    <br>
+                                    QUE ACESSARAM
+                                </th>
+
+                            </tr>
+
+                        </thead>
 
 
-</div>
+                        <tbody id="access-body">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
 
 
-<!-- =========================================================
+        </div>
+
+
+        <!-- =========================================================
 MOTORISTAS > 5
 ========================================================= -->
 
-<section class="critical-panel">
+        <section class="critical-panel">
 
-<div class="critical-title">
+            <div class="critical-title">
 
-MOTORISTAS ACIMA DE 5 DE EPK EM
-&nbsp;
-<span id="critical-month"></span>
+                MOTORISTAS ACIMA DE 5 DE EPK EM
+                &nbsp;
+                <span id="critical-month"></span>
 
-</div>
+            </div>
 
 
-<table class="critical-table">
+            <table class="critical-table">
 
-<colgroup>
+                <colgroup>
 
-<col style="width:21%">
+                    <col style="width:21%">
 
-<col style="width:7%">
+                    <col style="width:7%">
 
-<col style="width:6%">
+                    <col style="width:6%">
 
-<col style="width:6%">
+                    <col style="width:6%">
 
-<col style="width:11%">
+                    <col style="width:11%">
 
-<col style="width:11%">
+                    <col style="width:11%">
 
-<col style="width:9%">
+                    <col style="width:9%">
 
-<col style="width:11%">
+                    <col style="width:11%">
 
-<col style="width:18%">
+                    <col style="width:18%">
 
-</colgroup>
+                </colgroup>
 
 
-<thead>
+                <thead>
 
-<tr>
+                    <tr>
 
-<th style="text-align:left;">
-COLABORADOR
-</th>
+                        <th style="text-align:left;">
+                            COLABORADOR
+                        </th>
 
-<th>
-KM RODADO
-</th>
+                        <th>
+                            KM RODADO
+                        </th>
 
-<th id="header-epk-anterior">
-EPK ANTERIOR
-</th>
+                        <th id="header-epk-anterior">
+                            EPK ANTERIOR
+                        </th>
 
-<th id="header-epk-atual">
-EPK ATUAL
-</th>
+                        <th id="header-epk-atual">
+                            EPK ATUAL
+                        </th>
 
-<th>
-ACOMPANHAMENTO
-<br>
-INSTRUTOR
-</th>
+                        <th>
+                            ACOMPANHAMENTO
+                            <br>
+                            INSTRUTOR
+                        </th>
 
-<th>
-ACOMPANHAMENTO
-<br>
-ESCOLINHA
-</th>
+                        <th>
+                            ACOMPANHAMENTO
+                            <br>
+                            ESCOLINHA
+                        </th>
 
-<th>
-TRATATIVA
-<br>
-SUPERVISOR
-</th>
+                        <th>
+                            TRATATIVA
+                            <br>
+                            SUPERVISOR
+                        </th>
 
-<th>
-GARAGEM
-</th>
+                        <th>
+                            GARAGEM
+                        </th>
 
-<th>
-AÇÃO
-</th>
+                        <th>
+                            AÇÃO
+                        </th>
 
-</tr>
+                    </tr>
 
-</thead>
+                </thead>
 
 
-<tbody id="critical-body">
-</tbody>
+                <tbody id="critical-body">
+                </tbody>
 
-</table>
+            </table>
 
-</section>
+        </section>
 
 
-<div class="footer">
+        <div class="footer">
 
-A análise executiva é calculada automaticamente
-comparando o mês atual com o mês imediatamente anterior.
+            A análise executiva é calculada automaticamente
+            comparando o mês atual com o mês imediatamente anterior.
 
-</div>
+        </div>
 
 
-</div>
+    </div>
 
 
-<script>
+    <script>
 
-/* =========================================================
-DADOS
-========================================================= */
+        /* =========================================================
+        DADOS
+        ========================================================= */
 
-const dados={
+        const dados = {
 
-meta:"1,00",
+            meta: "1,00",
 
-resumo:{
+            resumo: {
 
-mes:"AGO/26",
+                mes: "AGO/26",
 
-media_epk:"1,16",
-
-pior_epk:"14,56",
-
-mediana_epk:"0,78"
-
-},
-
-
-meses:[
-
-{mes:"JAN/26", ate_060:10, de_060_080:3, de_080_100:6, proximos:48, medianos:117, criticos:151, muito_criticos:129},
-{mes:"FEV/26",ate_060:5,de_060_080:1,de_080_100:3,proximos:69,medianos:294,criticos:392,muito_criticos:284},
-{mes:"MAR/26",ate_060:19,de_060_080:15,de_080_100:19,proximos:219,medianos:413,criticos:315,muito_criticos:131},
-{mes:"ABR/26",ate_060:206,de_060_080:77,de_080_100:66,proximos:315,medianos:309,criticos:128,muito_criticos:29},
-{mes:"MAI/26",ate_060:335,de_060_080:116,de_080_100:76,proximos:354,medianos:197,criticos:65,muito_criticos:13},
-{mes:"JUN/26",ate_060:439,de_060_080:112,de_080_100:109,proximos:345,medianos:147,criticos:44,muito_criticos:7},
-{mes:"JUL/26",ate_060:554,de_060_080:123,de_080_100:116,proximos:321,medianos:117,criticos:19,muito_criticos:3},
-{mes:"AGO/26",ate_060:443,de_060_080:127,de_080_100:109,proximos:299,medianos:112,criticos:19,muito_criticos:1}
-],
-
-
-acesso_site:{
-
-mes:"AGO/26", ate_060:416, de_060_080:111, de_080_100:92, proximos:242, medianos:81, criticos:10, muito_criticos:0
-
-},
-
-
-tabela_criticos:{
-
-mes_referencia:"AGO/26",
-
-motoristas:[
-
-{
-colaborador:"CARLOS TOLEDO NETO - 286522",
-km_rodado:"1564,84",
-epk_anterior:"0,70",
-epk_atual:"14,55",
-acompanhamento_instrutor:"1",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"0",
-garagem:"VITORINO",
-acao:"CONVERSA COM O FRANKLIN"
-},
-
-{
-colaborador:"SEBASTIAO ALICIDIO CECILIO NETO - 286217",
-km_rodado:"1842,88",
-epk_anterior:"2,13",
-epk_atual:"7,91",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"4",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"VALMIR DA SILVA - 282074",
-km_rodado:"1846,37",
-epk_anterior:"5,96",
-epk_atual:"7,38",
-acompanhamento_instrutor:"4",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"4",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"DIEGO MORAIS CHAVES - 772793",
-km_rodado:"971,70",
-epk_anterior:"8,69",
-epk_atual:"7,32",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"2",
-tratativa_supervisor:"1",
-garagem:"BANDEIRANTES",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"JOSIAS DOS SANTOS BARBOSA - 771219",
-km_rodado:"355,49",
-epk_anterior:"5,93",
-epk_atual:"7,05",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"3",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"LEANDRO RAMOS DE SOUZA - 282294",
-km_rodado:"2097,29",
-epk_anterior:"7,22",
-epk_atual:"6,81",
-acompanhamento_instrutor:"2",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"1",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O EUSTÁQUIO"
-},
-
-{
-colaborador:"EVERALDO JOSE PIRES - 771429",
-km_rodado:"506,30",
-epk_anterior:"2,65",
-epk_atual:"6,69",
-acompanhamento_instrutor:"1",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"1",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O EUSTÁQUIO"
-},
-
-{
-colaborador:"MARCIO LUIS ANTONIO DE AMORIM - 286006",
-km_rodado:"1851,32",
-epk_anterior:"6,00",
-epk_atual:"6,59",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"4",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"FERNANDO FIORAVANTE VIDAL PEREIRA - 3661",
-km_rodado:"1660,25",
-epk_anterior:"6,95",
-epk_atual:"6,35",
-acompanhamento_instrutor:"4",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"4",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"JAIRO NOGUEIRA - 5029",
-km_rodado:"1948,77",
-epk_anterior:"4,70",
-epk_atual:"5,86",
-acompanhamento_instrutor:"0",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"0",
-garagem:"FRETAMENTO",
-acao:"CONVERSA COM O MACANHA"
-},
-
-{
-colaborador:"GLAUBERT PEREIRA DA SILVA - 4178",
-km_rodado:"1243,67",
-epk_anterior:"5,20",
-epk_atual:"5,79",
-acompanhamento_instrutor:"2",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"3",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"JOSE MARIA DA SILVA - 284009",
-km_rodado:"300,57",
-epk_anterior:"4,36",
-epk_atual:"5,72",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"2",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"SEBASTIAO CARLOS DA SILVA - 772267",
-km_rodado:"2428,53",
-epk_anterior:"5,29",
-epk_atual:"5,64",
-acompanhamento_instrutor:"4",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"3",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"LUIZ CARLOS FRANCO DE ASSIS - 2846",
-km_rodado:"2098,02",
-epk_anterior:"4,99",
-epk_atual:"5,59",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"4",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"LEANDRO GOMES DA SILVA - 4837",
-km_rodado:"1560,52",
-epk_anterior:"5,41",
-epk_atual:"5,51",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"3",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"JEFFERSON SANTIAGO DA SILVA PIRES - 4857",
-km_rodado:"1701,68",
-epk_anterior:"1,86",
-epk_atual:"5,50",
-acompanhamento_instrutor:"1",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"0",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O EUSTÁQUIO"
-},
-
-{
-colaborador:"CELIO BARBOSA ARAUJO - 4607",
-km_rodado:"1771,7",
-epk_anterior:"6,34",
-epk_atual:"5,30",
-acompanhamento_instrutor:"2",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"3",
-garagem:"SÃO FRANCISCO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"LUIZ FLAVIO SANTOS DOS REIS - 285472",
-km_rodado:"1583,74",
-epk_anterior:"4,34",
-epk_atual:"5,15",
-acompanhamento_instrutor:"3",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"2",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"JOAO BATISTA ALVES - 4588",
-km_rodado:"1339,79",
-epk_anterior:"3,33",
-epk_atual:"5,15",
-acompanhamento_instrutor:"4",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"3",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"RENATO MARCELO BRAZ - 286242",
-km_rodado:"1661,37",
-epk_anterior:"4,21",
-epk_atual:"5,10",
-acompanhamento_instrutor:"5",
-acompanhamento_escolinha:"1",
-tratativa_supervisor:"3",
-garagem:"VITORINO",
-acao:"CONVERSA COM O RAIMUNDO"
-},
-
-{
-colaborador:"HIAGO CELESTINO DE JESUS - 772767",
-km_rodado:"1864,49",
-epk_anterior:"1,85",
-epk_atual:"5,08",
-acompanhamento_instrutor:"2",
-acompanhamento_escolinha:"0",
-tratativa_supervisor:"1",
-garagem:"VITORINO",
-acao:"CONVERSA COM O FRANKLIN"
-}
-
-]
-
-}
-
-};
-
-
-/* =========================================================
-CORES
-========================================================= */
-
-const cores={
-
-ate060:"#006837",
-
-ate080:"#00a878",
-
-ate100:"#0077b6",
-
-proximos:"#f2b701",
-
-medianos:"#f77f00",
-
-criticos:"#e63946",
-
-muito:"#6a040f"
-
-};
-
-
-/* =========================================================
-FUNÇÕES AUXILIARES
-========================================================= */
-
-const percentual=
-(valor,total)=>
-
-total>0
-
-?
-
-valor/total*100
-
-:
-
-0;
-
-
-const formatarPercentual=
-valor=>
-
-Number(valor)
-.toFixed(1)
-.replace(".",",")
-
-+
-
-"%";
-
-
-function formatarPP(valor){
-
-const absoluto=
-Math.abs(valor);
-
-const casas=
-absoluto<0.1
-?
-2
-:
-1;
-
-return absoluto
-.toFixed(casas)
-.replace(".",",")
-+
-" p.p.";
-
-}
-
-
-function tituloMes(mes){
-
-const nomes={
-
-JAN:"JANEIRO",
-FEV:"FEVEREIRO",
-MAR:"MARÇO",
-ABR:"ABRIL",
-MAI:"MAIO",
-JUN:"JUNHO",
-JUL:"JULHO",
-AGO:"AGOSTO",
-SET:"SETEMBRO",
-OUT:"OUTUBRO",
-NOV:"NOVEMBRO",
-DEZ:"DEZEMBRO"
-
-};
-
-
-const [m,a]=
-mes
-.toUpperCase()
-.split("/");
-
-
-return `${
-
-nomes[m]
-||
-m
-
-}/${
-
-a.length===2
-?
-"20"+a
-:
-a
-
-}`;
-
-}
-
-
-/* =========================================================
-RENDER
-========================================================= */
-
-function render(){
-
-const meses=
-dados.meses;
-
-
-/* =====================================================
-TOTAL DE MOTORISTAS
-===================================================== */
-
-const total=
-meses.map(
-x=>
-
-x.ate_060
-+
-x.de_060_080
-+
-x.de_080_100
-+
-x.proximos
-+
-x.medianos
-+
-x.criticos
-+
-x.muito_criticos
-
-);
-
-
-/* =====================================================
-PERCENTUAIS
-===================================================== */
-
-const p060=
-meses.map(
-(x,i)=>
-
-percentual(
-x.ate_060,
-total[i]
-)
-
-);
-
-
-const p080=
-meses.map(
-(x,i)=>
-
-percentual(
-x.de_060_080,
-total[i]
-)
-
-);
-
-
-const p100=
-meses.map(
-(x,i)=>
-
-percentual(
-x.de_080_100,
-total[i]
-)
-
-);
-
-
-const pProx=
-meses.map(
-(x,i)=>
-
-percentual(
-x.proximos,
-total[i]
-)
-
-);
-
-
-const pMed=
-meses.map(
-(x,i)=>
-
-percentual(
-x.medianos,
-total[i]
-)
+                media_epk: "1,16",
+
+                pior_epk: "14,56",
+
+                mediana_epk: "0,78"
+
+            },
+
+
+            meses: [
+
+                { mes: "JAN/26", ate_060: 10, de_060_080: 3, de_080_100: 6, proximos: 48, medianos: 117, criticos: 151, muito_criticos: 129 },
+                { mes: "FEV/26", ate_060: 5, de_060_080: 1, de_080_100: 3, proximos: 69, medianos: 294, criticos: 392, muito_criticos: 284 },
+                { mes: "MAR/26", ate_060: 19, de_060_080: 15, de_080_100: 19, proximos: 219, medianos: 413, criticos: 315, muito_criticos: 131 },
+                { mes: "ABR/26", ate_060: 206, de_060_080: 77, de_080_100: 66, proximos: 315, medianos: 309, criticos: 128, muito_criticos: 29 },
+                { mes: "MAI/26", ate_060: 335, de_060_080: 116, de_080_100: 76, proximos: 354, medianos: 197, criticos: 65, muito_criticos: 13 },
+                { mes: "JUN/26", ate_060: 439, de_060_080: 112, de_080_100: 109, proximos: 345, medianos: 147, criticos: 44, muito_criticos: 7 },
+                { mes: "JUL/26", ate_060: 554, de_060_080: 123, de_080_100: 116, proximos: 321, medianos: 117, criticos: 19, muito_criticos: 3 },
+                { mes: "AGO/26", ate_060: 477, de_060_080: 128, de_080_100: 114, proximos: 303, medianos: 118, criticos: 18, muito_criticos: 1 }
+            ],
+
+
+            acesso_site: {
+
+                mes: "AGO/26", ate_060: 433, de_060_080: 112, de_080_100: 99, proximos: 238, medianos: 82, criticos: 8, muito_criticos: 0
+
+            },
+
+
+            tabela_criticos: {
+
+                mes_referencia: "AGO/26",
+
+                motoristas: [
+
+                    {
+                        colaborador: "CARLOS TOLEDO NETO - 286522",
+                        km_rodado: "1564,84",
+                        epk_anterior: "0,70",
+                        epk_atual: "13,23",
+                        acompanhamento_instrutor: "1",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "0",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O FRANKLIN"
+                    },
+
+                    {
+                        colaborador: "SEBASTIAO ALICIDIO CECILIO NETO - 286217",
+                        km_rodado: "1842,88",
+                        epk_anterior: "2,13",
+                        epk_atual: "7,32",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "4",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "VALMIR DA SILVA - 282074",
+                        km_rodado: "1846,37",
+                        epk_anterior: "5,96",
+                        epk_atual: "7,46",
+                        acompanhamento_instrutor: "4",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "4",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "DIEGO MORAIS CHAVES - 772793",
+                        km_rodado: "971,70",
+                        epk_anterior: "8,69",
+                        epk_atual: "7,32",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "2",
+                        tratativa_supervisor: "1",
+                        garagem: "BANDEIRANTES",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "JOSIAS DOS SANTOS BARBOSA - 771219",
+                        km_rodado: "355,49",
+                        epk_anterior: "5,93",
+                        epk_atual: "7,03",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "3",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "LEANDRO RAMOS DE SOUZA - 282294",
+                        km_rodado: "2097,29",
+                        epk_anterior: "7,12",
+                        epk_atual: "6,81",
+                        acompanhamento_instrutor: "2",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "1",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O EUSTÁQUIO"
+                    },
+
+                    {
+                        colaborador: "MARCIO LUIS ANTONIO DE AMORIM - 286006",
+                        km_rodado: "1851,32",
+                        epk_anterior: "6,00",
+                        epk_atual: "6,36",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "4",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "FERNANDO FIORAVANTE VIDAL PEREIRA - 3661",
+                        km_rodado: "1660,25",
+                        epk_anterior: "6,95",
+                        epk_atual: "6,2",
+                        acompanhamento_instrutor: "4",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "4",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "JAIRO NOGUEIRA - 5029",
+                        km_rodado: "1948,77",
+                        epk_anterior: "4,70",
+                        epk_atual: "5,86",
+                        acompanhamento_instrutor: "0",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "0",
+                        garagem: "FRETAMENTO",
+                        acao: "CONVERSA COM O MACANHA"
+                    },
+
+                    {
+                        colaborador: "GLAUBERT PEREIRA DA SILVA - 4178",
+                        km_rodado: "1243,67",
+                        epk_anterior: "5,20",
+                        epk_atual: "5,76",
+                        acompanhamento_instrutor: "2",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "3",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "JOSE MARIA DA SILVA - 284009",
+                        km_rodado: "300,57",
+                        epk_anterior: "4,36",
+                        epk_atual: "5,72",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "2",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "SEBASTIAO CARLOS DA SILVA - 772267",
+                        km_rodado: "2428,53",
+                        epk_anterior: "5,29",
+                        epk_atual: "5,4",
+                        acompanhamento_instrutor: "4",
+                        acompanhamento_escolinha: "1",
+                        tratativa_supervisor: "3",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "LUIZ CARLOS FRANCO DE ASSIS - 2846",
+                        km_rodado: "2098,02",
+                        epk_anterior: "4,99",
+                        epk_atual: "5,34",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "4",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "LEANDRO GOMES DA SILVA - 4837",
+                        km_rodado: "1560,52",
+                        epk_anterior: "5,41",
+                        epk_atual: "5,07",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "3",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "JEFFERSON SANTIAGO DA SILVA PIRES - 4857",
+                        km_rodado: "1701,68",
+                        epk_anterior: "1,86",
+                        epk_atual: "5,71",
+                        acompanhamento_instrutor: "1",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "0",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O EUSTÁQUIO"
+                    },
+
+                    {
+                        colaborador: "CELIO BARBOSA ARAUJO - 4607",
+                        km_rodado: "1771,7",
+                        epk_anterior: "6,34",
+                        epk_atual: "5,06",
+                        acompanhamento_instrutor: "2",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "3",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    },
+
+                    {
+                        colaborador: "LUIZ FLAVIO SANTOS DOS REIS - 285472",
+                        km_rodado: "1583,74",
+                        epk_anterior: "4,34",
+                        epk_atual: "5,15",
+                        acompanhamento_instrutor: "3",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "2",
+                        garagem: "VITORINO",
+                        acao: "CONVERSA COM O RAIMUNDO"
+                    }, 
+
+                    {
+                        colaborador: "RICHARLOM DA CUNHA VICENTE - 284614",
+                        km_rodado: "72,145",
+                        epk_anterior: "SEM DADOS",
+                        epk_atual: "7,76",
+                        acompanhamento_instrutor: "0",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "0",
+                        garagem: "SÃO FRANCISCO",
+                        acao: "ACOMPANHAMENTO COM O INSTRUTOR"
+                    },
+                    {
+                        colaborador: "EDSON FRANCISCO DE SOUZA - 280359",
+                        km_rodado: "322,275",
+                        epk_anterior: "SEM DADOS",
+                        epk_atual: "6,36",
+                        acompanhamento_instrutor: "0",
+                        acompanhamento_escolinha: "0",
+                        tratativa_supervisor: "0",
+                        garagem: "BANDEIRANTES",
+                        acao: "ACOMPANHAMENTO COM O INSTRUTOR"
+                    }
+
+                ]
+
+            }
+
+        };
+
+
+        /* =========================================================
+        CORES
+        ========================================================= */
+
+        const cores = {
+
+            ate060: "#006837",
+
+            ate080: "#00a878",
+
+            ate100: "#0077b6",
+
+            proximos: "#f2b701",
+
+            medianos: "#f77f00",
+
+            criticos: "#e63946",
+
+            muito: "#6a040f"
+
+        };
+
+
+        /* =========================================================
+        FUNÇÕES AUXILIARES
+        ========================================================= */
+
+        const percentual =
+            (valor, total) =>
+
+                total > 0
+
+                    ?
+
+                    valor / total * 100
+
+                    :
+
+                    0;
+
+
+        const formatarPercentual =
+            valor =>
+
+                Number(valor)
+                    .toFixed(1)
+                    .replace(".", ",")
+
+                +
+
+                "%";
+
+
+        function formatarPP(valor) {
+
+            const absoluto =
+                Math.abs(valor);
+
+            const casas =
+                absoluto < 0.1
+                    ?
+                    2
+                    :
+                    1;
+
+            return absoluto
+                .toFixed(casas)
+                .replace(".", ",")
+                +
+                " p.p.";
+
+        }
+
+
+        function tituloMes(mes) {
+
+            const nomes = {
+
+                JAN: "JANEIRO",
+                FEV: "FEVEREIRO",
+                MAR: "MARÇO",
+                ABR: "ABRIL",
+                MAI: "MAIO",
+                JUN: "JUNHO",
+                JUL: "JULHO",
+                AGO: "AGOSTO",
+                SET: "SETEMBRO",
+                OUT: "OUTUBRO",
+                NOV: "NOVEMBRO",
+                DEZ: "DEZEMBRO"
+
+            };
+
+
+            const [m, a] =
+                mes
+                    .toUpperCase()
+                    .split("/");
+
+
+            return `${nomes[m]
+                ||
+                m
+
+                }/${a.length === 2
+                    ?
+                    "20" + a
+                    :
+                    a
+
+                }`;
+
+        }
+
+
+        /* =========================================================
+        RENDER
+        ========================================================= */
+
+        function render() {
+
+            const meses =
+                dados.meses;
+
+
+            /* =====================================================
+            TOTAL DE MOTORISTAS
+            ===================================================== */
+
+            const total =
+                meses.map(
+                    x =>
+
+                        x.ate_060
+                        +
+                        x.de_060_080
+                        +
+                        x.de_080_100
+                        +
+                        x.proximos
+                        +
+                        x.medianos
+                        +
+                        x.criticos
+                        +
+                        x.muito_criticos
+
+                );
+
+
+            /* =====================================================
+            PERCENTUAIS
+            ===================================================== */
+
+            const p060 =
+                meses.map(
+                    (x, i) =>
+
+                        percentual(
+                            x.ate_060,
+                            total[i]
+                        )
+
+                );
+
+
+            const p080 =
+                meses.map(
+                    (x, i) =>
+
+                        percentual(
+                            x.de_060_080,
+                            total[i]
+                        )
+
+                );
+
+
+            const p100 =
+                meses.map(
+                    (x, i) =>
+
+                        percentual(
+                            x.de_080_100,
+                            total[i]
+                        )
+
+                );
 
-);
-
-
-const pCrit=
-meses.map(
-(x,i)=>
 
-percentual(
-x.criticos,
-total[i]
-)
+            const pProx =
+                meses.map(
+                    (x, i) =>
 
-);
+                        percentual(
+                            x.proximos,
+                            total[i]
+                        )
 
+                );
 
-const pMuito=
-meses.map(
-(x,i)=>
 
-percentual(
-x.muito_criticos,
-total[i]
-)
+            const pMed =
+                meses.map(
+                    (x, i) =>
 
-);
+                        percentual(
+                            x.medianos,
+                            total[i]
+                        )
 
+                );
 
-const pDentro=
-meses.map(
-(x,i)=>
 
-percentual(
+            const pCrit =
+                meses.map(
+                    (x, i) =>
 
-x.ate_060
-+
-x.de_060_080
-+
-x.de_080_100,
+                        percentual(
+                            x.criticos,
+                            total[i]
+                        )
 
-total[i]
+                );
 
-)
 
-);
+            const pMuito =
+                meses.map(
+                    (x, i) =>
 
+                        percentual(
+                            x.muito_criticos,
+                            total[i]
+                        )
 
-/* =====================================================
-MÊS ATUAL E MÊS ANTERIOR
-===================================================== */
+                );
 
-let indiceAtual=
-meses.findIndex(
-x=>
-x.mes===
-dados.resumo.mes
-);
 
+            const pDentro =
+                meses.map(
+                    (x, i) =>
 
-if(indiceAtual===-1){
+                        percentual(
 
-indiceAtual=
-meses.length-1;
+                            x.ate_060
+                            +
+                            x.de_060_080
+                            +
+                            x.de_080_100,
 
-}
+                            total[i]
 
+                        )
 
-const indiceAnterior=
-Math.max(
-0,
-indiceAtual-1
-);
+                );
 
 
-const mesAtual=
-meses[indiceAtual];
+            /* =====================================================
+            MÊS ATUAL E MÊS ANTERIOR
+            ===================================================== */
 
+            let indiceAtual =
+                meses.findIndex(
+                    x =>
+                        x.mes ===
+                        dados.resumo.mes
+                );
 
-const mesAnterior=
-meses[indiceAnterior];
 
+            if (indiceAtual === -1) {
 
-/* =====================================================
-RESUMO
-===================================================== */
+                indiceAtual =
+                    meses.length - 1;
 
-document
-.getElementById("top-meta")
-.textContent=
-dados.meta;
+            }
 
 
-document
-.getElementById("res-mes")
-.textContent=
-tituloMes(
-mesAtual.mes
-);
+            const indiceAnterior =
+                Math.max(
+                    0,
+                    indiceAtual - 1
+                );
 
 
-document
-.getElementById("res-media")
-.textContent=
-dados.resumo.media_epk;
+            const mesAtual =
+                meses[indiceAtual];
 
 
-document
-.getElementById("res-pior")
-.textContent=
-dados.resumo.pior_epk;
+            const mesAnterior =
+                meses[indiceAnterior];
 
 
-document
-.getElementById("res-mediana")
-.textContent=
-dados.resumo.mediana_epk;
+            /* =====================================================
+            RESUMO
+            ===================================================== */
 
+            document
+                .getElementById("top-meta")
+                .textContent =
+                dados.meta;
 
-document
-.getElementById("res-d-pct")
-.textContent=
-formatarPercentual(
-pDentro[indiceAtual]
-);
 
+            document
+                .getElementById("res-mes")
+                .textContent =
+                tituloMes(
+                    mesAtual.mes
+                );
 
-document
-.getElementById("res-d-qtd")
-.textContent=
 
-(
-mesAtual.ate_060
-+
-mesAtual.de_060_080
-+
-mesAtual.de_080_100
-)
+            document
+                .getElementById("res-media")
+                .textContent =
+                dados.resumo.media_epk;
 
-+
-" motoristas";
 
+            document
+                .getElementById("res-pior")
+                .textContent =
+                dados.resumo.pior_epk;
 
-document
-.getElementById("res-p-pct")
-.textContent=
-formatarPercentual(
-pProx[indiceAtual]
-);
 
+            document
+                .getElementById("res-mediana")
+                .textContent =
+                dados.resumo.mediana_epk;
 
-document
-.getElementById("res-p-qtd")
-.textContent=
 
-mesAtual.proximos
+            document
+                .getElementById("res-d-pct")
+                .textContent =
+                formatarPercentual(
+                    pDentro[indiceAtual]
+                );
 
-+
-" motoristas";
 
+            document
+                .getElementById("res-d-qtd")
+                .textContent =
 
-document
-.getElementById("res-med-pct")
-.textContent=
-formatarPercentual(
-pMed[indiceAtual]
-);
+                (
+                    mesAtual.ate_060
+                    +
+                    mesAtual.de_060_080
+                    +
+                    mesAtual.de_080_100
+                )
 
+                +
+                " motoristas";
 
-document
-.getElementById("res-med-qtd")
-.textContent=
 
-mesAtual.medianos
+            document
+                .getElementById("res-p-pct")
+                .textContent =
+                formatarPercentual(
+                    pProx[indiceAtual]
+                );
 
-+
-" motoristas";
 
+            document
+                .getElementById("res-p-qtd")
+                .textContent =
 
-document
-.getElementById("res-c-pct")
-.textContent=
-formatarPercentual(
-pCrit[indiceAtual]
-);
+                mesAtual.proximos
 
+                +
+                " motoristas";
 
-document
-.getElementById("res-c-qtd")
-.textContent=
 
-mesAtual.criticos
+            document
+                .getElementById("res-med-pct")
+                .textContent =
+                formatarPercentual(
+                    pMed[indiceAtual]
+                );
 
-+
-" motoristas";
 
+            document
+                .getElementById("res-med-qtd")
+                .textContent =
 
-document
-.getElementById("res-m-pct")
-.textContent=
-formatarPercentual(
-pMuito[indiceAtual]
-);
+                mesAtual.medianos
 
+                +
+                " motoristas";
 
-document
-.getElementById("res-m-qtd")
-.textContent=
 
-mesAtual.muito_criticos
+            document
+                .getElementById("res-c-pct")
+                .textContent =
+                formatarPercentual(
+                    pCrit[indiceAtual]
+                );
 
-+
-" motoristas";
 
+            document
+                .getElementById("res-c-qtd")
+                .textContent =
 
-/* =====================================================
-EVOLUÇÃO MÊS ANTERIOR X ATUAL
-===================================================== */
+                mesAtual.criticos
 
-const diferencaDentro=
+                +
+                " motoristas";
 
-pDentro[indiceAtual]
 
--
+            document
+                .getElementById("res-m-pct")
+                .textContent =
+                formatarPercentual(
+                    pMuito[indiceAtual]
+                );
 
-pDentro[indiceAnterior];
 
+            document
+                .getElementById("res-m-qtd")
+                .textContent =
 
-const criticosAnterior=
+                mesAtual.muito_criticos
 
-pCrit[indiceAnterior]
+                +
+                " motoristas";
 
-+
 
-pMuito[indiceAnterior];
+            /* =====================================================
+            EVOLUÇÃO MÊS ANTERIOR X ATUAL
+            ===================================================== */
 
+            const diferencaDentro =
 
-const criticosAtual=
+                pDentro[indiceAtual]
 
-pCrit[indiceAtual]
+                -
 
-+
+                pDentro[indiceAnterior];
 
-pMuito[indiceAtual];
 
+            const criticosAnterior =
 
-const diferencaCriticos=
+                pCrit[indiceAnterior]
 
-criticosAtual
+                +
 
--
+                pMuito[indiceAnterior];
 
-criticosAnterior;
 
+            const criticosAtual =
 
-document
-.getElementById("evo-d-m1")
-.textContent=
-mesAnterior.mes;
+                pCrit[indiceAtual]
 
+                +
 
-document
-.getElementById("evo-d-v1")
-.textContent=
-formatarPercentual(
-pDentro[indiceAnterior]
-);
+                pMuito[indiceAtual];
 
 
-document
-.getElementById("evo-d-m2")
-.textContent=
-mesAtual.mes;
+            const diferencaCriticos =
 
+                criticosAtual
 
-document
-.getElementById("evo-d-v2")
-.textContent=
-formatarPercentual(
-pDentro[indiceAtual]
-);
+                -
 
+                criticosAnterior;
 
-document
-.getElementById("evo-d-result")
-.textContent=
 
-diferencaDentro>0
+            document
+                .getElementById("evo-d-m1")
+                .textContent =
+                mesAnterior.mes;
 
-?
 
-"Aumento de "+formatarPP(diferencaDentro)
+            document
+                .getElementById("evo-d-v1")
+                .textContent =
+                formatarPercentual(
+                    pDentro[indiceAnterior]
+                );
 
-:
 
-diferencaDentro<0
+            document
+                .getElementById("evo-d-m2")
+                .textContent =
+                mesAtual.mes;
 
-?
 
-"Redução de "+formatarPP(diferencaDentro)
+            document
+                .getElementById("evo-d-v2")
+                .textContent =
+                formatarPercentual(
+                    pDentro[indiceAtual]
+                );
 
-:
 
-"Sem alteração";
+            document
+                .getElementById("evo-d-result")
+                .textContent =
 
+                diferencaDentro > 0
 
-document
-.getElementById("evo-d-icon")
-.className=
+                    ?
 
-diferencaDentro>=0
+                    "Aumento de " + formatarPP(diferencaDentro)
 
-?
+                    :
 
-"fa-solid fa-arrow-trend-up evo-icon green"
+                    diferencaDentro < 0
 
-:
+                        ?
 
-"fa-solid fa-arrow-trend-down evo-icon red";
+                        "Redução de " + formatarPP(diferencaDentro)
 
+                        :
 
-document
-.getElementById("evo-c-m1")
-.textContent=
-mesAnterior.mes;
+                        "Sem alteração";
 
 
-document
-.getElementById("evo-c-v1")
-.textContent=
-formatarPercentual(
-criticosAnterior
-);
+            document
+                .getElementById("evo-d-icon")
+                .className =
 
+                diferencaDentro >= 0
 
-document
-.getElementById("evo-c-m2")
-.textContent=
-mesAtual.mes;
+                    ?
 
+                    "fa-solid fa-arrow-trend-up evo-icon green"
 
-document
-.getElementById("evo-c-v2")
-.textContent=
-formatarPercentual(
-criticosAtual
-);
+                    :
 
+                    "fa-solid fa-arrow-trend-down evo-icon red";
 
-document
-.getElementById("evo-c-result")
-.textContent=
 
-diferencaCriticos<0
+            document
+                .getElementById("evo-c-m1")
+                .textContent =
+                mesAnterior.mes;
 
-?
 
-"Redução de "+formatarPP(diferencaCriticos)
+            document
+                .getElementById("evo-c-v1")
+                .textContent =
+                formatarPercentual(
+                    criticosAnterior
+                );
 
-:
 
-diferencaCriticos>0
+            document
+                .getElementById("evo-c-m2")
+                .textContent =
+                mesAtual.mes;
 
-?
 
-"Aumento de "+formatarPP(diferencaCriticos)
+            document
+                .getElementById("evo-c-v2")
+                .textContent =
+                formatarPercentual(
+                    criticosAtual
+                );
 
-:
 
-"Sem alteração";
+            document
+                .getElementById("evo-c-result")
+                .textContent =
 
+                diferencaCriticos < 0
 
-document
-.getElementById("evo-c-icon")
-.className=
+                    ?
 
-diferencaCriticos<=0
+                    "Redução de " + formatarPP(diferencaCriticos)
 
-?
+                    :
 
-"fa-solid fa-arrow-trend-down evo-icon green"
+                    diferencaCriticos > 0
 
-:
+                        ?
 
-"fa-solid fa-arrow-trend-up evo-icon red";
+                        "Aumento de " + formatarPP(diferencaCriticos)
 
+                        :
 
-/* =====================================================
-ANÁLISE AUTOMÁTICA
+                        "Sem alteração";
 
-REGRA:
 
-DENTRO DA META:
-AUMENTAR = BOM
+            document
+                .getElementById("evo-c-icon")
+                .className =
 
-TODAS AS DEMAIS FAIXAS:
-REDUZIR = BOM
-===================================================== */
+                diferencaCriticos <= 0
 
-const gruposAnalise=[
+                    ?
 
-{
-nome:"Dentro da meta",
-anterior:pDentro[indiceAnterior],
-atual:pDentro[indiceAtual],
-direcao:1
-},
+                    "fa-solid fa-arrow-trend-down evo-icon green"
 
-{
-nome:"Próximos (1,00 a 2,50)",
-anterior:pProx[indiceAnterior],
-atual:pProx[indiceAtual],
-direcao:-1
-},
+                    :
 
-{
-nome:"Medianos (2,50 a 5,00)",
-anterior:pMed[indiceAnterior],
-atual:pMed[indiceAtual],
-direcao:-1
-},
+                    "fa-solid fa-arrow-trend-up evo-icon red";
 
-{
-nome:"Críticos (5,00 a 8,00)",
-anterior:pCrit[indiceAnterior],
-atual:pCrit[indiceAtual],
-direcao:-1
-},
 
-{
-nome:"Muito críticos (> 8,00)",
-anterior:pMuito[indiceAnterior],
-atual:pMuito[indiceAtual],
-direcao:-1
-}
+            /* =====================================================
+            ANÁLISE AUTOMÁTICA
+            
+            REGRA:
+            
+            DENTRO DA META:
+            AUMENTAR = BOM
+            
+            TODAS AS DEMAIS FAIXAS:
+            REDUZIR = BOM
+            ===================================================== */
 
-];
+            const gruposAnalise = [
 
+                {
+                    nome: "Dentro da meta",
+                    anterior: pDentro[indiceAnterior],
+                    atual: pDentro[indiceAtual],
+                    direcao: 1
+                },
 
-gruposAnalise.forEach(
-grupo=>{
+                {
+                    nome: "Próximos (1,00 a 2,50)",
+                    anterior: pProx[indiceAnterior],
+                    atual: pProx[indiceAtual],
+                    direcao: -1
+                },
 
-grupo.delta=
+                {
+                    nome: "Medianos (2,50 a 5,00)",
+                    anterior: pMed[indiceAnterior],
+                    atual: pMed[indiceAtual],
+                    direcao: -1
+                },
 
-grupo.atual
+                {
+                    nome: "Críticos (5,00 a 8,00)",
+                    anterior: pCrit[indiceAnterior],
+                    atual: pCrit[indiceAtual],
+                    direcao: -1
+                },
 
--
+                {
+                    nome: "Muito críticos (> 8,00)",
+                    anterior: pMuito[indiceAnterior],
+                    atual: pMuito[indiceAtual],
+                    direcao: -1
+                }
 
-grupo.anterior;
+            ];
 
 
-grupo.score=
+            gruposAnalise.forEach(
+                grupo => {
 
-grupo.delta
+                    grupo.delta =
 
-*
+                        grupo.atual
 
-grupo.direcao;
+                        -
 
-}
-);
+                        grupo.anterior;
 
 
-/* =====================================================
-STATUS GERAL
-===================================================== */
+                    grupo.score =
 
-const scoreGeral=
+                        grupo.delta
 
-diferencaDentro
+                        *
 
--
+                        grupo.direcao;
 
-diferencaCriticos;
+                }
+            );
 
 
-let status="";
+            /* =====================================================
+            STATUS GERAL
+            ===================================================== */
 
-let statusClasse="";
+            const scoreGeral =
 
-let statusTexto="";
+                diferencaDentro
 
+                -
 
-if(scoreGeral>0.30){
+                diferencaCriticos;
 
-status=
-"MELHOROU";
 
-statusClasse=
-"status-good";
+            let status = "";
 
-statusTexto=
+            let statusClasse = "";
 
-`Na comparação entre ${mesAnterior.mes} e ${mesAtual.mes}, o cenário geral apresentou evolução. `
+            let statusTexto = "";
 
-+
 
-`A participação dentro da meta ${
-diferencaDentro>=0
-?
-"aumentou"
-:
-"reduziu"
-} ${formatarPP(diferencaDentro)} e a participação acima de 5 EPK ${
-diferencaCriticos<=0
-?
-"reduziu"
-:
-"aumentou"
-} ${formatarPP(diferencaCriticos)}.`;
+            if (scoreGeral > 0.30) {
 
-}
+                status =
+                    "MELHOROU";
 
-else if(scoreGeral<-0.30){
+                statusClasse =
+                    "status-good";
 
-status=
-"PIOROU NO MÊS";
+                statusTexto =
 
-statusClasse=
-"status-bad";
+                    `Na comparação entre ${mesAnterior.mes} e ${mesAtual.mes}, o cenário geral apresentou evolução. `
 
-statusTexto=
+                    +
 
-`Na comparação entre ${mesAnterior.mes} e ${mesAtual.mes}, houve piora no cenário mensal. `
+                    `A participação dentro da meta ${diferencaDentro >= 0
+                        ?
+                        "aumentou"
+                        :
+                        "reduziu"
+                    } ${formatarPP(diferencaDentro)} e a participação acima de 5 EPK ${diferencaCriticos <= 0
+                        ?
+                        "reduziu"
+                        :
+                        "aumentou"
+                    } ${formatarPP(diferencaCriticos)}.`;
 
-+
+            }
 
-`A participação dentro da meta ${
-diferencaDentro>=0
-?
-"aumentou"
-:
-"reduziu"
-} ${formatarPP(diferencaDentro)} e os motoristas acima de 5 EPK ${
-diferencaCriticos<=0
-?
-"reduziram"
-:
-"aumentaram"
-} ${formatarPP(diferencaCriticos)}.`;
+            else if (scoreGeral < -0.30) {
 
-}
+                status =
+                    "PIOROU NO MÊS";
 
-else{
+                statusClasse =
+                    "status-bad";
 
-status=
-"CENÁRIO MISTO";
+                statusTexto =
 
-statusClasse=
-"status-mixed";
+                    `Na comparação entre ${mesAnterior.mes} e ${mesAtual.mes}, houve piora no cenário mensal. `
 
-statusTexto=
+                    +
 
-`Entre ${mesAnterior.mes} e ${mesAtual.mes}, os indicadores apresentaram movimentos diferentes. `
+                    `A participação dentro da meta ${diferencaDentro >= 0
+                        ?
+                        "aumentou"
+                        :
+                        "reduziu"
+                    } ${formatarPP(diferencaDentro)} e os motoristas acima de 5 EPK ${diferencaCriticos <= 0
+                        ?
+                        "reduziram"
+                        :
+                        "aumentaram"
+                    } ${formatarPP(diferencaCriticos)}.`;
 
-+
+            }
 
-`Dentro da meta variou ${formatarPP(diferencaDentro)} e os motoristas acima de 5 EPK variaram ${formatarPP(diferencaCriticos)}.`;
+            else {
 
-}
+                status =
+                    "CENÁRIO MISTO";
 
+                statusClasse =
+                    "status-mixed";
 
-const statusPill=
-document
-.getElementById(
-"analysis-status-pill"
-);
+                statusTexto =
 
+                    `Entre ${mesAnterior.mes} e ${mesAtual.mes}, os indicadores apresentaram movimentos diferentes. `
 
-statusPill.textContent=
-status;
+                    +
 
+                    `Dentro da meta variou ${formatarPP(diferencaDentro)} e os motoristas acima de 5 EPK variaram ${formatarPP(diferencaCriticos)}.`;
 
-statusPill.className=
+            }
 
-"status-pill "
 
-+
+            const statusPill =
+                document
+                    .getElementById(
+                        "analysis-status-pill"
+                    );
 
-statusClasse;
 
+            statusPill.textContent =
+                status;
 
-document
-.getElementById(
-"analysis-summary"
-)
-.textContent=
-statusTexto;
 
+            statusPill.className =
 
-/* =====================================================
-PRINCIPAL AVANÇO
-===================================================== */
+                "status-pill "
 
-const ordenados=
+                +
 
-[...gruposAnalise]
-.sort(
-(a,b)=>
-b.score-a.score
-);
+                statusClasse;
 
 
-const melhor=
-ordenados[0];
+            document
+                .getElementById(
+                    "analysis-summary"
+                )
+                .textContent =
+                statusTexto;
 
 
-document
-.getElementById(
-"analysis-positive-title"
-)
-.textContent=
+            /* =====================================================
+            PRINCIPAL AVANÇO
+            ===================================================== */
 
-melhor.score>0
+            const ordenados =
 
-?
+                [...gruposAnalise]
+                    .sort(
+                        (a, b) =>
+                            b.score - a.score
+                    );
 
-melhor.nome
 
-:
+            const melhor =
+                ordenados[0];
 
-"Sem avanço relevante";
 
+            document
+                .getElementById(
+                    "analysis-positive-title"
+                )
+                .textContent =
 
-if(melhor.score>0){
+                melhor.score > 0
 
-const movimento=
+                    ?
 
-melhor.delta>0
-?
-"aumentou"
-:
-"reduziu";
+                    melhor.nome
 
+                    :
 
-document
-.getElementById(
-"analysis-positive-text"
-)
-.textContent=
+                    "Sem avanço relevante";
 
-`${melhor.nome} ${movimento} de ${formatarPercentual(melhor.anterior)} para ${formatarPercentual(melhor.atual)}, uma variação favorável de ${formatarPP(melhor.delta)}.`;
 
-}
+            if (melhor.score > 0) {
 
-else{
+                const movimento =
 
-document
-.getElementById(
-"analysis-positive-text"
-)
-.textContent=
+                    melhor.delta > 0
+                        ?
+                        "aumentou"
+                        :
+                        "reduziu";
 
-"Nenhuma das principais faixas apresentou avanço relevante na comparação com o mês anterior.";
 
-}
+                document
+                    .getElementById(
+                        "analysis-positive-text"
+                    )
+                    .textContent =
 
+                    `${melhor.nome} ${movimento} de ${formatarPercentual(melhor.anterior)} para ${formatarPercentual(melhor.atual)}, uma variação favorável de ${formatarPP(melhor.delta)}.`;
 
-/* =====================================================
-PRINCIPAL PONTO DE ATENÇÃO
-===================================================== */
+            }
 
-const pior=
+            else {
 
-[...gruposAnalise]
-.sort(
-(a,b)=>
-a.score-b.score
-)[0];
+                document
+                    .getElementById(
+                        "analysis-positive-text"
+                    )
+                    .textContent =
 
+                    "Nenhuma das principais faixas apresentou avanço relevante na comparação com o mês anterior.";
 
-document
-.getElementById(
-"analysis-attention-title"
-)
-.textContent=
+            }
 
-pior.score<0
 
-?
+            /* =====================================================
+            PRINCIPAL PONTO DE ATENÇÃO
+            ===================================================== */
 
-pior.nome
+            const pior =
 
-:
+                [...gruposAnalise]
+                    .sort(
+                        (a, b) =>
+                            a.score - b.score
+                    )[0];
 
-"Sem alerta relevante";
 
+            document
+                .getElementById(
+                    "analysis-attention-title"
+                )
+                .textContent =
 
-if(pior.score<0){
+                pior.score < 0
 
-const movimento=
+                    ?
 
-pior.delta>0
-?
-"aumentou"
-:
-"reduziu";
+                    pior.nome
 
+                    :
 
-document
-.getElementById(
-"analysis-attention-text"
-)
-.textContent=
+                    "Sem alerta relevante";
 
-`${pior.nome} ${movimento} de ${formatarPercentual(pior.anterior)} para ${formatarPercentual(pior.atual)}. Movimento desfavorável de ${formatarPP(pior.delta)} que merece acompanhamento.`;
 
-}
+            if (pior.score < 0) {
 
-else{
+                const movimento =
 
-document
-.getElementById(
-"analysis-attention-text"
-)
-.textContent=
+                    pior.delta > 0
+                        ?
+                        "aumentou"
+                        :
+                        "reduziu";
 
-"As principais faixas evoluíram de forma favorável ou permaneceram estáveis.";
 
-}
+                document
+                    .getElementById(
+                        "analysis-attention-text"
+                    )
+                    .textContent =
 
+                    `${pior.nome} ${movimento} de ${formatarPercentual(pior.anterior)} para ${formatarPercentual(pior.atual)}. Movimento desfavorável de ${formatarPP(pior.delta)} que merece acompanhamento.`;
 
-/* =====================================================
-DETALHAMENTO
-===================================================== */
+            }
 
-const linhas=[
+            else {
 
-{
-faixa:"0 - 0,60",
-nome:"DENTRO DA META",
-cor:cores.ate060,
-qtd:meses.map(x=>x.ate_060),
-pct:p060
-},
+                document
+                    .getElementById(
+                        "analysis-attention-text"
+                    )
+                    .textContent =
 
-{
-faixa:"> 0,60 - 0,80",
-nome:"DENTRO DA META",
-cor:cores.ate080,
-qtd:meses.map(x=>x.de_060_080),
-pct:p080
-},
+                    "As principais faixas evoluíram de forma favorável ou permaneceram estáveis.";
 
-{
-faixa:"> 0,80 - 1,00",
-nome:"DENTRO DA META",
-cor:cores.ate100,
-qtd:meses.map(x=>x.de_080_100),
-pct:p100
-},
+            }
 
-{
-faixa:"> 1,00 - 2,50",
-nome:"PRÓXIMOS",
-cor:cores.proximos,
-qtd:meses.map(x=>x.proximos),
-pct:pProx
-},
 
-{
-faixa:"> 2,50 - 5,00",
-nome:"MEDIANOS",
-cor:cores.medianos,
-qtd:meses.map(x=>x.medianos),
-pct:pMed
-},
+            /* =====================================================
+            DETALHAMENTO
+            ===================================================== */
 
-{
-faixa:"> 5,00 - 8,00",
-nome:"CRÍTICOS",
-cor:cores.criticos,
-qtd:meses.map(x=>x.criticos),
-pct:pCrit
-},
+            const linhas = [
 
-{
-faixa:"> 8,00",
-nome:"MUITO CRÍTICOS",
-cor:cores.muito,
-qtd:meses.map(x=>x.muito_criticos),
-pct:pMuito
-}
+                {
+                    faixa: "0 - 0,60",
+                    nome: "DENTRO DA META",
+                    cor: cores.ate060,
+                    qtd: meses.map(x => x.ate_060),
+                    pct: p060
+                },
 
-];
+                {
+                    faixa: "> 0,60 - 0,80",
+                    nome: "DENTRO DA META",
+                    cor: cores.ate080,
+                    qtd: meses.map(x => x.de_060_080),
+                    pct: p080
+                },
 
+                {
+                    faixa: "> 0,80 - 1,00",
+                    nome: "DENTRO DA META",
+                    cor: cores.ate100,
+                    qtd: meses.map(x => x.de_080_100),
+                    pct: p100
+                },
 
-let primeiraLinha=
+                {
+                    faixa: "> 1,00 - 2,50",
+                    nome: "PRÓXIMOS",
+                    cor: cores.proximos,
+                    qtd: meses.map(x => x.proximos),
+                    pct: pProx
+                },
 
-`
+                {
+                    faixa: "> 2,50 - 5,00",
+                    nome: "MEDIANOS",
+                    cor: cores.medianos,
+                    qtd: meses.map(x => x.medianos),
+                    pct: pMed
+                },
+
+                {
+                    faixa: "> 5,00 - 8,00",
+                    nome: "CRÍTICOS",
+                    cor: cores.criticos,
+                    qtd: meses.map(x => x.criticos),
+                    pct: pCrit
+                },
+
+                {
+                    faixa: "> 8,00",
+                    nome: "MUITO CRÍTICOS",
+                    cor: cores.muito,
+                    qtd: meses.map(x => x.muito_criticos),
+                    pct: pMuito
+                }
+
+            ];
+
+
+            let primeiraLinha =
+
+                `
 <tr>
 
 <th rowspan="2">
@@ -2857,12 +2775,12 @@ FAIXA DE EPK
 `;
 
 
-meses.forEach(
-mes=>{
+            meses.forEach(
+                mes => {
 
-primeiraLinha+=
+                    primeiraLinha +=
 
-`
+                        `
 <th colspan="2">
 
 ${mes.mes}
@@ -2870,24 +2788,24 @@ ${mes.mes}
 </th>
 `;
 
-}
-);
+                }
+            );
 
 
-primeiraLinha+=
-"</tr>";
+            primeiraLinha +=
+                "</tr>";
 
 
-let segundaLinha=
-"<tr>";
+            let segundaLinha =
+                "<tr>";
 
 
-meses.forEach(
-()=>{
+            meses.forEach(
+                () => {
 
-segundaLinha+=
+                    segundaLinha +=
 
-`
+                        `
 <th>
 Qtd.
 </th>
@@ -2897,24 +2815,24 @@ Qtd.
 </th>
 `;
 
-}
-);
+                }
+            );
 
 
-segundaLinha+=
-"</tr>";
+            segundaLinha +=
+                "</tr>";
 
 
-let corpo=
-"";
+            let corpo =
+                "";
 
 
-linhas.forEach(
-linha=>{
+            linhas.forEach(
+                linha => {
 
-corpo+=
+                    corpo +=
 
-`
+                        `
 <tr>
 
 <td>
@@ -2942,12 +2860,12 @@ ${linha.nome}
 `;
 
 
-meses.forEach(
-(_,indice)=>{
+                    meses.forEach(
+                        (_, indice) => {
 
-corpo+=
+                            corpo +=
 
-`
+                                `
 <td>
 
 ${linha.qtd[indice]}
@@ -2957,26 +2875,26 @@ ${linha.qtd[indice]}
 <td>
 
 ${formatarPercentual(
-linha.pct[indice]
-)}
+                                    linha.pct[indice]
+                                )}
 
 </td>
 `;
 
-}
-);
+                        }
+                    );
 
 
-corpo+=
-"</tr>";
+                    corpo +=
+                        "</tr>";
 
-}
-);
+                }
+            );
 
 
-corpo+=
+            corpo +=
 
-`
+                `
 <tr class="total-row">
 
 <td>
@@ -2985,12 +2903,12 @@ TOTAL
 `;
 
 
-total.forEach(
-valor=>{
+            total.forEach(
+                valor => {
 
-corpo+=
+                    corpo +=
 
-`
+                        `
 <td>
 
 ${valor.toLocaleString("pt-BR")}
@@ -3002,21 +2920,21 @@ ${valor.toLocaleString("pt-BR")}
 </td>
 `;
 
-}
-);
+                }
+            );
 
 
-corpo+=
-"</tr>";
+            corpo +=
+                "</tr>";
 
 
-document
-.getElementById(
-"detail-table"
-)
-.innerHTML=
+            document
+                .getElementById(
+                    "detail-table"
+                )
+                .innerHTML =
 
-`
+                `
 <thead>
 
 ${primeiraLinha}
@@ -3033,119 +2951,119 @@ ${corpo}
 `;
 
 
-/* =====================================================
-ACESSO AO SITE
-===================================================== */
+            /* =====================================================
+            ACESSO AO SITE
+            ===================================================== */
 
-const acesso=
-dados.acesso_site;
-
-
-const indiceAcesso=
-meses.findIndex(
-x=>
-x.mes===
-acesso.mes
-);
+            const acesso =
+                dados.acesso_site;
 
 
-document
-.getElementById(
-"access-month"
-)
-.textContent=
-tituloMes(
-acesso.mes
-);
+            const indiceAcesso =
+                meses.findIndex(
+                    x =>
+                        x.mes ===
+                        acesso.mes
+                );
 
 
-const faixasAcesso=[
-
-{
-faixa:"0 - 0,60",
-nome:"Dentro da meta",
-cor:cores.ate060,
-acesso:acesso.ate_060,
-total:meses[indiceAcesso].ate_060
-},
-
-{
-faixa:"> 0,60 - 0,80",
-nome:"Dentro da meta",
-cor:cores.ate080,
-acesso:acesso.de_060_080,
-total:meses[indiceAcesso].de_060_080
-},
-
-{
-faixa:"> 0,80 - 1,00",
-nome:"Dentro da meta",
-cor:cores.ate100,
-acesso:acesso.de_080_100,
-total:meses[indiceAcesso].de_080_100
-},
-
-{
-faixa:"> 1,00 - 2,50",
-nome:"Próximos",
-cor:cores.proximos,
-acesso:acesso.proximos,
-total:meses[indiceAcesso].proximos
-},
-
-{
-faixa:"> 2,50 - 5,00",
-nome:"Medianos",
-cor:cores.medianos,
-acesso:acesso.medianos,
-total:meses[indiceAcesso].medianos
-},
-
-{
-faixa:"> 5,00 - 8,00",
-nome:"Críticos",
-cor:cores.criticos,
-acesso:acesso.criticos,
-total:meses[indiceAcesso].criticos
-},
-
-{
-faixa:"> 8,00",
-nome:"Muito críticos",
-cor:cores.muito,
-acesso:acesso.muito_criticos,
-total:meses[indiceAcesso].muito_criticos
-}
-
-];
+            document
+                .getElementById(
+                    "access-month"
+                )
+                .textContent =
+                tituloMes(
+                    acesso.mes
+                );
 
 
-let acessoHtml=
-"";
+            const faixasAcesso = [
+
+                {
+                    faixa: "0 - 0,60",
+                    nome: "Dentro da meta",
+                    cor: cores.ate060,
+                    acesso: acesso.ate_060,
+                    total: meses[indiceAcesso].ate_060
+                },
+
+                {
+                    faixa: "> 0,60 - 0,80",
+                    nome: "Dentro da meta",
+                    cor: cores.ate080,
+                    acesso: acesso.de_060_080,
+                    total: meses[indiceAcesso].de_060_080
+                },
+
+                {
+                    faixa: "> 0,80 - 1,00",
+                    nome: "Dentro da meta",
+                    cor: cores.ate100,
+                    acesso: acesso.de_080_100,
+                    total: meses[indiceAcesso].de_080_100
+                },
+
+                {
+                    faixa: "> 1,00 - 2,50",
+                    nome: "Próximos",
+                    cor: cores.proximos,
+                    acesso: acesso.proximos,
+                    total: meses[indiceAcesso].proximos
+                },
+
+                {
+                    faixa: "> 2,50 - 5,00",
+                    nome: "Medianos",
+                    cor: cores.medianos,
+                    acesso: acesso.medianos,
+                    total: meses[indiceAcesso].medianos
+                },
+
+                {
+                    faixa: "> 5,00 - 8,00",
+                    nome: "Críticos",
+                    cor: cores.criticos,
+                    acesso: acesso.criticos,
+                    total: meses[indiceAcesso].criticos
+                },
+
+                {
+                    faixa: "> 8,00",
+                    nome: "Muito críticos",
+                    cor: cores.muito,
+                    acesso: acesso.muito_criticos,
+                    total: meses[indiceAcesso].muito_criticos
+                }
+
+            ];
 
 
-let somaAcesso=
-0;
+            let acessoHtml =
+                "";
 
 
-faixasAcesso.forEach(
-item=>{
-
-const p=
-
-percentual(
-item.acesso,
-item.total
-);
+            let somaAcesso =
+                0;
 
 
-somaAcesso+=
-item.acesso;
+            faixasAcesso.forEach(
+                item => {
+
+                    const p =
+
+                        percentual(
+                            item.acesso,
+                            item.total
+                        );
 
 
-acessoHtml+=
+                    somaAcesso +=
+                        item.acesso;
 
-`
+
+                    acessoHtml +=
+
+                        `
 <tr>
 
 <td>
@@ -3203,8 +3121,8 @@ class="access-number"
 style="color:${item.cor}">
 
 ${formatarPercentual(
-p
-)}
+                            p
+                        )}
 
 </span>
 
@@ -3213,7 +3131,7 @@ p
 
 <span
 style="
-width:${Math.min(p,100)}%;
+width:${Math.min(p, 100)}%;
 background:${item.cor};
 ">
 </span>
@@ -3225,25 +3143,25 @@ background:${item.cor};
 </tr>
 `;
 
-}
-);
+                }
+            );
 
 
-const totalMotoristas=
-total[indiceAcesso];
+            const totalMotoristas =
+                total[indiceAcesso];
 
 
-const totalPercentualAcesso=
+            const totalPercentualAcesso =
 
-percentual(
-somaAcesso,
-totalMotoristas
-);
+                percentual(
+                    somaAcesso,
+                    totalMotoristas
+                );
 
 
-acessoHtml+=
+            acessoHtml +=
 
-`
+                `
 <tr class="total-row">
 
 <td>
@@ -3275,8 +3193,8 @@ ${totalMotoristas.toLocaleString("pt-BR")}
 <span class="access-number">
 
 ${formatarPercentual(
-totalPercentualAcesso
-)}
+                    totalPercentualAcesso
+                )}
 
 </span>
 
@@ -3286,141 +3204,141 @@ totalPercentualAcesso
 `;
 
 
-document
-.getElementById(
-"access-body"
-)
-.innerHTML=
-acessoHtml;
+            document
+                .getElementById(
+                    "access-body"
+                )
+                .innerHTML =
+                acessoHtml;
 
 
-/* =====================================================
-CABEÇALHO DOS MESES NA TABELA MOTORISTAS
-===================================================== */
+            /* =====================================================
+            CABEÇALHO DOS MESES NA TABELA MOTORISTAS
+            ===================================================== */
 
-document
-.getElementById(
-"header-epk-anterior"
-)
-.textContent=
+            document
+                .getElementById(
+                    "header-epk-anterior"
+                )
+                .textContent =
 
-"EPK "
+                "EPK "
 
-+
+                +
 
-mesAnterior.mes.split("/")[0];
-
-
-document
-.getElementById(
-"header-epk-atual"
-)
-.textContent=
-
-"EPK "
-
-+
-
-mesAtual.mes.split("/")[0];
+                mesAnterior.mes.split("/")[0];
 
 
-/* =====================================================
-MOTORISTAS
-===================================================== */
+            document
+                .getElementById(
+                    "header-epk-atual"
+                )
+                .textContent =
 
-document
-.getElementById(
-"critical-month"
-)
-.textContent=
-tituloMes(
-dados.tabela_criticos.mes_referencia
-);
+                "EPK "
 
+                +
 
-function classeEpk(valor){
-
-const numero=
-
-parseFloat(
-String(valor)
-.replace(",",".")
-);
+                mesAtual.mes.split("/")[0];
 
 
-if(numero<=1){
+            /* =====================================================
+            MOTORISTAS
+            ===================================================== */
 
-return "epk-green";
-
-}
-
-
-if(numero<=5){
-
-return "epk-yellow";
-
-}
-
-
-if(numero<=8){
-
-return "epk-orange";
-
-}
+            document
+                .getElementById(
+                    "critical-month"
+                )
+                .textContent =
+                tituloMes(
+                    dados.tabela_criticos.mes_referencia
+                );
 
 
-return "epk-red";
+            function classeEpk(valor) {
 
-}
+                const numero =
 
-
-function classeGaragem(garagem){
-
-if(
-garagem.includes("VITORINO")
-){
-
-return "gar-vitorino";
-
-}
+                    parseFloat(
+                        String(valor)
+                            .replace(",", ".")
+                    );
 
 
-if(
-garagem.includes("SÃO")
-){
+                if (numero <= 1) {
 
-return "gar-sf";
+                    return "epk-green";
 
-}
+                }
 
 
-if(
-garagem.includes("BANDEIRANTES")
-){
+                if (numero <= 5) {
 
-return "gar-band";
+                    return "epk-yellow";
 
-}
+                }
 
 
-return "gar-fret";
+                if (numero <= 8) {
 
-}
+                    return "epk-orange";
 
-
-let criticosHtml=
-"";
+                }
 
 
-dados
-.tabela_criticos
-.motoristas
-.forEach(
-motorista=>{
+                return "epk-red";
 
-criticosHtml+=
+            }
 
-`
+
+            function classeGaragem(garagem) {
+
+                if (
+                    garagem.includes("VITORINO")
+                ) {
+
+                    return "gar-vitorino";
+
+                }
+
+
+                if (
+                    garagem.includes("SÃO")
+                ) {
+
+                    return "gar-sf";
+
+                }
+
+
+                if (
+                    garagem.includes("BANDEIRANTES")
+                ) {
+
+                    return "gar-band";
+
+                }
+
+
+                return "gar-fret";
+
+            }
+
+
+            let criticosHtml =
+                "";
+
+
+            dados
+                .tabela_criticos
+                .motoristas
+                .forEach(
+                    motorista => {
+
+                        criticosHtml +=
+
+                            `
 <tr>
 
 <td>
@@ -3439,8 +3357,8 @@ ${motorista.km_rodado}
 
 <td
 class="${classeEpk(
-motorista.epk_anterior
-)}">
+                                motorista.epk_anterior
+                            )}">
 
 ${motorista.epk_anterior}
 
@@ -3449,8 +3367,8 @@ ${motorista.epk_anterior}
 
 <td
 class="${classeEpk(
-motorista.epk_atual
-)}">
+                                motorista.epk_atual
+                            )}">
 
 ${motorista.epk_atual}
 
@@ -3480,8 +3398,8 @@ ${motorista.tratativa_supervisor}
 
 <td
 class="${classeGaragem(
-motorista.garagem
-)}">
+                                motorista.garagem
+                            )}">
 
 ${motorista.garagem}
 
@@ -3497,28 +3415,29 @@ ${motorista.acao}
 </tr>
 `;
 
-}
-);
+                    }
+                );
 
 
-document
-.getElementById(
-"critical-body"
-)
-.innerHTML=
-criticosHtml;
+            document
+                .getElementById(
+                    "critical-body"
+                )
+                .innerHTML =
+                criticosHtml;
 
-}
+        }
 
 
-/* =========================================================
-INICIAR
-========================================================= */
+        /* =========================================================
+        INICIAR
+        ========================================================= */
 
-window.onload=
-render;
+        window.onload =
+            render;
 
-</script>
+    </script>
 
 </body>
+
 </html>

@@ -640,44 +640,81 @@ body {
 </div>
 
 <script>
-Chart.register(ChartDataLabels);
-Chart.defaults.font.family = "'Inter', sans-serif";
+// Protege o dashboard caso Chart.js não carregue.
+// Os rótulos do gráfico são desenhados por um plugin local abaixo,
+// então não dependem do chartjs-plugin-datalabels para aparecer.
+if (typeof Chart !== 'undefined') {
+    Chart.defaults.font.family = "'Inter', sans-serif";
+}
+
+const inlineDonutLabels = {
+    id: 'inlineDonutLabels',
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        const dataset = chart.data.datasets[0];
+        const meta = chart.getDatasetMeta(0);
+        const total = dataset.data.reduce((a, b) => Number(a) + Number(b), 0);
+
+        ctx.save();
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        meta.data.forEach((arc, index) => {
+            const value = Number(dataset.data[index]);
+            const percentual = total > 0 ? (value * 100 / total).toFixed(1).replace('.', ',') : '0,0';
+
+            // Posição central de cada faixa do donut.
+            const angle = (arc.startAngle + arc.endAngle) / 2;
+            const radius = (arc.innerRadius + arc.outerRadius) / 2;
+            const x = arc.x + Math.cos(angle) * radius;
+            const y = arc.y + Math.sin(angle) * radius;
+
+            ctx.font = "900 14px Inter, sans-serif";
+            ctx.fillText(value.toLocaleString('pt-BR'), x, y - 8);
+            ctx.font = "800 12px Inter, sans-serif";
+            ctx.fillText(`(${percentual}%)`, x, y + 9);
+        });
+
+        ctx.restore();
+    }
+};
 
 const dados = {
     periodo: "JULHO 2026",
     meta_considerada: "1,00 EPK",
-    total_motoristas: 1177,
+    total_motoristas: 1178,
 
     resumo_executivo: {
-        ativos: 1168,
-        acima_meta: 437,
-        abaixo_meta: 690,
-        sem_dados: 41
+        ativos: 1166,
+        acima_meta: 440,
+        abaixo_meta: 719,
+        sem_dados: 7
     },
 
     pizza_acompanhamento: {
-        instrutor: 722,
+        instrutor: 719,
         supervisor: 484,
-        ambos: 444,
-        total_manual: 759
+        ambos: 443,
+        total_manual: 757
     },
 
     tabela_acompanhamento: {
-        instrutor: 722,
+        instrutor: 719,
         supervisor: 484,
-        ambos: 444
+        ambos: 443
     },
 
     acima_meta_acompanhados: {
-        instrutor: 427,
-        supervisor: 312,
-        ambos: 311
+        instrutor: 416,
+        supervisor: 306,
+        ambos: 303
     },
 
     acima_meta_nao_acompanhados: {
-        instrutor: 10,
-        supervisor: 125,
-        ambos: 126
+        instrutor: 24,
+        supervisor: 134,
+        ambos: 137
     }
 };
 
@@ -816,7 +853,14 @@ function renderDashboard() {
     document.getElementById('imp-pct1').textContent = pctAcompanhadosTxt;
     document.getElementById('imp-pct2').textContent = pctNaoAcompanhadosTxt;
 
-    drawPizzaChart(dados.pizza_acompanhamento);
+    // O restante do dashboard deve aparecer mesmo se o gráfico não puder ser carregado
+    if (typeof Chart !== 'undefined') {
+        drawPizzaChart(dados.pizza_acompanhamento);
+    } else {
+        const donutTotal = document.getElementById('donut-total');
+        if (donutTotal) donutTotal.textContent = dados.pizza_acompanhamento.total_manual;
+        console.warn('Chart.js não carregou; os números foram renderizados sem o gráfico.');
+    }
 }
 
 function drawPizzaChart(dataObj) {
@@ -826,6 +870,7 @@ function drawPizzaChart(dataObj) {
 
     new Chart(ctx, {
         type: 'doughnut',
+        plugins: [inlineDonutLabels],
         data: {
             labels: ['Instrutor', 'Supervisor', 'Ambos'],
             datasets: [{
@@ -841,17 +886,7 @@ function drawPizzaChart(dataObj) {
             cutout: '58%',
             plugins: {
                 legend: { display: false },
-                tooltip: { enabled: true },
-                datalabels: {
-                    color: '#ffffff',
-                    font: { weight: '900', size: 14 },
-                    textAlign: 'center',
-                    formatter: function(value, ctx) {
-                        const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                        const percentual = (value * 100 / total).toFixed(1).replace('.', ',');
-                        return `${value}\n(${percentual}%)`;
-                    }
-                }
+                tooltip: { enabled: true }
             }
         }
     });
