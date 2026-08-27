@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js & DataLabels -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -247,8 +246,86 @@
     <div class="rows-container" id="rows-container"></div>
 </div>
 <script>
-    Chart.register(ChartDataLabels);
-    Chart.defaults.font.family = "'Inter', sans-serif";
+    // O dashboard não depende mais do chartjs-plugin-datalabels.
+    // Assim, uma falha nesse CDN não derruba os KPIs nem as linhas das garagens.
+    if (typeof Chart !== 'undefined') {
+        Chart.defaults.font.family = "'Inter', sans-serif";
+    }
+
+    // Plugin local: desenha os valores sem depender de biblioteca externa.
+    const valueLabelsPlugin = {
+        id: 'valueLabelsPlugin',
+        afterDatasetsDraw(chart, args, pluginOptions) {
+            const { ctx, scales } = chart;
+            if (!chart.data.datasets.length || !scales?.y) return;
+
+            const serie = chart.data.datasets[0];
+            const metaSerie = chart.data.datasets[1];
+            const serieMeta = chart.getDatasetMeta(0);
+            const metaMeta = chart.getDatasetMeta(1);
+            const targetVal = Number(pluginOptions?.targetVal);
+
+            const roundedRect = (x, y, w, h, r = 4) => {
+                const rr = Math.min(r, w / 2, h / 2);
+                ctx.beginPath();
+                ctx.moveTo(x + rr, y);
+                ctx.arcTo(x + w, y, x + w, y + h, rr);
+                ctx.arcTo(x + w, y + h, x, y + h, rr);
+                ctx.arcTo(x, y + h, x, y, rr);
+                ctx.arcTo(x, y, x + w, y, rr);
+                ctx.closePath();
+            };
+
+            const drawBadge = (text, x, y, align = 'center', fontSize = 12) => {
+                ctx.save();
+                ctx.font = `800 ${fontSize}px Inter, sans-serif`;
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = align;
+
+                const metrics = ctx.measureText(text);
+                const padX = 4;
+                const h = fontSize + 7;
+                const w = metrics.width + padX * 2;
+                let left = x - w / 2;
+                if (align === 'left') left = x;
+                if (align === 'right') left = x - w;
+                const top = y - h / 2;
+
+                ctx.fillStyle = 'rgba(255,255,255,0.96)';
+                roundedRect(left, top, w, h, 4);
+                ctx.fill();
+                ctx.fillStyle = '#1e293b';
+                ctx.fillText(text, x, y);
+                ctx.restore();
+            };
+
+            const targetY = Number.isFinite(targetVal) ? scales.y.getPixelForValue(targetVal) : null;
+            const lastIndex = serie.data.length - 1;
+
+            serieMeta.data.forEach((point, i) => {
+                const value = Number(serie.data[i]);
+                if (!Number.isFinite(value)) return;
+
+                // Padrão: valor acima do ponto. Se estiver muito perto da meta,
+                // joga o valor para o lado oposto da linha tracejada.
+                let labelY = point.y - 15;
+                if (targetY !== null && Math.abs(point.y - targetY) < 30) {
+                    labelY = point.y < targetY ? point.y - 17 : point.y + 17;
+                }
+                drawBadge(fNum(value), point.x, labelY, 'center', 12);
+            });
+
+            // Escreve META apenas no último ponto e do lado oposto ao valor realizado.
+            if (metaMeta.data.length && Number.isFinite(targetVal)) {
+                const targetPoint = metaMeta.data[metaMeta.data.length - 1];
+                const actualPoint = serieMeta.data[lastIndex];
+                const metaY = actualPoint && actualPoint.y < targetPoint.y
+                    ? targetPoint.y + 17
+                    : targetPoint.y - 17;
+                drawBadge(`META: ${fNum(targetVal)}`, targetPoint.x + 10, metaY, 'left', 10);
+            }
+        }
+    };
     // =========================================================================
     // DADOS PARA ALTERAÇÃO MANUAL (HTML)
     // =========================================================================
@@ -264,7 +341,7 @@
                 cor: '#38668c', // Azul
                 corClara: '#f0f5fa',
                 metaKml: 2.96,
-                epk: [7.37, 4.07, 2.07, 1.29, 1.14, 0.98, 1.08],
+                epk: [7.37, 4.07, 2.07, 1.29, 1.14, 0.98, 1.03],
                 kml: [2.71, 2.77, 2.82, 2.86, 2.88, 2.90, 2.86]
             },
             {
@@ -273,8 +350,8 @@
                 cor: '#b31b1b', // Vermelho
                 corClara: '#fdf2f2',
                 metaKml: 2.98,
-                epk: [6.52, 4.83, 2.91, 2.08, 1.67, 1.40, 1.47],
-                kml: [2.86, 2.94, 2.94, 2.97, 3.00, 3.03, 2.98]
+                epk: [6.52, 4.83, 2.91, 2.08, 1.67, 1.40, 1.40],
+                kml: [2.86, 2.94, 2.94, 2.97, 3.00, 3.03, 2.99]
             },
             {
                 id: 'sao_francisco',
@@ -282,7 +359,7 @@
                 cor: '#2c6e3c', // Verde
                 corClara: '#f0f9f2',
                 metaKml: 3.05,
-                epk: [6.24, 4.74, 2.90, 1.91, 1.53, 1.20, 1.27],
+                epk: [6.24, 4.74, 2.90, 1.91, 1.53, 1.20, 1.21],
                 kml: [3.18, 3.19, 3.21, 3.29, 3.31, 3.33, 3.31]
             }
         ]
@@ -430,8 +507,23 @@
         });
     }
     function drawChart(canvasId, dataArr, targetVal, color, min, max, step, legendLabel) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+
+        // Se o Chart.js não carregar, os KPIs e dados textuais continuam aparecendo.
+        if (typeof Chart === 'undefined') {
+            const wrap = canvas.parentElement;
+            canvas.style.display = 'none';
+            const aviso = document.createElement('div');
+            aviso.style.cssText = 'height:100%;display:flex;align-items:center;justify-content:center;color:#64748b;font:700 12px Inter,sans-serif;';
+            aviso.textContent = 'GRÁFICO INDISPONÍVEL';
+            wrap.appendChild(aviso);
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
         const targetArray = dados.periodo.map(() => targetVal);
+
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -444,53 +536,47 @@
                         backgroundColor: color,
                         borderWidth: 2.5,
                         pointRadius: 5,
-                        datalabels: {
-                            align: 'top',
-                            anchor: 'center',
-                            offset: 8,
-                            color: '#1e293b',
-                            font: { weight: '800', size: 12 },
-                            formatter: v => v ? v.toFixed(2).replace('.', ',') : '' // Proteção para valores vazios
-                        }
+                        pointHoverRadius: 6,
+                        tension: 0
                     },
                     {
                         label: `Meta (${fNum(targetVal)})`,
                         data: targetArray,
                         borderColor: '#94a3b8',
+                        backgroundColor: '#94a3b8',
                         borderWidth: 2,
                         borderDash: [6, 4],
                         pointRadius: 0,
-                        datalabels: {
-                            display: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1,
-                            formatter: () => `META: ${fNum(targetVal)}`,
-                            align: 'right', // <--- POSICIONA TEXTO DA META SEMPRE À DIREITA
-                            anchor: 'center', // Alinhado ao centro da linha tracejada
-                            offset: 8, // Afasta um pouquinho pra direita
-                            color: '#475569',
-                            font: { weight: '800', size: 10 }
-                        }
+                        pointHoverRadius: 0
                     }
                 ]
             },
+            plugins: [valueLabelsPlugin],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                // Aumentado o padding na direita (right: 65) para caber a palavra "META" sem cortar na borda!
-                layout: { padding: { top: 25, right: 65, left: 10 } },
+                animation: false,
+                layout: { padding: { top: 30, right: 82, bottom: 14, left: 10 } },
                 plugins: {
+                    valueLabelsPlugin: { targetVal },
                     legend: {
                         position: 'bottom',
-                        labels: { boxWidth: 25, boxHeight: 3, font: { weight: '800', size: 11, family: 'Inter' } }
+                        labels: {
+                            boxWidth: 25,
+                            boxHeight: 3,
+                            font: { weight: '800', size: 11, family: 'Inter' }
+                        }
                     },
                     tooltip: { enabled: true }
                 },
                 scales: {
                     y: {
-                        min: min, max: max,
+                        min,
+                        max,
                         border: { display: false },
                         ticks: {
                             stepSize: step,
-                            callback: v => v.toFixed(2).replace('.', ','),
+                            callback: v => Number(v).toFixed(2).replace('.', ','),
                             font: { size: 11, weight: '600' },
                             color: '#64748b'
                         },
@@ -506,8 +592,9 @@
             }
         });
     }
+
     // Initialize
-    window.onload = renderDashboard;
+    document.addEventListener('DOMContentLoaded', renderDashboard);
 </script>
 </body>
 </html>

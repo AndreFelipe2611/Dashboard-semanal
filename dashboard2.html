@@ -574,7 +574,177 @@
 <!-- SCRIPT: DADOS E CONFIGURAÇÃO DOS GRÁFICOS -->
 <script>
     // Registra o plugin de DataLabels
-    Chart.register(ChartDataLabels);
+
+    // -------------------------------------------------------------------------
+    // PROTEÇÃO DO CHART.JS / DATALABELS
+    // Se o CDN do chartjs-plugin-datalabels falhar, este fallback mantém
+    // os números/rótulos visíveis e evita que o restante do dashboard pare.
+    // -------------------------------------------------------------------------
+    (function garantirDataLabels() {
+        if (typeof Chart === 'undefined') return;
+
+        if (typeof window.ChartDataLabels === 'undefined') {
+            const resolverOpcao = (valor, contexto, padrao) => {
+                if (typeof valor === 'function') {
+                    try { return valor(contexto); } catch (e) { return padrao; }
+                }
+                return valor === undefined ? padrao : valor;
+            };
+
+            const desenharRetanguloArredondado = (ctx, x, y, w, h, r) => {
+                const raio = Math.max(0, Math.min(Number(r) || 0, Math.min(w, h) / 2));
+                ctx.beginPath();
+                ctx.moveTo(x + raio, y);
+                ctx.lineTo(x + w - raio, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + raio);
+                ctx.lineTo(x + w, y + h - raio);
+                ctx.quadraticCurveTo(x + w, y + h, x + w - raio, y + h);
+                ctx.lineTo(x + raio, y + h);
+                ctx.quadraticCurveTo(x, y + h, x, y + h - raio);
+                ctx.lineTo(x, y + raio);
+                ctx.quadraticCurveTo(x, y, x + raio, y);
+                ctx.closePath();
+            };
+
+            window.ChartDataLabels = {
+                id: 'datalabels',
+                afterDatasetsDraw(chart) {
+                    if (!chart || !chart.ctx) return;
+
+                    const ctx = chart.ctx;
+                    const globalOptions =
+                        (chart.options && chart.options.plugins && chart.options.plugins.datalabels) || {};
+
+                    chart.data.datasets.forEach((dataset, datasetIndex) => {
+                        const meta = chart.getDatasetMeta(datasetIndex);
+                        if (!meta || meta.hidden || !meta.data) return;
+
+                        const options = Object.assign({}, globalOptions, dataset.datalabels || {});
+                        if (options.display === false) return;
+
+                        meta.data.forEach((element, dataIndex) => {
+                            const value = dataset.data[dataIndex];
+                            if (value === null || value === undefined || (typeof value === 'number' && !Number.isFinite(value))) return;
+
+                            const contexto = {
+                                chart,
+                                dataIndex,
+                                dataset,
+                                datasetIndex,
+                                active: false
+                            };
+
+                            const display = resolverOpcao(options.display, contexto, true);
+                            if (!display) return;
+
+                            let texto;
+                            try {
+                                texto = typeof options.formatter === 'function'
+                                    ? options.formatter(value, contexto)
+                                    : value;
+                            } catch (e) {
+                                texto = value;
+                            }
+
+                            if (texto === null || texto === undefined || texto === '') return;
+
+                            const linhas = String(texto).split('\n');
+                            const pos = typeof element.tooltipPosition === 'function'
+                                ? element.tooltipPosition()
+                                : { x: element.x, y: element.y };
+
+                            if (!pos || !Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return;
+
+                            const fonteOpt = resolverOpcao(options.font, contexto, {}) || {};
+                            const tamanhoFonte = Number(fonteOpt.size) || 11;
+                            const pesoFonte = fonteOpt.weight || '700';
+                            const familiaFonte = fonteOpt.family || "'Inter', sans-serif";
+                            const lineHeight = Number(fonteOpt.lineHeight) || Math.round(tamanhoFonte * 1.2);
+
+                            const offset = Number(resolverOpcao(options.offset, contexto, 4)) || 0;
+                            const align = resolverOpcao(options.align, contexto, 'center');
+
+                            let x = pos.x;
+                            let y = pos.y;
+
+                            if (typeof align === 'number') {
+                                const rad = align * Math.PI / 180;
+                                x += Math.cos(rad) * offset;
+                                y += Math.sin(rad) * offset;
+                            } else {
+                                switch (align) {
+                                    case 'top':
+                                    case 'start':
+                                        y -= offset + tamanhoFonte * 0.55;
+                                        break;
+                                    case 'bottom':
+                                    case 'end':
+                                        y += offset + tamanhoFonte * 0.55;
+                                        break;
+                                    case 'left':
+                                        x -= offset + tamanhoFonte * 0.55;
+                                        break;
+                                    case 'right':
+                                        x += offset + tamanhoFonte * 0.55;
+                                        break;
+                                }
+                            }
+
+                            const anchor = resolverOpcao(options.anchor, contexto, 'center');
+                            // Para barras, o tooltipPosition já fica próximo da extremidade.
+                            // Para linhas, estes pequenos ajustes reproduzem o comportamento
+                            // visual esperado do plugin oficial.
+                            if (anchor === 'start' && typeof align !== 'number') y += tamanhoFonte * 0.25;
+                            if (anchor === 'end' && typeof align !== 'number') y -= tamanhoFonte * 0.25;
+
+                            ctx.save();
+                            ctx.font = `${pesoFonte} ${tamanhoFonte}px ${familiaFonte}`;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+
+                            const corTexto = resolverOpcao(options.color, contexto, '#1e293b');
+                            const fundo = resolverOpcao(options.backgroundColor, contexto, null);
+
+                            const paddingOpt = resolverOpcao(options.padding, contexto, 0);
+                            const paddingX = typeof paddingOpt === 'object'
+                                ? Number(paddingOpt.left ?? paddingOpt.x ?? 4)
+                                : Number(paddingOpt) || 0;
+                            const paddingY = typeof paddingOpt === 'object'
+                                ? Number(paddingOpt.top ?? paddingOpt.y ?? 3)
+                                : Number(paddingOpt) || 0;
+
+                            const larguraTexto = Math.max(...linhas.map(linha => ctx.measureText(linha).width));
+                            const largura = larguraTexto + paddingX * 2;
+                            const altura = linhas.length * lineHeight + paddingY * 2;
+
+                            if (fundo) {
+                                ctx.fillStyle = fundo;
+                                desenharRetanguloArredondado(
+                                    ctx,
+                                    x - largura / 2,
+                                    y - altura / 2,
+                                    largura,
+                                    altura,
+                                    resolverOpcao(options.borderRadius, contexto, 0)
+                                );
+                                ctx.fill();
+                            }
+
+                            ctx.fillStyle = corTexto;
+                            const inicioY = y - ((linhas.length - 1) * lineHeight) / 2;
+                            linhas.forEach((linha, indice) => {
+                                ctx.fillText(linha, x, inicioY + indice * lineHeight);
+                            });
+
+                            ctx.restore();
+                        });
+                    });
+                }
+            };
+        }
+
+        Chart.register(window.ChartDataLabels);
+    })();
     // =========================================================================
     // DADOS PARA ALTERAÇÃO MANUAL (HTML)
     // Altere os valores nestes objetos para atualizar os gráficos e resumos dinamicamente.
@@ -685,6 +855,7 @@
     // =========================================================================
     // CONFIGURAÇÃO DOS GRÁFICOS
     // =========================================================================
+    if (typeof Chart !== 'undefined') {
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = '#0a1930';
     // Opções base para os gráficos idênticas à imagem
@@ -878,10 +1049,44 @@
         }
     };
 
+    // Rótulos próprios para os cards inferiores. Eles não dependem do
+    // chartjs-plugin-datalabels e, portanto, continuam visíveis mesmo quando
+    // o plugin externo falha ou demora para inicializar.
+    const rotulosModuloPlugin = {
+        id: 'rotulosModulo',
+        afterDatasetsDraw(chart) {
+            if (!chart || !chart.ctx) return;
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.font = "800 9px 'Inter', sans-serif";
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const meta = chart.getDatasetMeta(datasetIndex);
+                if (!meta || meta.hidden) return;
+
+                meta.data.forEach((element, dataIndex) => {
+                    const valor = dataset.data[dataIndex];
+                    if (!Number.isFinite(valor) || !element) return;
+                    const pos = typeof element.tooltipPosition === 'function'
+                        ? element.tooltipPosition()
+                        : { x: element.x, y: element.y };
+                    if (!pos || !Number.isFinite(pos.x) || !Number.isFinite(pos.y)) return;
+
+                    const deslocamento = datasetIndex === 0 ? -13 : 13;
+                    ctx.fillStyle = dataset.borderColor || '#0a1930';
+                    ctx.fillText(formatNumber(valor), pos.x, pos.y + deslocamento);
+                });
+            });
+            ctx.restore();
+        }
+    };
+
     const criarGraficoPorArea = ({ canvasId, acessosTotais, usuariosUnicos, corTotal, corUnicos }) => {
         const contexto = document.getElementById(canvasId).getContext('2d');
 
-        new Chart(contexto, {
+        return new Chart(contexto, {
             type: 'line',
             data: {
                 labels: dadosGerais.labelsModulos.map(label => label.toUpperCase()),
@@ -932,10 +1137,13 @@
                     }
                 ]
             },
-            plugins: [mensagemSemDadosPlugin],
+            plugins: [mensagemSemDadosPlugin, rotulosModuloPlugin],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                // Dashboards usados em captura/impressão precisam nascer prontos.
+                // Sem animação, todos os cinco cards aparecem já no primeiro frame.
+                animation: false,
                 interaction: {
                     mode: 'index',
                     intersect: false
@@ -944,11 +1152,9 @@
                     padding: { top: 22, right: 4, left: 4, bottom: 4 }
                 },
                 plugins: {
-                    datalabels: {
-                        display: (context) => context.dataset.data[context.dataIndex] !== null,
-                        font: { size: 8, weight: '800' },
-                        formatter: (value) => formatNumber(value)
-                    },
+                    // Desliga o plugin externo somente nesses cinco gráficos.
+                    // Os valores são desenhados pelo rotulosModuloPlugin acima.
+                    datalabels: { display: false },
                     legend: {
                         display: true,
                         position: 'top',
@@ -1003,7 +1209,94 @@
         });
     };
 
-    graficosPorArea.forEach(criarGraficoPorArea);
+    const desenharFallbackModulo = ({ canvasId, acessosTotais, usuariosUnicos, corTotal, corUnicos }) => {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+
+        // Se o Chart.js criou uma instância parcialmente antes de falhar, libera o canvas.
+        try {
+            const existente = typeof Chart.getChart === 'function' ? Chart.getChart(canvas) : null;
+            if (existente) existente.destroy();
+        } catch (e) {}
+
+        const wrapper = canvas.parentElement;
+        const cssWidth = Math.max(210, Math.floor(wrapper.clientWidth || 250) - 12);
+        const cssHeight = Math.max(150, Math.floor(wrapper.clientHeight || 190) - 8);
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        canvas.style.width = cssWidth + 'px';
+        canvas.style.height = cssHeight + 'px';
+        canvas.width = Math.round(cssWidth * dpr);
+        canvas.height = Math.round(cssHeight * dpr);
+
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+        const total = normalizarSerieMensal(acessosTotais).find(Number.isFinite);
+        const unicos = normalizarSerieMensal(usuariosUnicos).find(Number.isFinite);
+        const valores = [total, unicos].filter(Number.isFinite);
+
+        if (!valores.length) {
+            ctx.fillStyle = '#98a2b3';
+            ctx.font = "700 10px 'Inter', sans-serif";
+            ctx.textAlign = 'center';
+            ctx.fillText('AGUARDANDO DADOS', cssWidth / 2, cssHeight / 2);
+            return;
+        }
+
+        const max = Math.max(...valores, 1) * 1.18;
+        const top = 38, bottom = cssHeight - 30, left = 34, right = cssWidth - 12;
+        const chartH = Math.max(60, bottom - top);
+        const baseY = bottom;
+        const xs = [cssWidth * 0.42, cssWidth * 0.62];
+        const larguraBarra = Math.max(16, Math.min(28, cssWidth * 0.09));
+
+        // grade e base
+        ctx.strokeStyle = '#e8edf4';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 3; i++) {
+            const y = top + (chartH * i / 3);
+            ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+        }
+        ctx.strokeStyle = '#d0d5dd';
+        ctx.beginPath(); ctx.moveTo(left, baseY); ctx.lineTo(right, baseY); ctx.stroke();
+
+        const desenharBarra = (valor, x, cor, label) => {
+            if (!Number.isFinite(valor)) return;
+            const h = Math.max(2, (valor / max) * chartH);
+            const y = baseY - h;
+            ctx.fillStyle = cor;
+            ctx.fillRect(x - larguraBarra / 2, y, larguraBarra, h);
+
+            ctx.fillStyle = cor;
+            ctx.font = "800 9px 'Inter', sans-serif";
+            ctx.textAlign = 'center';
+            ctx.fillText(formatNumber(valor), x, Math.max(12, y - 8));
+
+            ctx.fillStyle = '#0a1930';
+            ctx.font = "700 8px 'Inter', sans-serif";
+            ctx.fillText(label, x, baseY + 15);
+        };
+
+        desenharBarra(total, xs[0], corTotal, 'Totais');
+        desenharBarra(unicos, xs[1], corUnicos, 'Únicos');
+
+        ctx.fillStyle = '#0a1930';
+        ctx.font = "800 8px 'Inter', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText(dadosGerais.labelsModulos[dadosGerais.labelsModulos.length - 1].toUpperCase(), cssWidth / 2, cssHeight - 5);
+    };
+
+    graficosPorArea.forEach((config) => {
+        try {
+            const grafico = criarGraficoPorArea(config);
+            if (grafico && typeof grafico.update === 'function') grafico.update('none');
+        } catch (erro) {
+            console.error(`Falha ao renderizar ${config.canvasId}:`, erro);
+            desenharFallbackModulo(config);
+        }
+    });
+    }
 </script>
 </body>
 </html>
