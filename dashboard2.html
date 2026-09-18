@@ -752,19 +752,19 @@
 
     // ATUALIZAÇÃO DOS DADOS DO PAINEL
     const dadosGerais = {
-        labels: ['Maio 2026', 'Junho 2026', 'Julho 2026', 'Agosto 2026'],
-        labelsCurtas: ['mai/26', 'jun/26', 'jul/26', 'ago/26'], // Usado apenas no "Período de Análise"
+        labels: ['Maio 2026', 'Junho 2026', 'Julho 2026', 'Agosto 2026', 'Setembro 2026'],
+        labelsCurtas: ['mai/26', 'jun/26', 'jul/26', 'ago/26', 'set/26'], // Usado apenas no "Período de Análise"
 
         // MESES EXCLUSIVOS DOS 5 GRÁFICOS INFERIORES
         // Como esses gráficos são novos, o histórico deles começa em agosto de 2026.
         // Para adicionar os próximos meses, inclua-os aqui e acrescente um valor
         // na mesma posição em cada array de "modulos".
-        labelsModulos: ['Agosto 2026'],
+        labelsModulos: ['Agosto 2026', 'Setembro 2026'],
         
         // DADOS DOS DOIS GRÁFICOS GRANDES, KPIs E RESUMOS
         // Estes dados são independentes das tabelinhas manuais abaixo.
-        acessosTotais: [7164, 23862, 27097, 23774],
-        usuariosUnicos: [893, 1124, 1125, 1120],
+        acessosTotais: [7164, 23862, 27097, 23774, 13867],
+        usuariosUnicos: [893, 1124, 1125, 1120, 1085],
         usuariosCadastrados: 1306, // Pode ser alterado e o % recalculará automaticamente
 
         // TABELINHAS MANUAIS POR ÁREA
@@ -772,24 +772,24 @@
         // Use null quando o dado ainda não existir; não use zero como preenchimento.
         modulos: {
             telemetria: {
-                acessosTotais: [21206],
-                usuariosUnicos: [1035]
+                acessosTotais: [21206, 13459],
+                usuariosUnicos: [1035, 993]
             },
             escala: {
-                acessosTotais: [5716],
-                usuariosUnicos: [802]
+                acessosTotais: [5716, 2978],
+                usuariosUnicos: [802, 666]
             },
             treinamentos: {
-                acessosTotais: [4524],
-                usuariosUnicos: [830]
+                acessosTotais: [4524, 3003],
+                usuariosUnicos: [830, 723]
             },
             fichas: {
-                acessosTotais: [2473],
-                usuariosUnicos: [739]
+                acessosTotais: [2473, 1443],
+                usuariosUnicos: [739, 548]
             },
             banheiros: {
-                acessosTotais: [1309],
-                usuariosUnicos: [644]
+                acessosTotais: [1309, 537],
+                usuariosUnicos: [644, 352]
             }
         }
     };
